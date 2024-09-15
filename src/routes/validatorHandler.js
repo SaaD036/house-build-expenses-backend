@@ -1,6 +1,8 @@
 const { validationResult } = require('express-validator');
 const { isEmpty } = require('lodash');
 
+const { getErrorResponse } = require('../utilities/api');
+
 const { HTTP_STATUS } = require('../constants/http');
 
 const validtorHandler = (req, res, next) => {
@@ -23,16 +25,14 @@ const validtorHandler = (req, res, next) => {
     });
 
     if (validationErrorsArray.length === 1) {
-        console.log('SaaD 1 : ', validationErrorsArray[0]);
         validationErrorResponse.message = validationErrorsArray[0];
     } else if (validationErrorsArray.length >= 2) {
-        console.log('SaaD 2');
         validationErrorResponse.message = validationErrorsArray;
     }
 
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        errors: validationErrorResponse,
-    });
+    return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json(getErrorResponse(validationErrorResponse.message));
 };
 
 module.exports = validtorHandler;
