@@ -1,20 +1,13 @@
 const express = require('express');
 
-const AuthMiddleware = require('../../middlewares/auth');
-const AdminMiddleware = require('../../middlewares/auth/Admin');
-
-const { loginValidator } = require('./authValidators');
+const { loginValidator, forgotPasswordValidator } = require('./authValidators');
 const validtorHandler = require('../validatorHandler');
 
-const { login } = require('../../controllers/auth');
-
-const { HTTP_STATUS } = require('../../constants/http');
+const { login, forgotPassword } = require('../../controllers/auth');
 
 const router = express.Router();
 
-router.get('/', AuthMiddleware, AdminMiddleware, (req, res, next) => {
-    return res.json(req.user).status(HTTP_STATUS.OK);
-});
 router.post('/login', loginValidator, validtorHandler, login);
+router.post('/forgot-password', forgotPasswordValidator, validtorHandler, forgotPassword);
 
 module.exports = router;
