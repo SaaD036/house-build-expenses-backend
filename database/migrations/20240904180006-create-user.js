@@ -1,6 +1,7 @@
 'use strict';
 
 const { UserRole } = require('../../src/constants/roles');
+const { UserAccountStatus } = require('../../src/constants/users');
 
 module.exports = {
     async up(queryInterface, DataTypes) {
@@ -37,8 +38,32 @@ module.exports = {
                 type: DataTypes.STRING,
                 defaultValue: UserRole.USER,
                 validate: {
-                    isIn: [UserRole.ADMIN,  UserRole.USER, UserRole.VISITOR],
+                    isIn: [UserRole.ADMIN, UserRole.USER, UserRole.VISITOR],
                 },
+            },
+            accountStatus: {
+                type: DataTypes.STRING,
+                defaultValue: UserAccountStatus.WAITING_FOR_USER_APPROVAL,
+                allowNull: false,
+                validate: {
+                    isIn: [
+                        UserAccountStatus.ACTIVE,
+                        UserAccountStatus.DEACTIVE,
+                        UserAccountStatus.DELETED,
+                        UserAccountStatus.WAITING_FOR_USER_APPROVAL,
+                    ],
+                },
+                field: 'account_status',
+            },
+            resetPasswordToken: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                field: 'reset_password_token',
+            },
+            accountEditHistory: {
+                type: DataTypes.JSON,
+                allowNull: true,
+                field: 'account_edit_history',
             },
             createdAt: {
                 allowNull: false,
