@@ -1,6 +1,6 @@
 const HTTP_STATUS = {
     OK: 200,
-    NOT_FOUND: 400,
+    NOT_FOUND: 404,
 };
 
 module.exports = {
