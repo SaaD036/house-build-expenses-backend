@@ -40,6 +40,14 @@ const login = async (req, res, next) => {
                 }
             );
 
+            user.resetPasswordToken = null;
+            user.accountEditHistory = {
+                ...JSON.parse(user.accountEditHistory),
+                last_reset_pass_request_time: null,
+            };
+
+            user.save();
+
             return res.status(200).json({
                 message: 'login successful',
                 token: token,
@@ -73,6 +81,10 @@ const forgotPassword = async (req, res, next) => {
         const verificationCode = generateFixDigitInteger(6);
 
         user.resetPasswordToken = verificationCode.toString();
+        user.accountEditHistory = {
+            ...JSON.parse(user.accountEditHistory),
+            last_reset_pass_request_time: new Date(),
+        };
         await user.save();
 
         return res.status(HTTP_STATUS.OK).json({
@@ -84,7 +96,10 @@ const forgotPassword = async (req, res, next) => {
     }
 };
 
+const resetPassword = async (req, res, next) => {};
+
 module.exports = {
     login,
     forgotPassword,
+    resetPassword,
 };
