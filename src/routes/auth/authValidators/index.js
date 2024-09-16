@@ -11,7 +11,18 @@ const forgotPasswordValidator = [
     check('email').isEmail().withMessage('Email is required and should be valid.'),
 ];
 
+const resetPasswordValidator = [
+    check('email').isEmail().withMessage('Email is required and should be valid.'),
+    check('verificationCode')
+        .custom((value) => (value || '').toString().length === 6)
+        .withMessage('Invalid code.'),
+    check('password')
+        .custom((value) => (value || '').length >= 8)
+        .withMessage('Password is required and must have at least 8 character.'),
+];
+
 module.exports = {
     loginValidator,
     forgotPasswordValidator,
+    resetPasswordValidator,
 };

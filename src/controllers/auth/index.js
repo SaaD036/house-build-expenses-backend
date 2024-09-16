@@ -40,6 +40,7 @@ const login = async (req, res, next) => {
                 }
             );
 
+            user.accountStatus = UserAccountStatus.ACTIVE;
             user.resetPasswordToken = null;
             user.accountEditHistory = {
                 ...JSON.parse(user.accountEditHistory),
@@ -96,7 +97,57 @@ const forgotPassword = async (req, res, next) => {
     }
 };
 
-const resetPassword = async (req, res, next) => {};
+const resetPassword = async (req, res, next) => {
+    const { email, verificationCode, password } = req.body;
+
+    try {
+        const user = await User.findOne({
+            where: { email },
+        });
+
+        if (!user || user.accountStatus === UserAccountStatus.DELETED) {
+            return res
+                .status(HTTP_STATUS.NOT_FOUND)
+                .json(getErrorResponse('No user found with this email.'));
+        }
+
+        if ((user.resetPasswordToken || '').toString() !== verificationCode.toString()) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json(getErrorResponse('Invalid code.'));
+        }
+
+        const accountEditHistory = JSON.parse(user.accountEditHistory);
+        const codeExpirationTime = accountEditHistory.last_reset_pass_request_time
+            ? new Date(accountEditHistory.last_reset_pass_request_time)
+            : new Date();
+        codeExpirationTime.setHours(codeExpirationTime.getHours() + 3);
+
+        if (new Date() > codeExpirationTime) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json(getErrorResponse('Code expired.'));
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        user.accountStatus = UserAccountStatus.ACTIVE;
+        user.resetPasswordToken = null;
+        user.password = hashedPassword;
+        user.accountEditHistory = {
+            ...accountEditHistory,
+            history: [
+                ...accountEditHistory.history,
+                { title: 'Password reset', created_at: new Date() },
+            ],
+            last_reset_pass_request_time: null,
+        };
+
+        user.save();
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'Password reset.',
+        });
+    } catch (error) {
+        next(error.message || error);
+    }
+};
 
 module.exports = {
     login,
