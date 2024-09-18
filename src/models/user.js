@@ -4,8 +4,20 @@ const { Sequelize, Model } = require('sequelize');
 const { UserRole } = require('../constants/roles');
 const { UserAccountStatus } = require('../constants/users');
 
+const PROTECTED_ATTRIBUTES = ['password', 'resetPasswordToken'];
+
 module.exports = (sequelize, DataTypes) => {
-    class User extends Model {}
+    class User extends Model {
+        toJSON() {
+            let attributes = Object.assign({}, this.get());
+
+            for (let a of PROTECTED_ATTRIBUTES) {
+                delete attributes[a];
+            }
+
+            return attributes;
+        }
+    }
 
     User.init(
         {
