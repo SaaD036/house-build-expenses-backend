@@ -1,25 +1,6 @@
 {
-    "development": {
-        "username": "root",
-        "password": "",
-        "database": "m-house",
-        "host": "localhost",
+    "db_config": {
         "dialect": "mysql",
         "logging": false
-    },
-    "test": {
-        "username": "saadjama_saad",
-        "password": "Jeem9999$Jeem9999$",
-        "database": "saadjama_house-build-expenses-test",
-        "host": "srv1.whitelabelhost.net",
-        "dialect": "mysql",
-        "logging": false
-    },
-    "production": {
-        "username": "root",
-        "password": null,
-        "database": "database_production",
-        "host": "127.0.0.1",
-        "dialect": "mysql"
     }
 }
