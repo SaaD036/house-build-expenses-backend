@@ -1,0 +1,27 @@
+{
+    "development": {
+        "username": "postgres",
+        "password": "admin",
+        "database": "m-house",
+        "host": "localhost",
+        "dialect": "postgres",
+        "port": 5432,
+        "logging": false
+    },
+    "test": {
+        "username": "uqbtlorwysvpnrf9wqfl",
+        "password": "mlhCqG84pGi6sFSHOaQ2Z6R4SEXspk",
+        "database": "bnrvil1m7joq9qc4wil0",
+        "host": "bnrvil1m7joq9qc4wil0-postgresql.services.clever-cloud.com",
+        "dialect": "postgres",
+        "port": 50013,
+        "logging": false
+    },
+    "production": {
+        "username": "root",
+        "password": null,
+        "database": "database_production",
+        "host": "127.0.0.1",
+        "dialect": "mysql"
+    }
+}
