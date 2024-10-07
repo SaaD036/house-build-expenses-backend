@@ -1,10 +1,10 @@
 'use strict';
 const { Sequelize, Model } = require('sequelize');
 
-const PROTECTED_ATTRIBUTES = ['createdBy'];
+const PROTECTED_ATTRIBUTES = ['createdByj'];
 
 module.exports = (sequelize, DataTypes) => {
-    class User extends Model {
+    class Expense extends Model {
         static associate({ User }) {
             this.belongsTo(User, {
                 foreignKey: 'createdBy',
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    User.init(
+    Expense.init(
         {
             amount: {
                 type: DataTypes.FLOAT,
@@ -98,5 +98,5 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    return User;
+    return Expense;
 };
