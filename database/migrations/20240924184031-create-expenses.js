@@ -36,7 +36,7 @@ module.exports = {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {
-                    model: 'Users',
+                    model: 'users',
                     key: 'id',
                 },
                 field: 'created_by',
