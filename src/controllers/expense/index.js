@@ -16,18 +16,24 @@ const getAllExpenses = async (req, res, next) => {
             toDate,
         });
 
-        const expenses = await Expenses.findAll({
-            include: {
-                association: 'creator',
-                attributes: ['id', 'firstName', 'lastName'],
-            },
-            where: filter.where,
-            limit: filter.limit,
-            offset: filter.offset,
-        });
+        const [expenses, expensesCount] = await Promise.all([
+            Expenses.findAll({
+                include: {
+                    association: 'creator',
+                    attributes: ['id', 'firstName', 'lastName'],
+                },
+                where: filter.where,
+                limit: filter.limit,
+                offset: filter.offset,
+            }),
+            Expenses.count({
+                where: filter.where,
+            }),
+        ]);
 
         return res.status(HTTP_STATUS.OK).json({
             expenses,
+            expensesCount,
         });
     } catch (error) {
         next(error);
