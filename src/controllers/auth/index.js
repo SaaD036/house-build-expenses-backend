@@ -44,7 +44,7 @@ const login = async (req, res, next) => {
             user.accountStatus = UserAccountStatus.ACTIVE;
             user.resetPasswordToken = null;
             user.accountEditHistory = {
-                ...JSON.parse(user.accountEditHistory),
+                ...user.accountEditHistory,
                 last_reset_pass_request_time: null,
             };
 
