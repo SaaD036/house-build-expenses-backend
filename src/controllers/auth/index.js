@@ -8,6 +8,7 @@ const { generateFixDigitInteger } = require('../../utilities/integer');
 
 const { UserAccountStatus } = require('../../constants/users');
 const { HTTP_STATUS } = require('../../constants/http');
+const { JWT_SECRET } = require('../../constants');
 
 const login = async (req, res, next) => {
     const { email, password } = req.body;
@@ -34,7 +35,7 @@ const login = async (req, res, next) => {
                     name: `${user.firstName} ${user.lastName}`,
                     role: user.role,
                 },
-                process.env.JWT_SECRET,
+                process.env.JWT_SECRET || JWT_SECRET,
                 {
                     expiresIn: '3h',
                 }
