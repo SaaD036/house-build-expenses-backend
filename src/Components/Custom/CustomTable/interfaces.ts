@@ -15,3 +15,8 @@ export type CustomTableRowDataType = Record<
         value: any;
     }
 >;
+
+export type CustomTableColumnSortDataType = {
+    columnKey: string;
+    sortType: 'ASC' | 'DES';
+};

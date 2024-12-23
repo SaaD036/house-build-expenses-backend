@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
     Table,
@@ -9,18 +9,55 @@ import {
     TableRow,
     Tooltip,
 } from '@mui/material';
+import {
+    ImportExport as ImportExportIcon,
+    ArrowDownward as DownArrowIcon,
+    ArrowUpward as upArrowIcon,
+} from '@mui/icons-material';
 
-import { CustomTablePropsType, CustomTableRowDataType } from './interfaces';
+import {
+    CustomTablePropsType,
+    CustomTableRowDataType,
+    CustomTableColumnSortDataType,
+} from './interfaces';
+import styles from './styles.module.css';
 
 const CustomTable = (props: CustomTablePropsType) => {
     const { columns, rowData } = props;
+
+    const [sortData, setSortData] = useState<CustomTableColumnSortDataType>();
+
+    const onSortIconClick = (columnKey: string) => {
+        if (sortData?.columnKey === columnKey) {
+            setSortData((prevSortData) => ({
+                columnKey,
+                sortType: prevSortData?.sortType === 'ASC' ? 'DES' : 'ASC',
+            }));
+
+            return;
+        }
+
+        setSortData({
+            columnKey,
+            sortType: 'ASC',
+        });
+    };
+
+    const getTitleSortIcon = (columnKey: string) => {
+        if (columnKey === sortData?.columnKey) {
+            return sortData.sortType === 'ASC' ? DownArrowIcon : upArrowIcon;
+        }
+
+        return ImportExportIcon;
+    };
 
     const renderTableHead = () => {
         return (
             <TableHead sx={{ backgroundColor: '#158901' }}>
                 <TableRow>
                     {columns.map((column, index) => {
-                        const { key, label } = column;
+                        const { key, label, sortable } = column;
+                        const SortIcon = getTitleSortIcon(key);
 
                         return (
                             <TableCell
@@ -31,7 +68,15 @@ const CustomTable = (props: CustomTablePropsType) => {
                                     borderLeft: index === 0 ? null : '1px solid white',
                                 }}
                             >
-                                {label}
+                                <div className="center">
+                                    {label}
+                                    {sortable && (
+                                        <SortIcon
+                                            className={styles.titleIcon}
+                                            onClick={() => onSortIconClick(key)}
+                                        />
+                                    )}
+                                </div>
                             </TableCell>
                         );
                     })}
