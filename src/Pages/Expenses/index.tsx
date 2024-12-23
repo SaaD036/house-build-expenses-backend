@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 
+import ExpensePageComponent from '../../Components/Expenses/ExpensePageComponent';
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 
 import { EXPENSE_PAGE_TAB_ITEMS, tabValueItem } from './constants';
+import styles from './styles.module.css';
 
 const ExpensesPage = () => {
     const query = useQuery();
@@ -14,7 +16,7 @@ const ExpensesPage = () => {
     const [activeTab, setActiveTab] = useState(tabName);
 
     return (
-        <div>
+        <div className={`pageComponent center ${styles.expensePageComponent}`}>
             <Header
                 components={
                     <CustomNavTabs
@@ -24,7 +26,7 @@ const ExpensesPage = () => {
                     />
                 }
             />
-            Expenses page
+            <ExpensePageComponent tabName={activeTab} />
         </div>
     );
 };

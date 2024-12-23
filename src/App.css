@@ -43,6 +43,10 @@ a {
     height: 100vh;
 }
 
+.pageComponent {
+    width: 100%;
+}
+
 .links {
     text-decoration: none;
     color: black;
