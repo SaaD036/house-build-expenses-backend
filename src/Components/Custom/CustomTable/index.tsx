@@ -28,18 +28,16 @@ const CustomTable = (props: CustomTablePropsType) => {
     const [sortData, setSortData] = useState<CustomTableColumnSortDataType>();
 
     const onSortIconClick = (columnKey: string) => {
-        if (sortData?.columnKey === columnKey) {
-            setSortData((prevSortData) => ({
-                columnKey,
-                sortType: prevSortData?.sortType === 'ASC' ? 'DES' : 'ASC',
-            }));
-
-            return;
-        }
+        const sortType =
+            sortData?.columnKey === columnKey
+                ? sortData?.sortType === 'ASC'
+                    ? 'DES'
+                    : 'ASC'
+                : 'ASC';
 
         setSortData({
             columnKey,
-            sortType: 'ASC',
+            sortType,
         });
     };
 
@@ -53,7 +51,7 @@ const CustomTable = (props: CustomTablePropsType) => {
 
     const renderTableHead = () => {
         return (
-            <TableHead sx={{ backgroundColor: '#158901' }}>
+            <TableHead className="bg-color-green">
                 <TableRow>
                     {columns.map((column, index) => {
                         const { key, label, sortable } = column;
@@ -63,10 +61,7 @@ const CustomTable = (props: CustomTablePropsType) => {
                             <TableCell
                                 key={`custom-table-header-cell-${key}`}
                                 align="center"
-                                sx={{
-                                    color: 'white',
-                                    borderLeft: index === 0 ? null : '1px solid white',
-                                }}
+                                className={styles.tableheaderCell}
                             >
                                 <div className="center">
                                     {label}
@@ -93,8 +88,8 @@ const CustomTable = (props: CustomTablePropsType) => {
 
             if (typeof tableRowCellContent === 'string' && tableRowCellContent.length >= 30) {
                 tableRowCellContent = (
-                    <Tooltip title={tableRowCellContent} style={{ cursor: 'pointer' }}>
-                        <div>{`${tableRowCellContent.substring(0, 37)}...`}</div>
+                    <Tooltip title={tableRowCellContent} className={styles.tableRowCellContent}>
+                        <div>{tableRowCellContent}</div>
                     </Tooltip>
                 );
             }
@@ -103,7 +98,7 @@ const CustomTable = (props: CustomTablePropsType) => {
                 <TableCell
                     key={`custom-table-row-cell-${columnKey}`}
                     align="center"
-                    sx={{ borderColor: '#158901', maxWidth: '120px' }}
+                    className={styles.tableRowCell}
                 >
                     <div>{tableRowCellContent}</div>
                 </TableCell>
@@ -114,7 +109,7 @@ const CustomTable = (props: CustomTablePropsType) => {
     };
 
     return (
-        <TableContainer style={{ border: '1px solid #158901', borderRadius: '3px 3px 5px 5px' }}>
+        <TableContainer className={styles.tableContainer}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 {renderTableHead()}
                 <TableBody>
