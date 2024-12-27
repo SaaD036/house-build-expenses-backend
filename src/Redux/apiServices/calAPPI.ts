@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { getCookie, cookieName } from '../../Utilities/Cookies';
+
 import { AxiosPayloadType } from './apiServiceTypes';
 
 export const callAxiosAPIWithoutUserCredential = async (payload: AxiosPayloadType) => {
@@ -11,4 +13,17 @@ export const callAxiosAPIWithoutUserCredential = async (payload: AxiosPayloadTyp
     return response;
 };
 
-export const callAxiosAPIWithUserCredential = () => {};
+export const callAxiosAPI = async (payload: AxiosPayloadType) => {
+    const authToken = getCookie(cookieName.USER_TOKEN);
+
+    const response = await axios({
+        ...payload,
+        validateStatus: (status_code) => true,
+        headers: {
+            ...payload.headers,
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
+
+    return response;
+};
