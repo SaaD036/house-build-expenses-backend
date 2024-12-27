@@ -1,6 +1,7 @@
 export type CustomTablePropsType = {
     columns: CustomTableColumnDataType[];
     rowData: CustomTableRowDataType[];
+    totalRowCount: number;
 };
 
 export type CustomTableColumnDataType = {

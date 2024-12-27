@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Pagination, PaginationItem, PaginationRenderItemParams, Stack } from '@mui/material';
 
@@ -20,6 +20,8 @@ const CustomPagination = (props: CustomPaginationType) => {
                 className={styles.selectItemsPerPage}
                 value={selectedItemsPerPage}
                 onChange={(e) => {
+                    setPage(1);
+
                     if (isNaN(Number(e.target.value))) {
                         setItemsPerPageCount(itemsPerPageCount[0] || 0);
                         return;

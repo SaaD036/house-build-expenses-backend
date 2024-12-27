@@ -15,17 +15,22 @@ import {
     ArrowUpward as upArrowIcon,
 } from '@mui/icons-material';
 
+import CustomPagination from '../CustomPagination';
+
 import {
     CustomTablePropsType,
     CustomTableRowDataType,
     CustomTableColumnSortDataType,
 } from './interfaces';
 import styles from './styles.module.css';
+import { TABLE_ROW_COUNT_OPTIONS } from './constants';
 
 const CustomTable = (props: CustomTablePropsType) => {
-    const { columns, rowData } = props;
+    const { columns, rowData, totalRowCount } = props;
 
+    const [page, setPage] = useState(1);
     const [sortData, setSortData] = useState<CustomTableColumnSortDataType>();
+    const [tableRowCount, setTableRowCount] = useState(TABLE_ROW_COUNT_OPTIONS[0]);
 
     const onSortIconClick = (columnKey: string) => {
         const sortType =
@@ -109,23 +114,35 @@ const CustomTable = (props: CustomTablePropsType) => {
     };
 
     return (
-        <TableContainer className={styles.tableContainer}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                {renderTableHead()}
-                <TableBody>
-                    {rowData.map((row) => (
-                        <TableRow
-                            key=""
-                            sx={{
-                                '&:last-child td, &:last-child th': { border: 0 },
-                            }}
-                        >
-                            {renderTableRow(row)}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <div>
+            <TableContainer className={styles.tableContainer}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    {renderTableHead()}
+                    <TableBody>
+                        {rowData.map((row, index) => (
+                            <TableRow
+                                key={`custom-table-row-${index}`}
+                                sx={{
+                                    '&:last-child td, &:last-child th': { border: 0 },
+                                }}
+                            >
+                                {renderTableRow(row)}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <CustomPagination
+                page={page}
+                setPage={setPage}
+                itemsPerPage={{
+                    itemsPerPageCount: TABLE_ROW_COUNT_OPTIONS,
+                    selectedItemsPerPage: tableRowCount,
+                    setItemsPerPageCount: setTableRowCount,
+                }}
+                pageCount={Math.ceil(totalRowCount / tableRowCount)}
+            />
+        </div>
     );
 };
 
