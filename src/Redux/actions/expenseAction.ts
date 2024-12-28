@@ -12,6 +12,8 @@ import { GET_ALL_EXPENSES } from '../types/expenses';
 import { HTTP_STATUS_CODE } from '../../Constants/HTTP';
 import ValidationError from '../../ErrorHandlers/ValidationError';
 
+import { ExpenseType } from '../../Types/expenses';
+
 export const getAllExpenses =
     (filters: any) => async (dispatch: Dispatch<{ type: string; payload: any }>) => {
         try {
@@ -28,11 +30,27 @@ export const getAllExpenses =
                 throw new ValidationError('Can not fetch expenses');
             }
 
+            const expenseData: ExpenseType[] = (data.expenses || []).map((expense: any) => ({
+                id: expense.id,
+                amount: expense.amount,
+                title: expense.title,
+                description: expense.description,
+                expenseAt: expense.expenseAt,
+                lastUpdatedAt: expense.updatedAt,
+                creator: {
+                    creatorID: expense.createdBy,
+                    firstName: expense.creator.firstName,
+                    lastName: expense.creator.lastName,
+                },
+            }));
+
             dispatch({
                 type: GET_ALL_EXPENSES,
                 payload: {
-                    expenses: data.expenses,
-                    expensesCount: data.expensesCount,
+                    expenses: expenseData,
+                    expensesCount: isNaN(Number(data.expensesCount))
+                        ? Number(data.expensesCount)
+                        : null,
                 },
             });
         } catch (error) {
