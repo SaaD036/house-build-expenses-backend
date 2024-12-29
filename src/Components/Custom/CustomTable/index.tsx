@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import {
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -13,6 +14,7 @@ import {
     ImportExport as ImportExportIcon,
     ArrowDownward as DownArrowIcon,
     ArrowUpward as upArrowIcon,
+    Cached as RefreshIcon,
 } from '@mui/icons-material';
 
 import CustomPagination from '../CustomPagination';
@@ -26,7 +28,7 @@ import styles from './styles.module.css';
 import { TABLE_ROW_COUNT_OPTIONS } from './constants';
 
 const CustomTable = (props: CustomTablePropsType) => {
-    const { columns, rowData, totalRowCount } = props;
+    const { columns, rowData, totalRowCount, loadTableData = () => {}, showRefreshButton } = props;
 
     const [page, setPage] = useState(1);
     const [sortData, setSortData] = useState<CustomTableColumnSortDataType>();
@@ -52,6 +54,20 @@ const CustomTable = (props: CustomTablePropsType) => {
         }
 
         return ImportExportIcon;
+    };
+
+    const loadData = async () => {
+        await loadTableData();
+    };
+
+    const renderRefreshButton = () => {
+        return (
+            <Stack className={styles.refreshButtonContainer} alignItems="flex-end">
+                <Tooltip title="Refresh">
+                    <RefreshIcon className={`icon ${styles.refreshIcon}`} onClick={loadData} />
+                </Tooltip>
+            </Stack>
+        );
     };
 
     const renderTableHead = () => {
@@ -115,6 +131,7 @@ const CustomTable = (props: CustomTablePropsType) => {
 
     return (
         <div>
+            {showRefreshButton && renderRefreshButton()}
             <TableContainer className={styles.tableContainer}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     {renderTableHead()}

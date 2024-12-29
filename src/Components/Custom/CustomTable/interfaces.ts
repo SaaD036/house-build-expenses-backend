@@ -2,6 +2,8 @@ export type CustomTablePropsType = {
     columns: CustomTableColumnDataType[];
     rowData: CustomTableRowDataType[];
     totalRowCount: number;
+    loadTableData?: (filterAndParams?: any) => Promise<void>;
+    showRefreshButton?: boolean;
 };
 
 export type CustomTableColumnDataType = {

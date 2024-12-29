@@ -17,7 +17,7 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
 
     const [isLoadingExpenseData, setIsLoadingExpenseData] = useState(true);
 
-    const loadExpenseData = async () => {
+    const loadExpenseData = async (filterAndParams?: any) => {
         setIsLoadingExpenseData(true);
         await getAllExpenses(null);
         setIsLoadingExpenseData(false);
@@ -66,6 +66,8 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
                     columns={EXPENSE_TABLE_COLUMNS}
                     rowData={getExpenseTableRows()}
                     totalRowCount={expensesCount}
+                    loadTableData={loadExpenseData}
+                    showRefreshButton
                 />
             )}
         </>
