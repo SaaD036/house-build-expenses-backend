@@ -107,9 +107,9 @@ const CustomTable = (props: CustomTablePropsType) => {
         const tableRow = columnKeys.map((columnKey) => {
             let tableRowCellContent = row[columnKey].value;
 
-            if (typeof tableRowCellContent === 'string' && tableRowCellContent.length >= 30) {
+            if (typeof tableRowCellContent === 'string' && tableRowCellContent.length >= 20) {
                 tableRowCellContent = (
-                    <Tooltip title={tableRowCellContent} className={styles.tableRowCellContent}>
+                    <Tooltip title={tableRowCellContent}>
                         <div>{tableRowCellContent}</div>
                     </Tooltip>
                 );
@@ -121,7 +121,7 @@ const CustomTable = (props: CustomTablePropsType) => {
                     align="center"
                     className={styles.tableRowCell}
                 >
-                    <div>{tableRowCellContent}</div>
+                    <div className={styles.tableRowCellContent}>{tableRowCellContent}</div>
                 </TableCell>
             );
         });
