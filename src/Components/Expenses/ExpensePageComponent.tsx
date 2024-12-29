@@ -4,6 +4,7 @@ import SeeExpenses from './SeeExpenses';
 
 import { tabValueItem } from '../../Pages/Expenses/constants';
 import { ExpensePagePropType } from './interfaces';
+import styles from './styles.module.css';
 
 const ExpensePageComponent = (props: ExpensePagePropType) => {
     const { tabName } = props;
@@ -20,7 +21,7 @@ const ExpensePageComponent = (props: ExpensePagePropType) => {
         return <div>Page not found</div>;
     };
 
-    return <div style={{ width: '98%' }}>{renderTabComponents()}</div>;
+    return <div className={styles.expenseTabComponentWrapper}>{renderTabComponents()}</div>;
 };
 
 export default ExpensePageComponent;
