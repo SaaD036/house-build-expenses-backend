@@ -40,6 +40,27 @@ const getAllExpenses = async (req, res, next) => {
     }
 };
 
+const createExpense = async (req, res, next) => {
+    try {
+        const { amount, title, description, expenseAt } = req.body;
+
+        await Expenses.create({
+            amount: Number(amount),
+            title,
+            description,
+            createdBy: req.user.id,
+            expenseAt: new Date(expenseAt),
+        });
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'successfull',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
+    createExpense,
 };
