@@ -1,0 +1,6 @@
+{
+    "GET_ALL_EXPENSES": {
+        "path": "/expense",
+        "method": "GET"
+    }
+}

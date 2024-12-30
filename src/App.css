@@ -6,16 +6,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-    text-decoration: none;
-}
-
-.App {
-    min-height: 100vh;
-}
-
 ::-webkit-scrollbar {
-    width: 15px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -28,6 +20,14 @@ a {
     border-radius: 2px;
 }
 
+a {
+    text-decoration: none;
+}
+
+.App {
+    min-height: 100vh;
+}
+
 .container {
     height: 100vh;
 }
@@ -38,13 +38,10 @@ a {
     justify-content: center;
 }
 
-.page {
-    display: flex;
-    height: 100vh;
-}
-
 .pageComponent {
     width: 100%;
+    max-height: 100vh;
+    overflow: none;
 }
 
 .links {

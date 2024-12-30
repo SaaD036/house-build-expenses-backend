@@ -1,0 +1,27 @@
+import React from 'react';
+
+import SeeExpenses from './SeeExpenses';
+
+import { tabValueItem } from '../../Pages/Expenses/constants';
+import { ExpensePagePropType } from './interfaces';
+import styles from './styles.module.css';
+
+const ExpensePageComponent = (props: ExpensePagePropType) => {
+    const { tabName } = props;
+
+    const renderTabComponents = () => {
+        if (tabName === tabValueItem.SEE_EXPENSES) {
+            return <SeeExpenses />;
+        }
+
+        if (tabName === tabValueItem.CREATE_EXPENSE) {
+            return <div>Create expenses here</div>;
+        }
+
+        return <div>Page not found</div>;
+    };
+
+    return <div className={styles.expenseTabComponentWrapper}>{renderTabComponents()}</div>;
+};
+
+export default ExpensePageComponent;
