@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 
+const { HTTP_STATUS } = require('../../constants/http');
+
 const auth = (req, res, next) => {
     const { authorization } = req.headers;
     const token =
@@ -7,7 +9,7 @@ const auth = (req, res, next) => {
 
     try {
         if (!authorization || !token) {
-            return res.status(401).json({
+            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
                 message: 'unauthenticated',
             });
         }
@@ -15,7 +17,7 @@ const auth = (req, res, next) => {
         const user = jwt.verify(token, process.env.JWT_SECRET);
 
         if (!user) {
-            return res.status(401).json({
+            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
                 message: 'unauthenticated',
             });
         }
@@ -24,7 +26,7 @@ const auth = (req, res, next) => {
 
         next();
     } catch (err) {
-        return res.status(401).json({
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
             message: 'unauthenticated',
         });
     }
