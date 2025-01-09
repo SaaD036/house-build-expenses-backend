@@ -1,7 +1,8 @@
 import React from 'react';
 
-export type FormProsType = {
+export type FormProsType<initialValueTypes> = {
     children: React.ReactNode;
-    initialValue: object;
+    initialValue: initialValueTypes;
     validationObject: object;
+    onSubmit: (formValue: initialValueTypes) => void;
 };

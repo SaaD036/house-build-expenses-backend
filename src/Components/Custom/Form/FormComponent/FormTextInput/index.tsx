@@ -22,7 +22,7 @@ const FormTextInput = (props: FormTextInputPropsType) => {
             <input
                 id={id}
                 className={hasError() ? styles.inputError : styles.formTextInputBox}
-                onChange={field.onChange}
+                {...field}
             />
             {hasError() ? <div className={styles.errorMessage}>{meta.error}</div> : null}
         </div>
