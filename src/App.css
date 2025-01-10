@@ -4,6 +4,7 @@ body {
         'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(242, 244, 247);
 }
 
 ::-webkit-scrollbar {
@@ -59,6 +60,8 @@ a {
     background-color: #158901 !important;
     border-radius: 5px !important;
     color: white !important;
+    border: none;
+    cursor: pointer;
 }
 
 .button-disabled {
