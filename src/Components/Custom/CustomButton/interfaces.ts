@@ -3,6 +3,7 @@ export type CustomButtonPropsType = {
     className?: string;
     onClick?: () => void;
     disabled?: boolean;
+    // type?: string;
 };
 
 export type ButtonSectionPropsType = {

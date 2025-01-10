@@ -10,9 +10,7 @@ const CustomButton = (props: CustomButtonPropsType) => {
 
     return (
         <Button
-            className={`${disabled ? 'button-disabled': 'button'} ${
-                className || ''
-            }`}
+            className={`${disabled ? 'button-disabled' : 'button'} ${className || ''}`}
             disabled={disabled}
             {...rest}
         >

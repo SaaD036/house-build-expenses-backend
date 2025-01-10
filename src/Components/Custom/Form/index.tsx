@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 
 import { FormProsType } from './interface';
+import styles from './styles.module.css';
 
 const Form = <T,>(props: FormProsType<T>) => {
     const { children, validationObject, initialValue, onSubmit } = props;
@@ -14,7 +15,11 @@ const Form = <T,>(props: FormProsType<T>) => {
                 onSubmit(values as T)
             }
         >
-            {(formik) => <form onSubmit={formik.handleSubmit}>{children}</form>}
+            {(formik) => (
+                <form onSubmit={formik.handleSubmit} className={styles.formWrapper}>
+                    {children}
+                </form>
+            )}
         </Formik>
     );
 };
