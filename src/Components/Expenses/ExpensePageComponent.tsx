@@ -1,6 +1,7 @@
 import React from 'react';
 
 import SeeExpenses from './SeeExpenses';
+import CreateExpense from './CreateExpense';
 
 import { tabValueItem } from '../../Pages/Expenses/constants';
 import { ExpensePagePropType } from './interfaces';
@@ -15,7 +16,7 @@ const ExpensePageComponent = (props: ExpensePagePropType) => {
         }
 
         if (tabName === tabValueItem.CREATE_EXPENSE) {
-            return <div>Create expenses here</div>;
+            return <CreateExpense />;
         }
 
         return <div>Page not found</div>;
