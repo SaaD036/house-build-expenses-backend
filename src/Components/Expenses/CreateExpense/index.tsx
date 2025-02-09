@@ -1,5 +1,4 @@
 import React from 'react';
-import * as Yup from 'yup';
 
 import Form from '../../Custom/Form';
 import FormTextInput from '../../Custom/Form/FormComponent/FormTextInput';
@@ -10,14 +9,9 @@ import FormTextArea from '../../Custom/Form/FormComponent/FormTextAreaInput';
 import CardContainer from '../../CardContainer';
 import ButtonSection from '../../Custom/CustomButton/ButtonSection';
 
+import { CREATE_EXPENSE_INITIAL_VALUE, CREATE_EXPENSE_FORM_VALIDATOR } from './constants';
 import { CreateExpenseFormValueType } from './interfaces';
-
-const initialValue: CreateExpenseFormValueType = {
-    title: 'BSRM Rods',
-    description: '',
-    amount: undefined,
-    expense_at: new Date(),
-};
+import styles from './styles.module.css';
 
 const CreateExpense = () => {
     return (
@@ -25,18 +19,8 @@ const CreateExpense = () => {
             <CardContainer title="Add Expense" />
             <CardContainer>
                 <Form
-                    initialValue={initialValue}
-                    validationObject={Yup.object({
-                        title: Yup.string()
-                            .max(15, 'Must be 15 characters or less')
-                            .required('Firstname is required'),
-                        description: Yup.string()
-                            .max(20, 'Must be 20 characters or less')
-                            .required('Required'),
-                        amount: Yup.number()
-                            .min(1, 'Amount must be positive number')
-                            .required('Required'),
-                    })}
+                    initialValue={CREATE_EXPENSE_INITIAL_VALUE}
+                    validationObject={CREATE_EXPENSE_FORM_VALIDATOR}
                     onSubmit={(a: CreateExpenseFormValueType) => console.log('SaaD : ', a)}
                 >
                     <FormTextInput id="title" name="title" label="Title" />
