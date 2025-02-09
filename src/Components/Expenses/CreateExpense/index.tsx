@@ -32,7 +32,7 @@ const CreateExpense = () => {
                         label="Expense Time"
                         maxDate={new Date()}
                     />
-                    <ButtonSection>
+                    <ButtonSection className={styles.buttonSection}>
                         <button className="button" type="submit">
                             SUBMIT
                         </button>
