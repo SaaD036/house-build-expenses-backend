@@ -10,7 +10,7 @@ const FormDate = (props: FormDateInputPropsType) => {
     const { id, label, disabled, minDate, maxDate, ...fieldHookConfigProps } = props;
 
     const [field, meta] = useField(fieldHookConfigProps);
-    const { setFieldValue } = useFormikContext();
+    const { setFieldValue, setFieldError } = useFormikContext();
 
     const hasError = () => {
         if (id !== field.name) {
@@ -38,6 +38,7 @@ const FormDate = (props: FormDateInputPropsType) => {
                     }
 
                     setFieldValue(id, Date.parse(d.toString()));
+                    setFieldError(id, undefined);
                 }}
             />
             {hasError() ? <div className={styles.errorMessage}>{meta.error}</div> : null}

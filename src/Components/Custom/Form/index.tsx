@@ -11,6 +11,8 @@ const Form = <T,>(props: FormProsType<T>) => {
         <Formik
             initialValues={initialValue as object}
             validationSchema={validationObject}
+            validateOnChange={false}
+            validateOnBlur={false}
             onSubmit={(values: object, formikHelpers: FormikHelpers<object>) =>
                 onSubmit(values as T)
             }
