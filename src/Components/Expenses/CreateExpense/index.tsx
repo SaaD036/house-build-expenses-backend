@@ -3,9 +3,9 @@ import * as Yup from 'yup';
 
 import Form from '../../Custom/Form';
 import FormTextInput from '../../Custom/Form/FormComponent/FormTextInput';
-import FormDate from '../../Custom/Form/FormComponent/FormDate';
-import FormNumberInput from '../../Custom/Form/FormComponent/FormNumberInput';
-import FormTextArea from '../../Custom/Form/FormComponent/FormTextArea';
+import FormDate from '../../Custom/Form/FormComponent/FormDateInput';
+import FormCurrencyInput from '../../Custom/Form/FormComponent/FormCurrencyInput';
+import FormTextArea from '../../Custom/Form/FormComponent/FormTextAreaInput';
 
 import CardContainer from '../../CardContainer';
 import ButtonSection from '../../Custom/CustomButton/ButtonSection';
@@ -41,7 +41,7 @@ const CreateExpense = () => {
                 >
                     <FormTextInput id="title" name="title" label="Title" />
                     <FormTextArea id="description" name="description" label="Description" />
-                    <FormNumberInput id="amount" name="amount" label="Amount" min={1} />
+                    <FormCurrencyInput id="amount" name="amount" label="Amount" min={1} />
                     <FormDate
                         id="expense_at"
                         name="expense_at"
