@@ -1,0 +1,34 @@
+.formNumberInputContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.formNumberInputContainer div {
+    margin: 2px 0px 2px 2px;
+    font-size: 15px;
+}
+
+.formNumberInputContainer input {
+    padding: 5px 8px;
+    height: 35px;
+    outline: none;
+    color: #878787;
+    border-radius: 4px;
+}
+
+.formNumberInputContainer input:focus {
+    border: 1px solid #158901;
+}
+
+.formNumberInputBox {
+    border: 1px solid #878787;
+}
+
+.inputError {
+    border: 1px solid red;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 13px !important;
+}

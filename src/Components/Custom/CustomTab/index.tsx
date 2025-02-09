@@ -21,7 +21,7 @@ const CustomTab = (props: CustomTabProps) => {
     };
 
     return (
-        <Box sx={{ bgcolor: 'background.paper' }}>
+        <Box sx={{ bgcolor: 'rgb(242, 244, 247)' }}>
             <Tabs
                 value={selectedTab}
                 variant="scrollable"

@@ -1,0 +1,11 @@
+.cardContainerWrapper {
+    width: calc(100% - 70px);
+    padding: 15px 35px;
+    background-color: white;
+    border-radius: 15px;
+}
+
+.cardContainerTitle {
+    font-size: 25px;
+    font-style: bold;
+}
