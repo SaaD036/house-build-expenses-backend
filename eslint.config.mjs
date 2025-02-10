@@ -32,6 +32,7 @@ export default [
                 },
             ],
             '@typescript-eslint/no-empty-object-type': 1,
+            'max-len': ['warn', { code: 100, tabWidth: 4 }],
         },
     },
 ];
