@@ -14,7 +14,7 @@ const Form = <T,>(props: FormProsType<T>) => {
             validateOnChange={false}
             validateOnBlur={false}
             onSubmit={(values: object, formikHelpers: FormikHelpers<object>) =>
-                onSubmit(values as T)
+                onSubmit(values as T, formikHelpers)
             }
         >
             {(formik) => (
