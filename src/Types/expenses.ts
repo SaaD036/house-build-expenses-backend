@@ -11,3 +11,10 @@ export type ExpenseType = {
     };
     lastUpdatedAt: Date;
 };
+
+export type CreateExpenseFormDataType = {
+    amount: number;
+    title: string;
+    description: string;
+    expenseAt: string;
+};

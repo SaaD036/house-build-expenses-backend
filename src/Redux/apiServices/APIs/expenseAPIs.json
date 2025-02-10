@@ -2,5 +2,9 @@
     "GET_ALL_EXPENSES": {
         "path": "/expense",
         "method": "GET"
+    },
+    "CREATE_EXPENSE": {
+        "path": "/expense",
+        "method": "POST"
     }
 }
