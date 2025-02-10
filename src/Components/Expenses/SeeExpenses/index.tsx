@@ -5,6 +5,7 @@ import { MoreVert as ActionColumnIcon } from '@mui/icons-material';
 
 import CustomTable from '../../Custom/CustomTable';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
+import CardContainer from '../../CardContainer';
 
 import { getAllExpenses } from '../../../Redux/actions/expenseAction';
 
@@ -59,17 +60,20 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
 
     return (
         <>
-            {isLoadingExpenseData ? (
-                <TabComponentLoader />
-            ) : (
-                <CustomTable
-                    columns={EXPENSE_TABLE_COLUMNS}
-                    rowData={getExpenseTableRows()}
-                    totalRowCount={expensesCount}
-                    loadTableData={loadExpenseData}
-                    showRefreshButton
-                />
-            )}
+            <div style={{ display: 'grid', gap: '25px' }}>
+                <CardContainer title="Expenses" />
+                {isLoadingExpenseData ? (
+                    <TabComponentLoader />
+                ) : (
+                    <CustomTable
+                        columns={EXPENSE_TABLE_COLUMNS}
+                        rowData={getExpenseTableRows()}
+                        totalRowCount={expensesCount}
+                        loadTableData={loadExpenseData}
+                        showRefreshButton
+                    />
+                )}
+            </div>
         </>
     );
 };

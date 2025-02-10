@@ -37,7 +37,7 @@ const FormDate = (props: FormDateInputPropsType) => {
                         return;
                     }
 
-                    setFieldValue(id, Date.parse(d.toString()));
+                    setFieldValue(id, d);
                     setFieldError(id, undefined);
                 }}
             />
