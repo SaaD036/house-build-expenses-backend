@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { FormikHelpers } from 'formik';
 
 import Form from '../../Custom/Form';
 import FormTextInput from '../../Custom/Form/FormComponent/FormTextInput';
@@ -8,20 +10,44 @@ import FormTextArea from '../../Custom/Form/FormComponent/FormTextAreaInput';
 
 import CardContainer from '../../CardContainer';
 import ButtonSection from '../../Custom/CustomButton/ButtonSection';
+import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
+
+import { createExpense } from '../../../Redux/actions/expenseAction';
 
 import { CREATE_EXPENSE_INITIAL_VALUE, CREATE_EXPENSE_FORM_VALIDATOR } from './constants';
-import { CreateExpenseFormValueType } from './interfaces';
+import { CreateExpensePagePropsType, CreateExpenseFormValueType } from './interfaces';
 import styles from './styles.module.css';
 
-const CreateExpense = () => {
+const CreateExpense = (props: CreateExpensePagePropsType) => {
+    const { createExpense } = props;
+
+    const [loading, setLoading] = useState<boolean>();
+
+    const onSubmitCreateExpenseForm = async (
+        createExpenseFormData: CreateExpenseFormValueType,
+        formikHelpers: FormikHelpers<object>
+    ) => {
+        setLoading(true);
+
+        await createExpense({
+            title: createExpenseFormData.title || '',
+            description: createExpenseFormData.description || '',
+            amount: createExpenseFormData.amount || 1,
+            expenseAt: createExpenseFormData.expense_at.toISOString().split('T')[0],
+        });
+
+        setLoading(false);
+    };
+
     return (
         <div style={{ display: 'grid', gap: '25px' }}>
             <CardContainer title="Add Expense" />
+            {loading && <TabComponentLoader />}
             <CardContainer>
                 <Form
                     initialValue={CREATE_EXPENSE_INITIAL_VALUE}
                     validationObject={CREATE_EXPENSE_FORM_VALIDATOR}
-                    onSubmit={(a: CreateExpenseFormValueType) => console.log('SaaD : ', a)}
+                    onSubmit={onSubmitCreateExpenseForm}
                 >
                     <FormTextInput id="title" name="title" label="Title" />
                     <FormTextArea id="description" name="description" label="Description" />
@@ -43,4 +69,10 @@ const CreateExpense = () => {
     );
 };
 
-export default CreateExpense;
+const mapStateToProps = (state: any) => ({});
+
+const mapDispatchToProps = {
+    createExpense,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateExpense);
