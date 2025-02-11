@@ -50,8 +50,8 @@ export const getAllExpenses =
                 payload: {
                     expenses: expenseData,
                     expensesCount: isNaN(Number(data.expensesCount))
-                        ? Number(data.expensesCount)
-                        : null,
+                        ? null
+                        : Number(data.expensesCount),
                 },
             });
         } catch (error) {

@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Menu, MenuItem } from '@mui/material';
 
+import CustomMenuItemLabel from './CustomMenuItemLabel';
+
 import { CustomMenuProps, CutomMenuItemsType } from './interfaces';
 import styles from './styles.module.css';
 
@@ -57,7 +59,7 @@ const CustomMenu = (props: CustomMenuProps) => {
                     onClick={() => onMenuItemClick(menuItem)}
                     className={styles.menuItem}
                 >
-                    {menuItem.label}
+                    <CustomMenuItemLabel label={menuItem.label} Icon={menuItem.Icon} />
                 </MenuItem>
             ))}
         </Menu>
