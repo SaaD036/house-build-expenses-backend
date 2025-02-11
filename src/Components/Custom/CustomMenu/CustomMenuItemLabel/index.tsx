@@ -15,7 +15,7 @@ const CustomMenuItemLabel = ({
     return (
         <div className={styles.menuItemLabelContainer}>
             {Icon && <Icon sx={{ color: '#158901', fontSize: '17px', marginRight: '5px' }} />}
-            <div>{label}</div>
+            <div style={{ fontSize: '14px' }}>{label}</div>
         </div>
     );
 };
