@@ -29,3 +29,18 @@
     display: grid;
     gap: 10px;
 }
+
+@media only screen and (max-width: 768px) {
+    .loginSectionContainer {
+        flex-direction: column;
+    }
+
+    .divider {
+        display: none;
+    }
+
+    .loginInputSection {
+        min-width: 340px;
+        width: 90%;
+    }
+}
