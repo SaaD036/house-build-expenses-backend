@@ -16,7 +16,7 @@ const SideBar = () => {
         isActive: boolean;
         isPending: boolean;
     }) => {
-        let className = `text ${styles.sidebarItems}`;
+        let className = `${styles.sidebarItems}`;
 
         if (isActive) {
             className = `${className} ${styles.sidebarItemsSelected}`;

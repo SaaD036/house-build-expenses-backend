@@ -19,11 +19,11 @@
 }
 
 .sidebarItems:hover {
-    background-color: #e3fedf;
+    background-color: #ffffff;
 }
 
 .sidebarItemsSelected {
-    color: #158901;
+    color: #158901 !important;
     font-weight: bold;
 }
 
