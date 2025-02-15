@@ -1,8 +1,10 @@
 .layout {
     height: 100vh;
     width: 220px;
+    display: flex;
     padding: 0px 15px;
     flex-direction: column;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -19,6 +21,10 @@
 
 .sidebarOpenIcon {
     color: #158901;
+}
+
+.sidebarContainer {
+    width: 100%;
 }
 
 .sidebar {
@@ -77,6 +83,7 @@
     .layout {
         width: 30px;
         padding: 0px 5px;
+        justify-content: flex-start;
     }
 
     .sidebarOpenIconSection {
@@ -88,7 +95,16 @@
         cursor: pointer;
     }
 
-    .sidebarItemsContainer {
+    .sidebarContainer {
+        display: none;
+    }
+
+    .sidebar {
+        width: 220px;
+    }
+
+    /* In previous implementation, in smaller dimesion only icons were visible and text were hidden */
+    /* .sidebarItemsContainer {
         width: 100%;
     }
 
@@ -98,7 +114,7 @@
 
     .sidebarItemsDivider {
         width: 100%;
-    }
+    } */
 
     .childrenSection {
         width: calc(100vw - 30px);

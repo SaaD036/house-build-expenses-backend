@@ -5,10 +5,12 @@ import { Divider } from '@mui/material';
 
 import { SIDEBAR_ITEMS } from './constants';
 
-import { SidebarItemsTypes } from '../interfaces';
+import { SidebarPropsTypes, SidebarItemsTypes } from '../interfaces';
 import styles from '../styles.module.css';
 
-const SideBar = () => {
+const SideBar = (props: SidebarPropsTypes) => {
+    const { onCloseSidebarDrawer } = props;
+
     const getSidebarItemStyle = ({
         isActive,
         isPending,
@@ -32,7 +34,11 @@ const SideBar = () => {
         return (
             <>
                 <div className={`center ${styles.sidebarItemsContainer}`}>
-                    <NavLink to={`/${key}`} className={getSidebarItemStyle}>
+                    <NavLink
+                        to={`/${key}`}
+                        className={getSidebarItemStyle}
+                        onClick={onCloseSidebarDrawer}
+                    >
                         {Icon && (
                             <span className="center">
                                 <Icon

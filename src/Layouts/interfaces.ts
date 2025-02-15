@@ -7,6 +7,10 @@ export type LayoutPropsTypes = {
     children: React.ReactNode;
 };
 
+export type SidebarPropsTypes = {
+    onCloseSidebarDrawer?: () => void;
+};
+
 export type SidebarItemsTypes = {
     key: string;
     label: string;
