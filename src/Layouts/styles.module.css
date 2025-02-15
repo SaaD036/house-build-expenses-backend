@@ -6,6 +6,21 @@
     justify-content: space-between;
 }
 
+.sidebarOpenIconSection {
+    width: 80%;
+    height: 40px;
+    justify-content: flex-start !important;
+    padding-left: 10px;
+}
+
+.sidebarOpenIconSection span {
+    display: none;
+}
+
+.sidebarOpenIcon {
+    color: #158901;
+}
+
 .sidebar {
     height: calc(100vh - 80px);
     width: 100%;
@@ -26,6 +41,7 @@
 .sidebarItemsIcom {
     color: #158901;
     margin-right: 15px;
+    cursor: pointer;
 }
 
 .sidebarItems {
@@ -61,6 +77,15 @@
     .layout {
         width: 30px;
         padding: 0px 5px;
+    }
+
+    .sidebarOpenIconSection {
+        padding-left: 0px;
+    }
+
+    .sidebarOpenIconSection span {
+        display: block;
+        cursor: pointer;
     }
 
     .sidebarItemsContainer {

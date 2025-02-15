@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Menu as SidebarOpenIcon } from '@mui/icons-material';
+
 import SideBar from './Sidebar';
 
 import { LayoutPropsTypes } from './interfaces';
@@ -24,7 +26,11 @@ const Layout = (props: LayoutPropsTypes) => {
     return (
         <div style={{ display: 'flex' }}>
             <div className={`center ${styles.layout}`}>
-                <div style={{ height: '40px' }}></div>
+                <div className={`center ${styles.sidebarOpenIconSection}`}>
+                    <span>
+                        <SidebarOpenIcon className={styles.sidebarOpenIcon} />
+                    </span>
+                </div>
                 <SideBar />
                 {renderFooterSection()}
             </div>
