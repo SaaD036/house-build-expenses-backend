@@ -32,12 +32,15 @@ const SideBar = () => {
         return (
             <>
                 <div className={`center ${styles.sidebarItemsContainer}`}>
-                    {Icon && (
-                        <span className="center">
-                            <Icon sx={{ fontSize: '20px' }} className={styles.sidebarItemsIcom} />
-                        </span>
-                    )}
                     <NavLink to={`/${key}`} className={getSidebarItemStyle}>
+                        {Icon && (
+                            <span className="center">
+                                <Icon
+                                    sx={{ fontSize: '20px' }}
+                                    className={styles.sidebarItemsIcon}
+                                />
+                            </span>
+                        )}
                         <div>{label}</div>
                     </NavLink>
                 </div>

@@ -38,14 +38,14 @@
     background-color: #ffffff;
 }
 
-.sidebarItemsIcom {
-    color: #158901;
+.sidebarItemsIcon {
     margin-right: 15px;
     cursor: pointer;
 }
 
 .sidebarItems {
     width: 100%;
+    display: flex;
     cursor: pointer;
     color: black;
 }
@@ -92,7 +92,7 @@
         width: 100%;
     }
 
-    .sidebarItems {
+    .sidebarItems div {
         display: none;
     }
 
