@@ -1,6 +1,12 @@
 .loginPage {
     min-height: 100vh;
     min-width: 100vw;
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+    height: calc(50vh - 200px);
 }
 
 .loginSectionContainer {
@@ -28,6 +34,22 @@
     width: 350px;
     display: grid;
     gap: 10px;
+}
+
+.footer {
+    width: 100%;
+    height: calc(50vh - 200px);
+    align-items: flex-end !important;
+}
+
+.footer div {
+    height: 50px;
+}
+
+.footer div span {
+    color: #158901;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 22px;
 }
 
 @media only screen and (max-width: 768px) {
