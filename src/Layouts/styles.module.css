@@ -10,16 +10,26 @@
     flex-direction: column;
 }
 
-.sidebarItems {
+.sidebarItemsContainer {
     width: 80%;
-    padding: 10px 0px;
-    cursor: pointer;
-    text-align: center;
+    justify-content: flex-start !important;
     margin: 5px 0px;
+    padding: 10px 0px 10px 10px;
 }
 
-.sidebarItems:hover {
+.sidebarItemsContainer:hover {
     background-color: #ffffff;
+}
+
+.sidebarItemsIcom {
+    color: #158901;
+    margin-right: 15px;
+}
+
+.sidebarItems {
+    width: 100%;
+    cursor: pointer;
+    color: black;
 }
 
 .sidebarItemsSelected {
@@ -34,4 +44,14 @@
 
 .childrenSection {
     width: calc(100vw - 220px);
+}
+
+@media only screen and (max-width: 768px) {
+    .layout {
+        width: 30px;
+    }
+
+    .childrenSection {
+        width: calc(100vw - 30px);
+    }
 }

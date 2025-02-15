@@ -26,14 +26,21 @@ const SideBar = () => {
     };
 
     const renderSidebarItem = (sidebarItem: SidebarItemsTypes, index: number): JSX.Element => {
-        const { key, label } = sidebarItem;
+        const { key, label, Icon } = sidebarItem;
         const shouldShowDivider = index !== SIDEBAR_ITEMS.length - 1;
 
         return (
             <>
-                <NavLink to={`/${key}`} className={getSidebarItemStyle}>
-                    <div>{label}</div>
-                </NavLink>
+                <div className={`center ${styles.sidebarItemsContainer}`}>
+                    {Icon && (
+                        <span className="center">
+                            <Icon sx={{ fontSize: '20px' }} className={styles.sidebarItemsIcom} />
+                        </span>
+                    )}
+                    <NavLink to={`/${key}`} className={getSidebarItemStyle}>
+                        <div>{label}</div>
+                    </NavLink>
+                </div>
                 {shouldShowDivider && <Divider className={styles.sidebarItemsDivider} />}
             </>
         );
