@@ -12,8 +12,9 @@ import { login } from '../../../Redux/actions/authAction';
 
 import { isEmailValid } from '../../../Utilities/String';
 
+import WelcomeTextImage from '../../../Assets/Images/welcome_text.png';
+
 import { LoginPagePropTypes } from './interfaces';
-import WelcomeText from '../../../Assets/Images/welcome_text.png';
 import styles from './styles.module.css';
 
 const Login = (props: LoginPagePropTypes) => {
@@ -46,7 +47,20 @@ const Login = (props: LoginPagePropTypes) => {
     const renderWelcomeSection = () => {
         return (
             <div className={styles.welcomeSection}>
-                <img src={WelcomeText} className={styles.welcomeImage}></img>
+                <img src={WelcomeTextImage} className={styles.welcomeImage}></img>
+            </div>
+        );
+    };
+
+    const renderFooterSection = () => {
+        // eslint-disable-next-line quotes
+        const FOOTER_TEXT = "A SaaD's product";
+
+        return (
+            <div className={`center ${styles.footer}`}>
+                <div className="center">
+                    <span>{FOOTER_TEXT}</span>
+                </div>
             </div>
         );
     };
@@ -74,11 +88,13 @@ const Login = (props: LoginPagePropTypes) => {
         <>
             {isLoading && <LinearLoadingItem />}
             <div className={`center ${styles.loginPage}`}>
+                <div className={styles.header}></div>
                 <div className={`center ${styles.loginSectionContainer}`}>
                     {renderWelcomeSection()}
                     <Divider orientation="vertical" className={styles.divider} />
                     {renderLoginInputs()}
                 </div>
+                {renderFooterSection()}
             </div>
         </>
     );
