@@ -5,10 +5,12 @@ import { Divider } from '@mui/material';
 
 import { SIDEBAR_ITEMS } from './constants';
 
-import { SidebarItemsTypes } from '../interfaces';
+import { SidebarPropsTypes, SidebarItemsTypes } from '../interfaces';
 import styles from '../styles.module.css';
 
-const SideBar = () => {
+const SideBar = (props: SidebarPropsTypes) => {
+    const { onCloseSidebarDrawer } = props;
+
     const getSidebarItemStyle = ({
         isActive,
         isPending,
@@ -16,7 +18,7 @@ const SideBar = () => {
         isActive: boolean;
         isPending: boolean;
     }) => {
-        let className = `text ${styles.sidebarItems}`;
+        let className = `${styles.sidebarItems}`;
 
         if (isActive) {
             className = `${className} ${styles.sidebarItemsSelected}`;
@@ -26,14 +28,28 @@ const SideBar = () => {
     };
 
     const renderSidebarItem = (sidebarItem: SidebarItemsTypes, index: number): JSX.Element => {
-        const { key, label } = sidebarItem;
+        const { key, label, Icon } = sidebarItem;
         const shouldShowDivider = index !== SIDEBAR_ITEMS.length - 1;
 
         return (
             <>
-                <NavLink to={`/${key}`} className={getSidebarItemStyle}>
-                    <div>{label}</div>
-                </NavLink>
+                <div className={`center ${styles.sidebarItemsContainer}`}>
+                    <NavLink
+                        to={`/${key}`}
+                        className={getSidebarItemStyle}
+                        onClick={onCloseSidebarDrawer}
+                    >
+                        {Icon && (
+                            <span className="center">
+                                <Icon
+                                    sx={{ fontSize: '20px' }}
+                                    className={styles.sidebarItemsIcon}
+                                />
+                            </span>
+                        )}
+                        <div>{label}</div>
+                    </NavLink>
+                </div>
                 {shouldShowDivider && <Divider className={styles.sidebarItemsDivider} />}
             </>
         );

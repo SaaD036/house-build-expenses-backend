@@ -1,29 +1,63 @@
 .layout {
     height: 100vh;
     width: 220px;
+    display: flex;
     padding: 0px 15px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebarOpenIconSection {
+    width: 80%;
+    height: 40px;
+    justify-content: flex-start !important;
+    padding-left: 10px;
+}
+
+.sidebarOpenIconSection span {
+    display: none;
+}
+
+.sidebarOpenIcon {
+    color: #158901;
+}
+
+.sidebarContainer {
+    width: 100%;
 }
 
 .sidebar {
-    height: 100%;
+    height: calc(100vh - 80px);
     width: 100%;
     flex-direction: column;
 }
 
-.sidebarItems {
+.sidebarItemsContainer {
     width: 80%;
-    padding: 10px 0px;
-    cursor: pointer;
-    text-align: center;
+    justify-content: flex-start !important;
     margin: 5px 0px;
+    padding: 10px 0px 10px 10px;
 }
 
-.sidebarItems:hover {
-    background-color: #e3fedf;
+.sidebarItemsContainer:hover {
+    background-color: #ffffff;
+}
+
+.sidebarItemsIcon {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.sidebarItems {
+    width: 100%;
+    display: flex;
+    cursor: pointer;
+    color: black;
 }
 
 .sidebarItemsSelected {
-    color: #158901;
+    color: #158901 !important;
     font-weight: bold;
 }
 
@@ -34,4 +68,59 @@
 
 .childrenSection {
     width: calc(100vw - 220px);
+}
+
+.footer {
+    width: 80%;
+    height: 40px;
+    justify-content: flex-start !important;
+    padding-left: 10px;
+    color: #158901;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 768px) {
+    .layout {
+        width: 30px;
+        padding: 0px 5px;
+        justify-content: flex-start;
+    }
+
+    .sidebarOpenIconSection {
+        padding-left: 0px;
+    }
+
+    .sidebarOpenIconSection span {
+        display: block;
+        cursor: pointer;
+    }
+
+    .sidebarContainer {
+        display: none;
+    }
+
+    .sidebar {
+        width: 220px;
+    }
+
+    /* In previous implementation, in smaller dimesion only icons were visible and text were hidden */
+    /* .sidebarItemsContainer {
+        width: 100%;
+    }
+
+    .sidebarItems div {
+        display: none;
+    }
+
+    .sidebarItemsDivider {
+        width: 100%;
+    } */
+
+    .childrenSection {
+        width: calc(100vw - 30px);
+    }
+
+    .footer div {
+        display: none !important;
+    }
 }
