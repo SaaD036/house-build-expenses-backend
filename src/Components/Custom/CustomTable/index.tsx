@@ -9,6 +9,7 @@ import {
     TableHead,
     TableRow,
     Tooltip,
+    Paper,
 } from '@mui/material';
 import {
     ImportExport as ImportExportIcon,
@@ -132,7 +133,7 @@ const CustomTable = (props: CustomTablePropsType) => {
     return (
         <div>
             {showRefreshButton && renderRefreshButton()}
-            <TableContainer className={styles.tableContainer}>
+            <TableContainer component={Paper} className={styles.tableContainer}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     {renderTableHead()}
                     <TableBody>
