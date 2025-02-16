@@ -18,6 +18,7 @@ import CustomMenu from '../../Custom/CustomMenu';
 import { getAllExpenses } from '../../../Redux/actions/expenseAction';
 
 import { EXPENSE_TABLE_COLUMNS } from './constants';
+import { CustomTableLoadDataTypes } from '../../Custom/CustomTable/interfaces';
 import { SeeExpensesPropsType } from './interfaces';
 import styles from './styles.module.css';
 
@@ -62,9 +63,9 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
         ];
     };
 
-    const loadExpenseData = async (filterAndParams?: any) => {
+    const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
         setIsLoadingExpenseData(true);
-        await getAllExpenses(null);
+        await getAllExpenses(filterAndParams);
         setIsLoadingExpenseData(false);
     };
 
@@ -101,7 +102,10 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
     };
 
     useEffect(() => {
-        loadExpenseData();
+        loadExpenseData({
+            page: 1,
+            itemsPerPage: 10,
+        });
     }, []);
 
     return (

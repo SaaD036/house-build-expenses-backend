@@ -2,7 +2,7 @@ export type CustomTablePropsType = {
     columns: CustomTableColumnDataType[];
     rowData: CustomTableRowDataType[];
     totalRowCount: number;
-    loadTableData?: (filterAndParams?: any) => Promise<void>;
+    loadTableData?: (filterAndParams?: CustomTableLoadDataTypes) => Promise<void>;
     showRefreshButton?: boolean;
 };
 
@@ -22,4 +22,11 @@ export type CustomTableRowDataType = Record<
 export type CustomTableColumnSortDataType = {
     columnKey: string;
     sortType: 'ASC' | 'DES';
+};
+
+export type CustomTableLoadDataTypes = {
+    page: number;
+    itemsPerPage: number;
+    sort?: CustomTableColumnSortDataType;
+    filters?: any;
 };
