@@ -106,12 +106,12 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
 
     return (
         <>
-            <div style={{ display: 'grid', gap: '25px' }}>
+            <div>
                 <CardContainer title="Expenses" />
                 {isLoadingExpenseData ? (
                     <TabComponentLoader />
                 ) : (
-                    <>
+                    <div className={styles.tableSectionContainer}>
                         <CustomMenu
                             items={getActionColumnMenuItems()}
                             open={Boolean(anchorEl)}
@@ -125,7 +125,7 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
                             loadTableData={loadExpenseData}
                             showRefreshButton
                         />
-                    </>
+                    </div>
                 )}
             </div>
         </>

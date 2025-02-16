@@ -1,3 +1,7 @@
+.tableSectionContainer {
+    margin-top: 20px;
+}
+
 .actionColumnIcon {
     background-color: transparent;
     cursor: pointer;
