@@ -1,11 +1,11 @@
 export type CustomPaginationType = {
     alignH?: 'center' | 'flex-start' | 'flex-end' | 'space-between';
     page: number;
-    setPage: React.Dispatch<React.SetStateAction<number>>;
+    setPage: (page: number) => void;
     itemsPerPage?: {
         itemsPerPageCount: number[];
         selectedItemsPerPage: number;
-        setItemsPerPageCount: React.Dispatch<React.SetStateAction<number>>;
+        setItemsPerPageCount: (itemPerPageCount: number) => void;
     };
     pageCount: number;
 };

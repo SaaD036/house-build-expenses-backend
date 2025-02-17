@@ -1,7 +1,19 @@
 export type CustomTablePropsType = {
     columns: CustomTableColumnDataType[];
     rowData: CustomTableRowDataType[];
-    totalRowCount: number;
+    pagination?: {
+        page: number;
+        setPage: (page: number) => void;
+        totalPage: number;
+        sizePerPageData?: {
+            sizePerPage: number;
+            setSizePerPage: (sizePerPage: number) => void;
+        };
+    };
+    sort?: {
+        sortData?: CustomTableColumnSortDataType;
+        setSortData: (sortData?: CustomTableColumnSortDataType) => void;
+    };
     loadTableData?: (filterAndParams?: CustomTableLoadDataTypes) => Promise<void>;
     showRefreshButton?: boolean;
 };

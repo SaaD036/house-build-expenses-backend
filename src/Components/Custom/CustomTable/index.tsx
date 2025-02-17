@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
     Stack,
@@ -20,22 +20,26 @@ import {
 
 import CustomPagination from '../CustomPagination';
 
-import {
-    CustomTablePropsType,
-    CustomTableRowDataType,
-    CustomTableColumnSortDataType,
-} from './interfaces';
+import { CustomTablePropsType, CustomTableRowDataType } from './interfaces';
 import styles from './styles.module.css';
 import { TABLE_ROW_COUNT_OPTIONS } from './constants';
 
 const CustomTable = (props: CustomTablePropsType) => {
-    const { columns, rowData, totalRowCount, loadTableData = () => {}, showRefreshButton } = props;
-
-    const [page, setPage] = useState(1);
-    const [sortData, setSortData] = useState<CustomTableColumnSortDataType>();
-    const [tableRowCount, setTableRowCount] = useState(TABLE_ROW_COUNT_OPTIONS[0]);
+    const {
+        columns,
+        rowData,
+        showRefreshButton,
+        pagination,
+        sort,
+        loadTableData = () => {},
+    } = props;
 
     const onSortIconClick = (columnKey: string) => {
+        if (!sort) {
+            return;
+        }
+
+        const { sortData, setSortData } = sort;
         const sortType =
             sortData?.columnKey === columnKey
                 ? sortData?.sortType === 'ASC'
@@ -50,11 +54,28 @@ const CustomTable = (props: CustomTablePropsType) => {
     };
 
     const getTitleSortIcon = (columnKey: string) => {
+        if (!sort) {
+            return;
+        }
+
+        const { sortData } = sort;
         if (columnKey === sortData?.columnKey) {
             return sortData.sortType === 'ASC' ? DownArrowIcon : upArrowIcon;
         }
 
         return ImportExportIcon;
+    };
+
+    const getItemPerPageData = () => {
+        if (!pagination || !pagination.sizePerPageData) {
+            return;
+        }
+
+        return {
+            itemsPerPageCount: TABLE_ROW_COUNT_OPTIONS,
+            selectedItemsPerPage: pagination.sizePerPageData.sizePerPage,
+            setItemsPerPageCount: pagination.sizePerPageData.setSizePerPage,
+        };
     };
 
     const loadData = async () => {
@@ -87,7 +108,7 @@ const CustomTable = (props: CustomTablePropsType) => {
                             >
                                 <div className="center">
                                     {label}
-                                    {sortable && (
+                                    {sortable && SortIcon && (
                                         <SortIcon
                                             className={styles.titleIcon}
                                             onClick={() => onSortIconClick(key)}
@@ -150,16 +171,14 @@ const CustomTable = (props: CustomTablePropsType) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <CustomPagination
-                page={page}
-                setPage={setPage}
-                itemsPerPage={{
-                    itemsPerPageCount: TABLE_ROW_COUNT_OPTIONS,
-                    selectedItemsPerPage: tableRowCount,
-                    setItemsPerPageCount: setTableRowCount,
-                }}
-                pageCount={Math.ceil(totalRowCount / tableRowCount)}
-            />
+            {pagination && (
+                <CustomPagination
+                    page={pagination.page}
+                    setPage={pagination.setPage}
+                    itemsPerPage={getItemPerPageData()}
+                    pageCount={pagination.totalPage}
+                />
+            )}
         </div>
     );
 };
