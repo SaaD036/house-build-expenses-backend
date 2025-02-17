@@ -28,7 +28,7 @@ const createExpenseValidator = [
             true;
         }
 
-        return isDate(new Date(expenseAt));
+        return isDate(new Date(value));
     }),
 ];
 
