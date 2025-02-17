@@ -18,11 +18,22 @@ import CustomMenu from '../../Custom/CustomMenu';
 import { getAllExpenses } from '../../../Redux/actions/expenseAction';
 
 import { EXPENSE_TABLE_COLUMNS } from './constants';
+import { TABLE_ROW_COUNT_OPTIONS } from '../../Custom/CustomTable/constants';
+
+import {
+    CustomTableColumnSortDataType,
+    CustomTableLoadDataTypes,
+} from '../../Custom/CustomTable/interfaces';
 import { SeeExpensesPropsType } from './interfaces';
+
 import styles from './styles.module.css';
 
 const SeeExpenses = (props: SeeExpensesPropsType) => {
     const { expenses, expensesCount, getAllExpenses } = props;
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [expensesPerPage, setExpensesPerPage] = useState(TABLE_ROW_COUNT_OPTIONS[0]);
+    const [expenseSortData, setExpenseSortData] = useState<CustomTableColumnSortDataType>();
 
     const [isLoadingExpenseData, setIsLoadingExpenseData] = useState(true);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -62,9 +73,9 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
         ];
     };
 
-    const loadExpenseData = async (filterAndParams?: any) => {
+    const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
         setIsLoadingExpenseData(true);
-        await getAllExpenses(null);
+        await getAllExpenses(filterAndParams);
         setIsLoadingExpenseData(false);
     };
 
@@ -101,8 +112,11 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
     };
 
     useEffect(() => {
-        loadExpenseData();
-    }, []);
+        loadExpenseData({
+            page: currentPage,
+            itemsPerPage: expensesPerPage,
+        });
+    }, [currentPage, expensesPerPage]);
 
     return (
         <>
@@ -121,9 +135,23 @@ const SeeExpenses = (props: SeeExpensesPropsType) => {
                         <CustomTable
                             columns={EXPENSE_TABLE_COLUMNS}
                             rowData={getExpenseTableRows()}
-                            totalRowCount={expensesCount}
                             loadTableData={loadExpenseData}
                             showRefreshButton
+                            pagination={{
+                                page: currentPage,
+                                setPage: (page: number) => setCurrentPage(page),
+                                totalPage: Math.ceil(expensesCount / expensesPerPage),
+                                sizePerPageData: {
+                                    sizePerPage: expensesPerPage,
+                                    setSizePerPage: (sizePerPage) =>
+                                        setExpensesPerPage(sizePerPage),
+                                },
+                            }}
+                            sort={{
+                                sortData: expenseSortData,
+                                setSortData: (sortData?: CustomTableColumnSortDataType) =>
+                                    setExpenseSortData(sortData),
+                            }}
                         />
                     </div>
                 )}

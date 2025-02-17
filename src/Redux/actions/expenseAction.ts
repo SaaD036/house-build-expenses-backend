@@ -15,13 +15,25 @@ import ValidationError from '../../ErrorHandlers/ValidationError';
 
 import { ExpenseType, CreateExpenseFormDataType } from '../../Types/expenses';
 
+import { CustomTableLoadDataTypes } from '../../Components/Custom/CustomTable/interfaces';
+
 export const getAllExpenses =
-    (filters: any) => async (dispatch: Dispatch<{ type: string; payload: any }>) => {
+    (filters?: CustomTableLoadDataTypes) =>
+    async (dispatch: Dispatch<{ type: string; payload: any }>) => {
         try {
             const { path, method } = expenseAPIs.GET_ALL_EXPENSES;
             const { UNAUTHENTICATED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+            const URLwithVarsANDparams = buildURL(
+                path,
+                {},
+                {
+                    page: filters?.page,
+                    limit: filters?.itemsPerPage,
+                }
+            );
+
             const { status, data } = await callAxiosAPI({
-                url: buildURL(path),
+                url: URLwithVarsANDparams,
                 method: method as Method,
             });
 
