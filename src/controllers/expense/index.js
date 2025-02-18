@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const { Expenses } = require('../../models');
 
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
@@ -60,7 +62,54 @@ const createExpense = async (req, res, next) => {
     }
 };
 
+const deleteExpense = async (req, res, next) => {
+    try {
+        const { expenseID } = req.params;
+
+        if (isNaN(Number(expenseID))) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: 'Invalid expense ID',
+            });
+        }
+
+        const expense = await Expenses.findOne({
+            where: {
+                isDeleted: false,
+                id: expenseID,
+            },
+        });
+
+        if (!expense) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: 'Expense not found',
+            });
+        }
+
+        expense.isDeleted = true;
+        expense.expenseEditHistory = {
+            last_updated_by: req.user.id,
+            history: [
+                ..._.get(expense, 'expenseEditHistory.history', []),
+                {
+                    task_type: 'delete',
+                    task_by: req.user.id,
+                    task_at: new Date(),
+                },
+            ],
+        };
+
+        await expense.save();
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'expense deleted',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
+    deleteExpense,
 };
