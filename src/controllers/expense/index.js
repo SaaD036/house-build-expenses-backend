@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { Op } = require('sequelize');
 
 const { Expenses } = require('../../models');
 
@@ -68,7 +69,7 @@ const deleteExpense = async (req, res, next) => {
 
         if (isNaN(Number(expenseID))) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'Invalid expense ID',
+                message: 'Invalid expense ID.',
             });
         }
 
@@ -81,7 +82,7 @@ const deleteExpense = async (req, res, next) => {
 
         if (!expense) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'Expense not found',
+                message: 'Expense not found.',
             });
         }
 
@@ -108,8 +109,48 @@ const deleteExpense = async (req, res, next) => {
     }
 };
 
+const deleteMultipleExpenses = async (req, res, next) => {
+    try {
+        const { expenseIDX } = req.body;
+        const expenseIDXasTableID = (expenseIDX || []).map((item) => parseInt(item.id));
+
+        const expenses = await Expenses.findAll({
+            where: {
+                id: {
+                    [Op.in]: expenseIDXasTableID,
+                },
+                isDeleted: false,
+            },
+        });
+
+        (expenses || []).forEach((expense) => {
+            expense.isDeleted = true;
+            expense.expenseEditHistory = {
+                last_updated_by: req.user.id,
+                history: [
+                    ..._.get(expense, 'expenseEditHistory.history', []),
+                    {
+                        task_type: 'delete',
+                        task_by: req.user.id,
+                        task_at: new Date(),
+                    },
+                ],
+            };
+        });
+
+        await Promise.all((expenses || []).map(async (expense) => await expense.save()));
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'expense deleted',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
     deleteExpense,
+    deleteMultipleExpenses,
 };

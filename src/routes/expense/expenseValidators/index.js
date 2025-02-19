@@ -1,5 +1,5 @@
 const { check } = require('express-validator');
-const { isDate } = require('lodash');
+const { isDate, isArray } = require('lodash');
 
 const createExpenseValidator = [
     check('amount')
@@ -32,4 +32,22 @@ const createExpenseValidator = [
     }),
 ];
 
-module.exports = { createExpenseValidator };
+const deleteMultipleExpensesValidator = [
+    check('expenseIDX')
+        .custom((value) => {
+            if (!isArray(value)) {
+                return false;
+            }
+
+            const valueArrayWithNotNumber = (value || []).filter((item) => isNaN(Number(item.id)));
+
+            if (valueArrayWithNotNumber.length > 0) {
+                return false;
+            }
+
+            return true;
+        })
+        .withMessage('Expense IDs are not valid.'),
+];
+
+module.exports = { createExpenseValidator, deleteMultipleExpensesValidator };
