@@ -8,7 +8,9 @@ const prepareFiltersForAllExpenses = (params) => {
     const filter = {
         ...preparePaginationQuery(params),
     };
-    let where = {};
+    let where = {
+        isDeleted: false,
+    };
 
     if (params.title) {
         where = {

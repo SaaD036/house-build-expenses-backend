@@ -1,7 +1,7 @@
 'use strict';
 const { Sequelize, Model } = require('sequelize');
 
-const PROTECTED_ATTRIBUTES = ['createdByj'];
+const PROTECTED_ATTRIBUTES = ['createdBy'];
 
 module.exports = (sequelize, DataTypes) => {
     class Expense extends Model {
