@@ -9,6 +9,7 @@ import { setLoggedinUserToken } from './Redux/actions/authAction';
 
 import { cookieName, getCookie } from './Utilities/Cookies';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 function App(props: any) {
