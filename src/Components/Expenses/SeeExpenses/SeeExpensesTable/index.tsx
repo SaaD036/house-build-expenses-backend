@@ -13,7 +13,6 @@ import {
 import CustomTable from '../../../Custom/CustomTable';
 import CustomMenu from '../../../Custom/CustomMenu';
 import ConfirmationPopover from '../../../Custom/CustomPopover/ConfirmationPopover';
-import TabComponentLoader from '../../../Custom/CustomLoadingItems/TabComponentLoader';
 
 import { getAllExpenses } from '../../../../Redux/actions/expenseAction';
 
@@ -31,13 +30,12 @@ import {
 import styles from '../styles.module.css';
 
 const SeeExpensesTable = (props: SeeExpensesTableProps) => {
-    const { expenses, expensesCount, getAllExpenses } = props;
+    const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses } = props;
 
     const [currentPage, setCurrentPage] = useState(1);
     const [expensesPerPage, setExpensesPerPage] = useState(TABLE_ROW_COUNT_OPTIONS[0]);
     const [expenseSortData, setExpenseSortData] = useState<CustomTableColumnSortDataType>();
 
-    const [isLoadingExpenseData, setIsLoadingExpenseData] = useState(false);
     const [actionColumMenuAnchorEl, setActionColumMenuAnchorEl] = useState<null | HTMLElement>(
         null
     );
@@ -70,14 +68,14 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     };
 
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
-        setIsLoadingExpenseData(true);
+        showLoader();
         await getAllExpenses(
             filterAndParams || {
                 page: currentPage,
                 itemsPerPage: expensesPerPage,
             }
         );
-        setIsLoadingExpenseData(false);
+        hideLoader();
     };
 
     useEffect(() => {
@@ -86,10 +84,6 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             itemsPerPage: expensesPerPage,
         });
     }, [currentPage, expensesPerPage]);
-
-    if (isLoadingExpenseData) {
-        return <TabComponentLoader />;
-    }
 
     return (
         <>

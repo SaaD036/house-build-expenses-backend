@@ -5,4 +5,6 @@ export type SeeExpensesTableProps = {
     expenses: ExpenseType[];
     expensesCount: number;
     getAllExpenses: (filters: CustomTableLoadDataTypes) => Promise<void>;
+    showLoader: () => void;
+    hideLoader: () => void;
 };
