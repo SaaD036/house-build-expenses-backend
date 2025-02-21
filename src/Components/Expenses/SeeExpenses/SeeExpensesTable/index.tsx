@@ -17,6 +17,8 @@ import TabComponentLoader from '../../../Custom/CustomLoadingItems/TabComponentL
 
 import { getAllExpenses } from '../../../../Redux/actions/expenseAction';
 
+import { createActionColumnMenuItem, getExpenseTableRows } from './utilities';
+
 import { EXPENSE_TABLE_COLUMNS } from '../constants';
 import { TABLE_ROW_COUNT_OPTIONS } from '../../../Custom/CustomTable/constants';
 
@@ -44,69 +46,27 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
 
     const getActionColumnMenuItems = () => {
         return [
-            {
-                key: 'edit',
-                label: 'Edit',
-                Icon: EditIcon,
-                onClick: () => {},
-            },
-            {
-                key: 'delete',
-                label: 'Delete',
-                Icon: DeleteIcon,
-                onClick: () => setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl),
-            },
-            {
-                key: 'add_to_album',
-                label: 'Add to Album',
-                Icon: AddToAlbumIcon,
-                onClick: () => {},
-            },
-            {
-                key: 'see_edit_history',
-                label: 'See Edit History',
-                Icon: EditHistoryIcon,
-                onClick: () => {},
-            },
-            {
-                key: 'see_details',
-                label: 'See Details',
-                Icon: SeeDetailsIcon,
-                onClick: () => {},
-            },
+            createActionColumnMenuItem('edit', 'Edit', EditIcon, () => {}),
+            createActionColumnMenuItem('delete', 'Delete', DeleteIcon, () =>
+                setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl)
+            ),
+            createActionColumnMenuItem('add_to_album', 'Add to Album', AddToAlbumIcon, () => {}),
+            createActionColumnMenuItem(
+                'see_edit_history',
+                'See Edit History',
+                EditHistoryIcon,
+                () => {}
+            ),
+            createActionColumnMenuItem('see_details', 'See Details', SeeDetailsIcon, () => {}),
         ];
     };
 
-    const getExpenseTableRows = () => {
-        const expenseTableRows = (expenses || []).map((expense) => ({
-            title: {
-                value: expense.title,
-            },
-            amount: {
-                value: expense.amount,
-            },
-            description: {
-                value: expense.description,
-            },
-            expense_time: {
-                value: expense.expenseAt,
-            },
-            creator: {
-                value: `${expense.creator.firstName} ${expense.creator.lastName}`,
-            },
-            action: {
-                value: (
-                    <span onClick={(e) => setActionColumMenuAnchorEl(e.currentTarget)}>
-                        <ActionColumnIcon
-                            sx={{ color: '#158901' }}
-                            className={styles.actionColumnIcon}
-                        />
-                    </span>
-                ),
-            },
-        }));
-
-        return expenseTableRows;
+    const getActionColumnItem = () => {
+        return (
+            <span onClick={(e) => setActionColumMenuAnchorEl(e.currentTarget)}>
+                <ActionColumnIcon sx={{ color: '#158901' }} className={styles.actionColumnIcon} />
+            </span>
+        );
     };
 
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
@@ -148,7 +108,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             />
             <CustomTable
                 columns={EXPENSE_TABLE_COLUMNS}
-                rowData={getExpenseTableRows()}
+                rowData={getExpenseTableRows(expenses || [], getActionColumnItem())}
                 loadTableData={loadExpenseData}
                 showRefreshButton
                 pagination={{
