@@ -8,21 +8,21 @@ import { CustomMenuProps, CutomMenuItemsType } from './interfaces';
 import styles from './styles.module.css';
 
 const CustomMenu = (props: CustomMenuProps) => {
-    const { items, open, anchorEl, setAnchorEl } = props;
+    const { id, items, open, anchorEl, onClose } = props;
 
     const onMenuItemClick = (menuItem: CutomMenuItemsType) => {
         const { onClick } = menuItem;
 
         onClick();
-        setAnchorEl(null);
+        onClose();
     };
 
     return (
         <Menu
-            id="basic-menu"
+            id={id}
             anchorEl={anchorEl}
             open={open}
-            onClose={() => setAnchorEl(null)}
+            onClose={onClose}
             MenuListProps={{ 'aria-labelledby': 'basic-button' }}
             slotProps={{
                 paper: {

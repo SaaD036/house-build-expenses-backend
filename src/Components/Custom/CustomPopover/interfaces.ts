@@ -1,4 +1,5 @@
 export type CustomPopoverProps = {
+    id: string;
     title: string | React.ReactNode;
     children: string | React.ReactNode;
     anchorEl: null | HTMLElement;
@@ -9,6 +10,7 @@ export type CustomPopoverProps = {
 };
 
 export type ConfirmationPopoverProps = {
+    id: string;
     title?: string | React.ReactNode;
     confirmationMessage?: string | React.ReactNode;
     isDeletion?: boolean;

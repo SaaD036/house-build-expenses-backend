@@ -6,7 +6,8 @@ import { ConfirmationPopoverProps } from '../interfaces';
 import styles from './styles.module.css';
 
 const ConfirmationPopover = (props: ConfirmationPopoverProps) => {
-    const { title, confirmationMessage, isDeletion, anchorEl, onClose, onCancel, onYes } = props;
+    const { id, title, confirmationMessage, isDeletion, anchorEl, onClose, onCancel, onYes } =
+        props;
 
     const getConfirmButtonStyles = () => {
         return isDeletion ? styles.confirmPopoverDeleteButton : styles.confirmPopoverConfirmButton;
@@ -38,6 +39,7 @@ const ConfirmationPopover = (props: ConfirmationPopoverProps) => {
 
     return (
         <CustomPopover
+            id={id}
             anchorEl={anchorEl}
             onClose={onClose}
             title={renderPopoverHeader()}

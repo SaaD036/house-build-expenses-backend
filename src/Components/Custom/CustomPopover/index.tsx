@@ -6,7 +6,8 @@ import { CustomPopoverProps } from './interfaces';
 import styles from './styles.module.css';
 
 const CustomPopover = (props: CustomPopoverProps) => {
-    const { children, title, anchorEl, className, headerClassName, bodyClassname, onClose } = props;
+    const { id, children, title, anchorEl, className, headerClassName, bodyClassname, onClose } =
+        props;
 
     const renderPopoverHeader = () => {
         if (typeof title !== 'string') {
@@ -19,7 +20,7 @@ const CustomPopover = (props: CustomPopoverProps) => {
     return (
         <div>
             <Overlay show={Boolean(anchorEl)} target={anchorEl} rootClose onHide={onClose}>
-                <Popover id="popover-contained" className={`${styles.popover}  ${className || ''}`}>
+                <Popover id={id} className={`${styles.popover}  ${className || ''}`}>
                     <Popover.Header className={`${styles.popoverHeader} ${headerClassName || ''}`}>
                         {renderPopoverHeader()}
                     </Popover.Header>

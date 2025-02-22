@@ -69,10 +69,11 @@ const HeaderProfile = () => {
     return (
         <div className={styles.headerProfileContainer}>
             <CustomMenu
+                id="header-profile-menu"
                 items={getProfileMenuItems()}
                 open={Boolean(anchorEl)}
                 anchorEl={anchorEl}
-                setAnchorEl={setAnchorEl}
+                onClose={() => setAnchorEl(null)}
             />
             <Avatar content={renderAvatarContent()} />
             <div
