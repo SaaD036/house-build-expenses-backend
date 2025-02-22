@@ -10,7 +10,10 @@ export const createActionColumnMenuItem = (
     return { key, label, Icon, onClick };
 };
 
-export const getExpenseTableRows = (expenses: ExpenseType[], actionColumnItem: JSX.Element) => {
+export const getExpenseTableRows = (
+    expenses: ExpenseType[],
+    getActionColumnItem: (expense: ExpenseType) => JSX.Element
+) => {
     const expenseTableRows = expenses.map((expense) => ({
         title: {
             value: expense.title,
@@ -28,7 +31,7 @@ export const getExpenseTableRows = (expenses: ExpenseType[], actionColumnItem: J
             value: `${expense.creator.firstName} ${expense.creator.lastName}`,
         },
         action: {
-            value: actionColumnItem,
+            value: getActionColumnItem(expense),
         },
     }));
 

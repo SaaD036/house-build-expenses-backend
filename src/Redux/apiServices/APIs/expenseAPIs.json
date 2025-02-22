@@ -6,5 +6,9 @@
     "CREATE_EXPENSE": {
         "path": "/expense",
         "method": "POST"
+    },
+    "DELETE_SINGLE_EXPENSE": {
+        "path": "/expense/{id}",
+        "method": "DELETE"
     }
 }

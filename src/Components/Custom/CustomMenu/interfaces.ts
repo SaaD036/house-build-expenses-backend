@@ -11,8 +11,9 @@ export type CutomMenuItemsType = {
 };
 
 export type CustomMenuProps = {
+    id: string;
     items: CutomMenuItemsType[];
     open: boolean;
     anchorEl: null | HTMLElement;
-    setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
+    onClose: () => void;
 };

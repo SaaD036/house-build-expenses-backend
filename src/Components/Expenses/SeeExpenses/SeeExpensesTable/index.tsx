@@ -14,7 +14,7 @@ import CustomTable from '../../../Custom/CustomTable';
 import CustomMenu from '../../../Custom/CustomMenu';
 import ConfirmationPopover from '../../../Custom/CustomPopover/ConfirmationPopover';
 
-import { getAllExpenses } from '../../../../Redux/actions/expenseAction';
+import { getAllExpenses, deleteSingleExpense } from '../../../../Redux/actions/expenseAction';
 
 import { createActionColumnMenuItem, getExpenseTableRows } from './utilities';
 
@@ -26,11 +26,15 @@ import {
     CustomTableColumnSortDataType,
     CustomTableLoadDataTypes,
 } from '../../../Custom/CustomTable/interfaces';
+import { ExpenseType } from '../../../../Types/expenses';
 
 import styles from '../styles.module.css';
 
 const SeeExpensesTable = (props: SeeExpensesTableProps) => {
-    const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses } = props;
+    const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses, deleteSingleExpense } =
+        props;
+
+    const [selectedExpense, setSelectedExpense] = useState<ExpenseType | null>(null);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [expensesPerPage, setExpensesPerPage] = useState(TABLE_ROW_COUNT_OPTIONS[0]);
@@ -59,12 +63,40 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         ];
     };
 
-    const getActionColumnItem = () => {
+    const getActionColumnItem = (expense: ExpenseType) => {
         return (
-            <span onClick={(e) => setActionColumMenuAnchorEl(e.currentTarget)}>
+            <span
+                onClick={(e) => {
+                    setActionColumMenuAnchorEl(e.currentTarget);
+                    setSelectedExpense(expense);
+                }}
+            >
                 <ActionColumnIcon sx={{ color: '#158901' }} className={styles.actionColumnIcon} />
             </span>
         );
+    };
+
+    const onActionColumnMenuClose = () => {
+        setActionColumMenuAnchorEl(null);
+    };
+
+    const onDeletePopoverClose = () => {
+        setDdeleteExpensePopoverAnchorEl(null);
+        setSelectedExpense(null);
+    };
+
+    const onDeleteExpense = async () => {
+        if (!selectedExpense) {
+            return;
+        }
+
+        showLoader();
+
+        await deleteSingleExpense(selectedExpense.id);
+        await getAllExpenses({ page: currentPage, itemsPerPage: expensesPerPage });
+
+        onDeletePopoverClose();
+        hideLoader();
     };
 
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
@@ -87,22 +119,28 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
 
     return (
         <>
-            <CustomMenu
-                items={getActionColumnMenuItems()}
-                open={Boolean(actionColumMenuAnchorEl)}
-                anchorEl={actionColumMenuAnchorEl}
-                setAnchorEl={setActionColumMenuAnchorEl}
-            />
-            <ConfirmationPopover
-                isDeletion
-                confirmationMessage="Are you sure to delete this expense?"
-                anchorEl={deleteExpensePopoverAnchorEl}
-                onClose={() => setDdeleteExpensePopoverAnchorEl(null)}
-                onYes={() => setDdeleteExpensePopoverAnchorEl(null)}
-            />
+            {selectedExpense && (
+                <>
+                    <CustomMenu
+                        id={`see-expense-table-menu-${selectedExpense.id}`}
+                        items={getActionColumnMenuItems()}
+                        open={Boolean(actionColumMenuAnchorEl)}
+                        anchorEl={actionColumMenuAnchorEl}
+                        onClose={onActionColumnMenuClose}
+                    />
+                    <ConfirmationPopover
+                        id={`see-expense-table-delete-confirm-${selectedExpense.id}`}
+                        isDeletion
+                        confirmationMessage="Are you sure to delete this expense?"
+                        anchorEl={deleteExpensePopoverAnchorEl}
+                        onClose={onDeletePopoverClose}
+                        onYes={onDeleteExpense}
+                    />
+                </>
+            )}
             <CustomTable
                 columns={EXPENSE_TABLE_COLUMNS}
-                rowData={getExpenseTableRows(expenses || [], getActionColumnItem())}
+                rowData={getExpenseTableRows(expenses || [], getActionColumnItem)}
                 loadTableData={loadExpenseData}
                 showRefreshButton
                 pagination={{
@@ -131,6 +169,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = {
     getAllExpenses,
+    deleteSingleExpense,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SeeExpensesTable);
