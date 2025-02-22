@@ -90,13 +90,13 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             return;
         }
 
+        showLoader();
+
         await deleteSingleExpense(selectedExpense.id);
-        await getAllExpenses({
-            page: currentPage,
-            itemsPerPage: expensesPerPage,
-        });
+        await getAllExpenses({ page: currentPage, itemsPerPage: expensesPerPage });
 
         onDeletePopoverClose();
+        hideLoader();
     };
 
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
