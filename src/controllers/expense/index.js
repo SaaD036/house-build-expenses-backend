@@ -5,6 +5,8 @@ const { Expenses } = require('../../models');
 
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
 
+const { createExpenseEditHistoryItem } = require('../../services/expense');
+
 const { HTTP_STATUS } = require('../../constants/http');
 
 const getAllExpenses = async (req, res, next) => {
@@ -54,6 +56,87 @@ const createExpense = async (req, res, next) => {
             createdBy: req.user.id,
             expenseAt: new Date(expenseAt),
         });
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'successfull',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateExpense = async (req, res, next) => {
+    try {
+        const { expenseID } = req.params;
+        const { amount, title, description, expenseAt } = req.body;
+        const { id: userId } = req.user;
+        const newEditHistory = [];
+
+        if (isNaN(Number(expenseID))) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: 'Invalid expense ID.',
+            });
+        }
+
+        const expense = await Expenses.findOne({
+            where: {
+                isDeleted: false,
+                id: expenseID,
+            },
+        });
+
+        if (!expense) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: 'Expense not found.',
+            });
+        }
+
+        if (amount !== expense.amount) {
+            newEditHistory.push(
+                createExpenseEditHistoryItem('update', 'amount', userId, amount, expense.amount)
+            );
+        }
+
+        if (title !== expense.title) {
+            newEditHistory.push(
+                createExpenseEditHistoryItem('update', 'title', userId, title, expense.title)
+            );
+        }
+
+        if (description !== expense.description) {
+            newEditHistory.push(
+                createExpenseEditHistoryItem(
+                    'update',
+                    'description',
+                    userId,
+                    description,
+                    expense.description
+                )
+            );
+        }
+
+        if (new Date(expenseAt).getTime() != new Date(expense.expenseAt).getTime()) {
+            newEditHistory.push(
+                createExpenseEditHistoryItem(
+                    'update',
+                    'expenseAt',
+                    userId,
+                    new Date(expenseAt),
+                    expense.expenseAt
+                )
+            );
+        }
+
+        expense.amount = Number(amount);
+        expense.title = title;
+        expense.description = description;
+        expense.expenseAt = expenseAt ? new Date(expenseAt) : new Date();
+        expense.expenseEditHistory = {
+            last_updated_by: userId,
+            history: [..._.get(expense, 'expenseEditHistory.history', []), ...newEditHistory],
+        };
+
+        await expense.save();
 
         return res.status(HTTP_STATUS.OK).json({
             message: 'successfull',
@@ -151,6 +234,7 @@ const deleteMultipleExpenses = async (req, res, next) => {
 module.exports = {
     getAllExpenses,
     createExpense,
+    updateExpense,
     deleteExpense,
     deleteMultipleExpenses,
 };
