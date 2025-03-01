@@ -3,6 +3,7 @@ const express = require('express');
 const {
     getAllExpenses,
     createExpense,
+    updateExpense,
     deleteExpense,
     deleteMultipleExpenses,
 } = require('../../controllers/expense');
@@ -17,6 +18,13 @@ const router = express.Router();
 router.get('/', getAllExpenses);
 router.post('/', adminMiddleware, createExpenseValidator, validatorHandler, createExpense);
 
+router.patch(
+    '/:expenseID',
+    adminMiddleware,
+    createExpenseValidator,
+    validatorHandler,
+    updateExpense
+);
 router.delete('/:expenseID', adminMiddleware, deleteExpense);
 router.patch(
     '/delete-multiple',
