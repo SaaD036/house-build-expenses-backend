@@ -91,6 +91,12 @@ const updateExpense = async (req, res, next) => {
             });
         }
 
+        if (expense.createdBy !== userId) {
+            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+                message: 'You can not delete this expense.',
+            });
+        }
+
         if (amount !== expense.amount) {
             newEditHistory.push(
                 createExpenseEditHistoryItem('update', 'amount', userId, amount, expense.amount)
