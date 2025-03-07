@@ -1,0 +1,8 @@
+.editExpenseFormWrapper {
+    min-width: 550px;
+    display: grid;
+}
+
+.submitButton {
+    margin-left: 5px;
+}

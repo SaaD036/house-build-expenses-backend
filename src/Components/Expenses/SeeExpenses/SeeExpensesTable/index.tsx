@@ -103,6 +103,16 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         hideLoader();
     };
 
+    const onEditModalClose = () => {
+        loadExpenseData({
+            page: currentPage,
+            itemsPerPage: expensesPerPage,
+        });
+
+        setEditExpenseModal(false);
+        setSelectedExpense(null);
+    };
+
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
         showLoader();
         await getAllExpenses(
@@ -145,7 +155,14 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
                         onClose={() => setEditExpenseModal(false)}
                         title="Edit expense"
                     >
-                        <EditExepense expense={selectedExpense} />
+                        <EditExepense
+                            expense={selectedExpense}
+                            onEditSuccess={onEditModalClose}
+                            onEditUnsuccess={() => {
+                                setEditExpenseModal(false);
+                                setSelectedExpense(null);
+                            }}
+                        />
                     </CustomModal>
                 </>
             )}

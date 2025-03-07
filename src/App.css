@@ -73,17 +73,12 @@ a {
 }
 
 .button-outlined {
-    padding: 6px 12px !important;
-    border-radius: 15px !important;
     border: 1px solid #158901;
     color: black !important;
 }
 
 .button-cancel {
-    padding: 6px 12px !important;
     background-color: rgb(175, 5, 5) !important;
-    border-radius: 15px !important;
-    color: white !important;
 }
 
 .icon {

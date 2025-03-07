@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { FormikHelpers } from 'formik';
+import { connect } from 'react-redux';
+import { noop } from 'lodash';
 
 import Form from '../../Custom/Form';
 import FormTextInput from '../../Custom/Form/FormComponent/FormTextInput';
@@ -7,6 +9,8 @@ import FormTextArea from '../../Custom/Form/FormComponent/FormTextAreaInput';
 import FormCurrencyInput from '../../Custom/Form/FormComponent/FormCurrencyInput';
 import FormDate from '../../Custom/Form/FormComponent/FormDateInput';
 import ButtonSection from '../../Custom/CustomButton/ButtonSection';
+
+import { editExpense } from '../../../Redux/actions/expenseAction';
 
 import { getInitialValueForEditExpenseForm } from './utilities';
 
@@ -17,7 +21,7 @@ import { CreateExpenseFormValueType } from '../CreateExpense/interfaces';
 import styles from './styles.module.css';
 
 function EditExepense(props: EditExpensePropTypes) {
-    const { expense } = props;
+    const { expense, onEditSuccess, onEditUnsuccess, editExpense } = props;
 
     const [loading, setLoading] = useState(false);
 
@@ -27,17 +31,27 @@ function EditExepense(props: EditExpensePropTypes) {
     ) => {
         setLoading(true);
 
-        // await createExpense({
-        //     title: createExpenseFormData.title || '',
-        //     description: createExpenseFormData.description || '',
-        //     amount: createExpenseFormData.amount || 1,
-        //     expenseAt: createExpenseFormData.expense_at.toISOString().split('T')[0],
-        // });
+        try {
+            await editExpense(expense.id, {
+                title: createExpenseFormData.title || '',
+                description: createExpenseFormData.description || '',
+                amount: createExpenseFormData.amount || 1,
+                expenseAt: createExpenseFormData.expense_at.toISOString().split('T')[0],
+            });
 
-        setLoading(false);
+            setLoading(false);
+            if (onEditSuccess) {
+                onEditSuccess();
+            }
+        } catch (error) {
+            setLoading(false);
+            if (onEditUnsuccess) {
+                onEditUnsuccess();
+            }
+        }
     };
     return (
-        <div style={{ display: 'grid', gap: '25px' }}>
+        <div className={styles.editExpenseFormWrapper}>
             <Form
                 initialValue={getInitialValueForEditExpenseForm(expense)}
                 validationObject={CREATE_EXPENSE_FORM_VALIDATOR}
@@ -52,9 +66,16 @@ function EditExepense(props: EditExpensePropTypes) {
                     label="Expense Time"
                     maxDate={new Date()}
                 />
-                <ButtonSection className={styles.buttonSection}>
-                    <button className="button" type="submit">
-                        SUBMIT
+                <ButtonSection>
+                    <button
+                        className="button button-cancel"
+                        type="button"
+                        onClick={onEditUnsuccess || noop}
+                    >
+                        CANCEL
+                    </button>
+                    <button className={`button ${styles.submitButton}`} type="submit">
+                        {loading ? 'UPDATING' : 'UPDATE'}
                     </button>
                 </ButtonSection>
             </Form>
@@ -62,4 +83,13 @@ function EditExepense(props: EditExpensePropTypes) {
     );
 }
 
-export default EditExepense;
+const mapStateToProps = (state: any) => ({
+    expenses: state.expense.expenses,
+    expensesCount: state.expense.expensesCount,
+});
+
+const mapDispatchToProps = {
+    editExpense,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditExepense);
