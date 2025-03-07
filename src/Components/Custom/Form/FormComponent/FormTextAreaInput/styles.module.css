@@ -9,7 +9,7 @@
 }
 
 .formTextAreaContainer textarea {
-    width: calc(100% - 16px);
+    width: 100%;
     min-height: 70px;
     max-height: 150px;
     padding: 5px 8px;

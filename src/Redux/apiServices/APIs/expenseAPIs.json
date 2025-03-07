@@ -10,5 +10,9 @@
     "DELETE_SINGLE_EXPENSE": {
         "path": "/expense/{id}",
         "method": "DELETE"
+    },
+    "EDIT_SINGLE_EXPENSE": {
+        "path": "/expense/{id}",
+        "method": "PATCH"
     }
 }

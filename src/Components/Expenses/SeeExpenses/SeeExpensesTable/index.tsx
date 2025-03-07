@@ -10,9 +10,12 @@ import {
     Info as SeeDetailsIcon,
 } from '@mui/icons-material';
 
+import EditExepense from '../../EditExepense';
+
 import CustomTable from '../../../Custom/CustomTable';
 import CustomMenu from '../../../Custom/CustomMenu';
 import ConfirmationPopover from '../../../Custom/CustomPopover/ConfirmationPopover';
+import CustomModal from '../../../Custom/CustomModal';
 
 import { getAllExpenses, deleteSingleExpense } from '../../../../Redux/actions/expenseAction';
 
@@ -45,10 +48,11 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     );
     const [deleteExpensePopoverAnchorEl, setDdeleteExpensePopoverAnchorEl] =
         useState<null | HTMLElement>(null);
+    const [editExpenseModal, setEditExpenseModal] = useState(false);
 
     const getActionColumnMenuItems = () => {
         return [
-            createActionColumnMenuItem('edit', 'Edit', EditIcon, () => {}),
+            createActionColumnMenuItem('edit', 'Edit', EditIcon, () => setEditExpenseModal(true)),
             createActionColumnMenuItem('delete', 'Delete', DeleteIcon, () =>
                 setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl)
             ),
@@ -99,6 +103,16 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         hideLoader();
     };
 
+    const onEditModalClose = () => {
+        loadExpenseData({
+            page: currentPage,
+            itemsPerPage: expensesPerPage,
+        });
+
+        setEditExpenseModal(false);
+        setSelectedExpense(null);
+    };
+
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
         showLoader();
         await getAllExpenses(
@@ -136,6 +150,20 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
                         onClose={onDeletePopoverClose}
                         onYes={onDeleteExpense}
                     />
+                    <CustomModal
+                        open={editExpenseModal}
+                        onClose={() => setEditExpenseModal(false)}
+                        title="Edit expense"
+                    >
+                        <EditExepense
+                            expense={selectedExpense}
+                            onEditSuccess={onEditModalClose}
+                            onEditUnsuccess={() => {
+                                setEditExpenseModal(false);
+                                setSelectedExpense(null);
+                            }}
+                        />
+                    </CustomModal>
                 </>
             )}
             <CustomTable

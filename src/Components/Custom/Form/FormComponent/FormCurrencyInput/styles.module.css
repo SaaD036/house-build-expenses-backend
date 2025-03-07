@@ -9,7 +9,7 @@
 }
 
 .currencyWithSymbolWrapper {
-    position: relative
+    position: relative;
 }
 
 .currencyWithSymbolWrapper div {
@@ -22,7 +22,7 @@
 .currencyWithSymbolWrapper input {
     padding: 5px 45px 5px 5px;
     height: 35px;
-    width: calc(100% - 50px);
+    width: 100%;
     outline: none;
     color: #878787;
     border-radius: 4px;

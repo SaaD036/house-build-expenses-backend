@@ -149,3 +149,44 @@ export const deleteSingleExpense =
             }
         }
     };
+
+export const editExpense =
+    (id: number, payloadData: CreateExpenseFormDataType) =>
+    async (dispatch: Dispatch<{ type: string; payload: any }>) => {
+        try {
+            const { path, method } = expenseAPIs.EDIT_SINGLE_EXPENSE;
+            const { BAD_REQUEST, UNAUTHENTICATED, NOT_FOUND } = HTTP_STATUS_CODE;
+
+            const { status, data } = await callAxiosAPI({
+                url: buildURL(path, { id }),
+                method: method as Method,
+                data: payloadData,
+            });
+
+            if (status === UNAUTHENTICATED) {
+                throw new ValidationError('User does not have access to delete expense.');
+            } else if (status === NOT_FOUND) {
+                throw new ValidationError('Expense not found.');
+            } else if (status === BAD_REQUEST) {
+                const errorMessage = get(data, 'error.message', null);
+
+                if (typeof errorMessage === 'string') {
+                    throw new ValidationError(errorMessage);
+                }
+
+                if (isArray(errorMessage) && errorMessage.length > 0) {
+                    throw new ValidationError(errorMessage[0]);
+                }
+
+                throw new ValidationError('Can not edit expense.');
+            } else if (status > 299) {
+                throw new ValidationError('Can not edit expense.');
+            }
+
+            toast('Expense edited successfully');
+        } catch (error) {
+            if (error instanceof Error) {
+                toast(error.message.toString());
+            }
+        }
+    };
