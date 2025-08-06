@@ -6,6 +6,7 @@ const {
     updateExpense,
     deleteExpense,
     deleteMultipleExpenses,
+    getTotalExpense,
 } = require('../../controllers/expense');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
@@ -33,5 +34,7 @@ router.patch(
     validatorHandler,
     deleteMultipleExpenses
 );
+
+router.get('/get-total-expense', getTotalExpense);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 
 const { Expenses } = require('../../models');
 
@@ -30,16 +30,12 @@ const getAllExpenses = async (req, res, next) => {
                 where: filter.where,
                 limit: filter.limit,
                 offset: filter.offset,
+                order: ['expenseAt'],
             }),
-            Expenses.count({
-                where: filter.where,
-            }),
+            Expenses.count({ where: filter.where }),
         ]);
 
-        return res.status(HTTP_STATUS.OK).json({
-            expenses,
-            expensesCount,
-        });
+        return res.status(HTTP_STATUS.OK).json({ expenses, expensesCount });
     } catch (error) {
         next(error);
     }
@@ -237,10 +233,28 @@ const deleteMultipleExpenses = async (req, res, next) => {
     }
 };
 
+const getTotalExpense = async (req, res, next) => {
+    try {
+        const { title, fromDate, toDate } = req.query;
+        const filter = prepareFiltersForAllExpenses({
+            title,
+            fromDate,
+            toDate,
+        });
+
+        const totalExpense = await Expenses.sum('amount', { where: filter.where });
+
+        return res.status(HTTP_STATUS.OK).json({ totalExpense });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
     updateExpense,
     deleteExpense,
     deleteMultipleExpenses,
+    getTotalExpense,
 };
