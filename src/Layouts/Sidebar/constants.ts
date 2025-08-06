@@ -1,12 +1,19 @@
 import { SidebarItemsTypes } from '../interfaces';
 
 import {
+    Home as HomeIcon,
     Receipt as TransactionIcon,
     Person as UserIcon,
     ManageAccounts as AccountIcon,
 } from '@mui/icons-material';
 
 export const SIDEBAR_ITEMS: SidebarItemsTypes[] = [
+    {
+        key: '',
+        label: 'Home',
+        access: 'all',
+        Icon: HomeIcon,
+    },
     {
         key: 'transaction',
         label: 'Transaction',
