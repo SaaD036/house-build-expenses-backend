@@ -235,9 +235,10 @@ const deleteMultipleExpenses = async (req, res, next) => {
 
 const getTotalExpense = async (req, res, next) => {
     try {
-        const { title, fromDate, toDate } = req.query;
+        const { title, created_by, fromDate, toDate } = req.query;
         const filter = prepareFiltersForAllExpenses({
             title,
+            created_by,
             fromDate,
             toDate,
         });
