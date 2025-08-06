@@ -1,0 +1,25 @@
+.totalExpense {
+    margin-top: 15px;
+}
+
+.totalExpenseTitle {
+    font-size: 22px;
+    font-weight: lighter;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #158901;
+}
+
+.totalExpenseBody {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.totalExpenseBody div {
+    flex: auto;
+    min-width: 175px;
+}
+
+.totalExpense h1 {
+    margin-left: 20px;
+}
