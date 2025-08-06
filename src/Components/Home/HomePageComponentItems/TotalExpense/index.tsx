@@ -23,7 +23,7 @@ const TotalExpense = () => {
     const [formValue, setFormValue] = useState<FormDataType>(FORM_DATA);
 
     const renderTitleForTotalExpense = () => {
-        return <div className={styles.totalExpenseTitle}>Total expense</div>;
+        return <div className={styles.totalExpenseTitle}>Total Expense</div>;
     };
 
     const renderTotalExpenseBody = () => {
@@ -40,7 +40,9 @@ const TotalExpense = () => {
                         <FormDate id="toDate" name="toDate" label="To" />
                     </Form>
                 </div>
-                <h1>25,00,000 BDT</h1>
+                <h2>
+                    <b>25,00,000 BDT</b>
+                </h2>
             </div>
         );
     };
@@ -50,11 +52,9 @@ const TotalExpense = () => {
     }, [formValue]);
 
     return (
-        <div className={styles.totalExpense}>
-            <CardContainer title={renderTitleForTotalExpense()}>
-                {renderTotalExpenseBody()}
-            </CardContainer>
-        </div>
+        <CardContainer title={renderTitleForTotalExpense()}>
+            {renderTotalExpenseBody()}
+        </CardContainer>
     );
 };
 
