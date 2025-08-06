@@ -55,6 +55,14 @@ const router = createBrowserRouter([
             </ProtectedRoutes>
         ),
     },
+    {
+        path: '/albums',
+        element: (
+            <ProtectedRoutes auth>
+                <Layout>Album page</Layout>
+            </ProtectedRoutes>
+        ),
+    },
 ]);
 
 export default router;
