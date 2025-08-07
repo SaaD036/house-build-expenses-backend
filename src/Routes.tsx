@@ -6,13 +6,16 @@ import ProtectedRoutes from './protectedRoutes';
 import Layout from './Layouts';
 import LoginPage from './Pages/Auth/Login';
 import ExpensesPage from './Pages/Expenses';
+import HomePage from './Pages/Home';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: (
             <ProtectedRoutes auth>
-                <Layout>Home page</Layout>
+                <Layout>
+                    <HomePage />
+                </Layout>
             </ProtectedRoutes>
         ),
     },
@@ -52,6 +55,14 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoutes auth>
                 <Layout>Account page</Layout>
+            </ProtectedRoutes>
+        ),
+    },
+    {
+        path: '/albums',
+        element: (
+            <ProtectedRoutes auth>
+                <Layout>Album page</Layout>
             </ProtectedRoutes>
         ),
     },

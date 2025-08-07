@@ -8,5 +8,6 @@
 
 .cardContainerTitle {
     font-size: 25px;
-    font-style: bold;
+    font-weight: 600;
+    margin-bottom: 8px;
 }

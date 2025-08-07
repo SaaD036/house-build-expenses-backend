@@ -1,11 +1,13 @@
 import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 
-import { FormProsType } from './interface';
+import FormObserver from './FormObserver';
+
+import { FormPropsType } from './interface';
 import styles from './styles.module.css';
 
-const Form = <T,>(props: FormProsType<T>) => {
-    const { children, validationObject, initialValue, onSubmit } = props;
+const Form = <T,>(props: FormPropsType<T>) => {
+    const { children, validationObject, initialValue, onFormValueChange, onSubmit } = props;
 
     return (
         <Formik
@@ -19,6 +21,7 @@ const Form = <T,>(props: FormProsType<T>) => {
         >
             {(formik) => (
                 <form onSubmit={formik.handleSubmit} className={styles.formWrapper}>
+                    <FormObserver onFormValueChange={onFormValueChange} />
                     {children}
                 </form>
             )}
