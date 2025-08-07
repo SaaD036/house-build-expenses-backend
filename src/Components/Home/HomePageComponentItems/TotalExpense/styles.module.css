@@ -18,7 +18,6 @@
 
 .totalExpenseBody div {
     flex: auto;
-    min-width: 175px;
 }
 
 .totalExpenseBody h2 {

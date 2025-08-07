@@ -1,15 +1,19 @@
-import { GET_ALL_EXPENSES } from '../types/expenses';
+import { GET_ALL_EXPENSES, GET_TOTAL_EXPENSE } from '../types/expenses';
 
 import { ExpenseType } from '../../Types/expenses';
 
-type ExpenseReducerStateType = {
+export type ExpenseReducerStateType = {
     expenses: ExpenseType[] | null;
     expensesCount: number | null;
+    totalExpenses: number | null;
+    totalExpensesForThisYear: number | null;
 };
 
 const initialState: ExpenseReducerStateType = {
     expenses: null,
     expensesCount: null,
+    totalExpenses: null,
+    totalExpensesForThisYear: null,
 };
 
 const reducer = (
@@ -22,6 +26,14 @@ const reducer = (
             ...state,
             expenses,
             expensesCount,
+        };
+    }
+
+    if (action.type === GET_TOTAL_EXPENSE) {
+        const { totalExpenses = null } = action.payload;
+        return {
+            ...state,
+            totalExpenses,
         };
     }
 
