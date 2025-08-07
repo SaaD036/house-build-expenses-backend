@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { noop } from 'lodash';
+import { Circles } from 'react-loader-spinner';
 
 import CardContainer from '../../../CardContainer';
 
@@ -13,7 +14,6 @@ import { TotalExpensePropsType, TotalExpenseFormDataType } from './interfaces';
 
 import { DISPLAY_TOTAL_EXPENSE_VALIDATOR } from './constants';
 import styles from './styles.module.css';
-import TabComponentLoader from '../../../Custom/CustomLoadingItems/TabComponentLoader';
 
 const FORM_DATA: TotalExpenseFormDataType = {
     formDate: undefined,
@@ -44,7 +44,7 @@ const TotalExpense = (props: TotalExpensePropsType) => {
     const renderTotalExpenseBody = () => {
         return (
             <div className={styles.totalExpenseBody}>
-                <div>
+                <div style={{ flex: 'auto' }}>
                     <Form
                         initialValue={FORM_DATA}
                         validationObject={DISPLAY_TOTAL_EXPENSE_VALIDATOR}
@@ -57,13 +57,15 @@ const TotalExpense = (props: TotalExpensePropsType) => {
                         <FormDate id="toDate" name="toDate" label="To" />
                     </Form>
                 </div>
-                {loading ? (
-                    <div>Loading</div>
-                ) : (
-                    <h2>
-                        <b className="text">{totalExpense ? `${totalExpense} BDT` : 'N/A'}</b>
-                    </h2>
-                )}
+                <div className={`center ${styles.totalExpenseText}`}>
+                    {loading ? (
+                        <Circles height={50} width={50} color="#158901" visible />
+                    ) : (
+                        <h2>
+                            <b className="text">{totalExpense ? `${totalExpense} BDT` : 'N/A'}</b>
+                        </h2>
+                    )}
+                </div>
             </div>
         );
     };

@@ -16,10 +16,7 @@
     flex-wrap: wrap;
 }
 
-.totalExpenseBody div {
-    flex: auto;
-}
-
-.totalExpenseBody h2 {
-    margin-left: 20px;
+.totalExpenseText {
+    width: 150px;
+    margin: 15px 0px;
 }
