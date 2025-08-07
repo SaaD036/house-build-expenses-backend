@@ -5,12 +5,8 @@ const { preparePaginationQuery } = require('..');
 const { EXPENSE_START_DATE } = require('../../constants/expense');
 
 const prepareFiltersForAllExpenses = (params) => {
-    const filter = {
-        ...preparePaginationQuery(params),
-    };
-    let where = {
-        isDeleted: false,
-    };
+    const filter = { ...preparePaginationQuery(params) };
+    let where = { isDeleted: false };
 
     if (params.title) {
         where = {
