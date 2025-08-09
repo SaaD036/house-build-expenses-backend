@@ -1,6 +1,8 @@
 import { LOG_IN } from '../types/auth';
 
-const initialState = {
+import { AuthReducerStateType } from './reducerDataType';
+
+const initialState: AuthReducerStateType = {
     loggedInUser: null,
 };
 
