@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { FormikHelpers } from 'formik';
+import { Container } from '@mui/material';
 
 import Form from '../../Custom/Form';
 import FormTextInput from '../../Custom/Form/FormComponent/FormTextInput';
@@ -19,7 +20,7 @@ import { CreateExpensePagePropsType, CreateExpenseFormValueType } from './interf
 import styles from './styles.module.css';
 
 const CreateExpense = (props: CreateExpensePagePropsType) => {
-    const { createExpense } = props;
+    const { disabledForm, createExpense } = props;
 
     const [loading, setLoading] = useState<boolean>();
 
@@ -43,27 +44,34 @@ const CreateExpense = (props: CreateExpensePagePropsType) => {
         <div style={{ display: 'grid', gap: '25px' }}>
             <CardContainer title="Add Expense" />
             {loading && <TabComponentLoader />}
+            {disabledForm && (
+                <Container className="center">
+                    <div className={styles.formDisabledMessage}>This form is disabled</div>
+                </Container>
+            )}
             <CardContainer>
-                <Form
-                    initialValue={CREATE_EXPENSE_INITIAL_VALUE}
-                    validationObject={CREATE_EXPENSE_FORM_VALIDATOR}
-                    onSubmit={onSubmitCreateExpenseForm}
-                >
-                    <FormTextInput id="title" name="title" label="Title" />
-                    <FormTextArea id="description" name="description" label="Description" />
-                    <FormCurrencyInput id="amount" name="amount" label="Amount" min={1} />
-                    <FormDate
-                        id="expense_at"
-                        name="expense_at"
-                        label="Expense Time"
-                        maxDate={new Date()}
-                    />
-                    <ButtonSection className={styles.buttonSection}>
-                        <button className="button" type="submit">
-                            SUBMIT
-                        </button>
-                    </ButtonSection>
-                </Form>
+                <div style={disabledForm ? { pointerEvents: 'none' } : undefined}>
+                    <Form
+                        initialValue={CREATE_EXPENSE_INITIAL_VALUE}
+                        validationObject={CREATE_EXPENSE_FORM_VALIDATOR}
+                        onSubmit={onSubmitCreateExpenseForm}
+                    >
+                        <FormTextInput id="title" name="title" label="Title" />
+                        <FormTextArea id="description" name="description" label="Description" />
+                        <FormCurrencyInput id="amount" name="amount" label="Amount" min={1} />
+                        <FormDate
+                            id="expense_at"
+                            name="expense_at"
+                            label="Expense Time"
+                            maxDate={new Date()}
+                        />
+                        <ButtonSection className={styles.buttonSection}>
+                            <button className="button" type="submit">
+                                SUBMIT
+                            </button>
+                        </ButtonSection>
+                    </Form>
+                </div>
             </CardContainer>
         </div>
     );

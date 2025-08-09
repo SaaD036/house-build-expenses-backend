@@ -1,6 +1,7 @@
 import { CreateExpenseFormDataType, ExpenseType } from '../../../Types/expenses';
 
 export type EditExpensePropTypes = {
+    disableForm?: boolean;
     expense: ExpenseType;
     onEditSuccess?: () => void;
     onEditUnsuccess?: () => void;

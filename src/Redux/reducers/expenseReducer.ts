@@ -1,13 +1,6 @@
 import { GET_ALL_EXPENSES, GET_TOTAL_EXPENSE } from '../types/expenses';
 
-import { ExpenseType } from '../../Types/expenses';
-
-export type ExpenseReducerStateType = {
-    expenses: ExpenseType[] | null;
-    expensesCount: number | null;
-    totalExpenses: number | null;
-    totalExpensesForThisYear: number | null;
-};
+import { ExpenseReducerStateType } from './reducerDataType';
 
 const initialState: ExpenseReducerStateType = {
     expenses: null,

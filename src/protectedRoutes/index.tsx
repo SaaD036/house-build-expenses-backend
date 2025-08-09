@@ -1,20 +1,22 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+
+import { cookieName, getCookie } from '../Utilities/Cookies';
 
 import { ProtectedRoutePropType } from './interfaces';
 
 const ProtectedRoutes = (props: ProtectedRoutePropType) => {
-    const { children, user, auth, redirectIfNotLoggedIn, redirect } = props;
+    const { children, auth, redirectIfNotLoggedIn, redirect } = props;
+    const userToken = getCookie(cookieName.USER_TOKEN);
 
     if (auth) {
-        if (!user) {
+        if (!userToken) {
             return <Navigate to={redirectIfNotLoggedIn || '/auth/login'} replace />;
         }
 
         return children;
     } else {
-        if (user) {
+        if (userToken) {
             return <Navigate to={redirect || '/'} replace />;
         }
 
@@ -22,10 +24,4 @@ const ProtectedRoutes = (props: ProtectedRoutePropType) => {
     }
 };
 
-const mapStateToProps = (state: any) => ({
-    user: state.auth.loggedInUser,
-});
-
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProtectedRoutes);
+export default ProtectedRoutes;

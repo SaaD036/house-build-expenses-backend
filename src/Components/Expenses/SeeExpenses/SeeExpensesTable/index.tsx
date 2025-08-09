@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { jwtDecode } from 'jwt-decode';
 
 import {
     MoreVert as ActionColumnIcon,
@@ -32,10 +33,19 @@ import {
 import { ExpenseType } from '../../../../Types/expenses';
 
 import styles from '../styles.module.css';
+import { get } from 'lodash';
+import { UserRole } from '../../../../Constants/Users';
 
 const SeeExpensesTable = (props: SeeExpensesTableProps) => {
-    const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses, deleteSingleExpense } =
-        props;
+    const {
+        loggedInUser,
+        expenses,
+        expensesCount,
+        showLoader,
+        hideLoader,
+        getAllExpenses,
+        deleteSingleExpense,
+    } = props;
 
     const [selectedExpense, setSelectedExpense] = useState<ExpenseType | null>(null);
 
@@ -50,21 +60,40 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         useState<null | HTMLElement>(null);
     const [editExpenseModal, setEditExpenseModal] = useState(false);
 
+    const user = jwtDecode(loggedInUser || '');
+    const userRole = get(user, 'role', null);
+
     const getActionColumnMenuItems = () => {
-        return [
-            createActionColumnMenuItem('edit', 'Edit', EditIcon, () => setEditExpenseModal(true)),
-            createActionColumnMenuItem('delete', 'Delete', DeleteIcon, () =>
-                setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl)
-            ),
+        let actionColumnMenuItems: any[] = [];
+
+        if (!userRole) {
+            return actionColumnMenuItems;
+        }
+
+        actionColumnMenuItems = [
             createActionColumnMenuItem('add_to_album', 'Add to Album', AddToAlbumIcon, () => {}),
-            createActionColumnMenuItem(
-                'see_edit_history',
-                'See Edit History',
-                EditHistoryIcon,
-                () => {}
-            ),
             createActionColumnMenuItem('see_details', 'See Details', SeeDetailsIcon, () => {}),
         ];
+
+        if (userRole !== UserRole.USER) {
+            actionColumnMenuItems = [
+                createActionColumnMenuItem('edit', 'Edit', EditIcon, () =>
+                    setEditExpenseModal(true)
+                ),
+                createActionColumnMenuItem(
+                    'see_edit_history',
+                    'See Edit History',
+                    EditHistoryIcon,
+                    () => {}
+                ),
+                createActionColumnMenuItem('delete', 'Delete', DeleteIcon, () =>
+                    setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl)
+                ),
+                ...actionColumnMenuItems,
+            ];
+        }
+
+        return actionColumnMenuItems;
     };
 
     const getActionColumnItem = (expense: ExpenseType) => {
@@ -156,6 +185,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
                         title="Edit expense"
                     >
                         <EditExepense
+                            disableForm={userRole !== UserRole.ADMIN}
                             expense={selectedExpense}
                             onEditSuccess={onEditModalClose}
                             onEditUnsuccess={() => {
@@ -191,6 +221,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
 };
 
 const mapStateToProps = (state: any) => ({
+    loggedInUser: state.auth.loggedInUser,
     expenses: state.expense.expenses,
     expensesCount: state.expense.expensesCount,
 });
