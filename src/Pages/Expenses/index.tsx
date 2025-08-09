@@ -5,8 +5,9 @@ import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
+import { getExpensePageTabs } from './utilities';
 
-import { EXPENSE_PAGE_TAB_ITEMS, tabValueItem } from './constants';
+import { tabValueItem } from './constants';
 import styles from './styles.module.css';
 
 const ExpensesPage = () => {
@@ -20,7 +21,7 @@ const ExpensesPage = () => {
             <Header
                 components={
                     <CustomNavTabs
-                        tabItems={EXPENSE_PAGE_TAB_ITEMS}
+                        tabItems={getExpensePageTabs()}
                         selectedTab={activeTab}
                         onTabSelect={(tab: string) => setActiveTab(tab)}
                     />
