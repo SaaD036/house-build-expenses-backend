@@ -1,6 +1,7 @@
 import { CreateExpenseFormDataType } from '../../../Types/expenses';
 
 export type CreateExpensePagePropsType = {
+    disabledForm?: boolean;
     createExpense: (createExpenseFormData: CreateExpenseFormDataType) => Promise<void>;
 };
 

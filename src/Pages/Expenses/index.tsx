@@ -17,12 +17,12 @@ import { UserRole } from '../../Constants/Users';
 const ExpensesPage = () => {
     const query = useQuery();
     const tabName = query.get('tab') || tabValueItem.SEE_EXPENSES;
+    const userToken = getCookie(cookieName.USER_TOKEN);
+    const user = jwtDecode(userToken || '');
 
     const [activeTab, setActiveTab] = useState(tabName);
 
     useEffect(() => {
-        const userToken = getCookie(cookieName.USER_TOKEN);
-        const user = jwtDecode(userToken || '');
         const isLoggedInUserAsUser = get(user, 'role', UserRole.USER) === UserRole.USER;
 
         if (isLoggedInUserAsUser && activeTab === tabValueItem.CREATE_EXPENSE) {
@@ -41,7 +41,10 @@ const ExpensesPage = () => {
                     />
                 }
             />
-            <ExpensePageComponent tabName={activeTab} />
+            <ExpensePageComponent
+                isCreateExpenseFormDisabled={get(user, 'role', UserRole.USER) !== UserRole.ADMIN}
+                tabName={activeTab}
+            />
         </div>
     );
 };

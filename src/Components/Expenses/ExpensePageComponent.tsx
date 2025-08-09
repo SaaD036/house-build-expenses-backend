@@ -8,7 +8,7 @@ import { ExpensePagePropType } from './interfaces';
 import styles from './styles.module.css';
 
 const ExpensePageComponent = (props: ExpensePagePropType) => {
-    const { tabName } = props;
+    const { tabName, isCreateExpenseFormDisabled } = props;
 
     const renderTabComponents = () => {
         if (tabName === tabValueItem.SEE_EXPENSES) {
@@ -16,7 +16,7 @@ const ExpensePageComponent = (props: ExpensePagePropType) => {
         }
 
         if (tabName === tabValueItem.CREATE_EXPENSE) {
-            return <CreateExpense />;
+            return <CreateExpense disabledForm={isCreateExpenseFormDisabled} />;
         }
 
         return <div>Page not found</div>;
