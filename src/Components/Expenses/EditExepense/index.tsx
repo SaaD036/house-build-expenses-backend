@@ -19,9 +19,10 @@ import { EditExpensePropTypes } from './interfaces';
 import { CreateExpenseFormValueType } from '../CreateExpense/interfaces';
 
 import styles from './styles.module.css';
+import { Container } from '@mui/material';
 
 function EditExepense(props: EditExpensePropTypes) {
-    const { expense, onEditSuccess, onEditUnsuccess, editExpense } = props;
+    const { disableForm, expense, onEditSuccess, onEditUnsuccess, editExpense } = props;
 
     const [loading, setLoading] = useState(false);
 
@@ -50,8 +51,18 @@ function EditExepense(props: EditExpensePropTypes) {
             }
         }
     };
+
     return (
-        <div className={styles.editExpenseFormWrapper}>
+        <div
+            className={`${styles.editExpenseFormWrapper} ${
+                disableForm ? styles.editExpenseFormWrapperDisabled : ''
+            }`}
+        >
+            {disableForm && (
+                <Container className="center">
+                    <div className={styles.formDisabledMessage}>This form is disabled</div>
+                </Container>
+            )}
             <Form
                 initialValue={getInitialValueForEditExpenseForm(expense)}
                 validationObject={CREATE_EXPENSE_FORM_VALIDATOR}

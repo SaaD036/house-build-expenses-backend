@@ -60,10 +60,11 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         useState<null | HTMLElement>(null);
     const [editExpenseModal, setEditExpenseModal] = useState(false);
 
+    const user = jwtDecode(loggedInUser || '');
+    const userRole = get(user, 'role', null);
+
     const getActionColumnMenuItems = () => {
         let actionColumnMenuItems: any[] = [];
-        const user = jwtDecode(loggedInUser || '');
-        const userRole = get(user, 'role', null);
 
         if (!userRole) {
             return actionColumnMenuItems;
@@ -184,6 +185,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
                         title="Edit expense"
                     >
                         <EditExepense
+                            disableForm={userRole !== UserRole.ADMIN}
                             expense={selectedExpense}
                             onEditSuccess={onEditModalClose}
                             onEditUnsuccess={() => {
