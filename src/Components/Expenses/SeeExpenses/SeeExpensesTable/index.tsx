@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { jwtDecode } from 'jwt-decode';
 
 import {
     MoreVert as ActionColumnIcon,
@@ -21,6 +20,7 @@ import CustomModal from '../../../Custom/CustomModal';
 import { getAllExpenses, deleteSingleExpense } from '../../../../Redux/actions/expenseAction';
 
 import { createActionColumnMenuItem, getExpenseTableRows } from './utilities';
+import { getUserFromToken } from '../../../../Utilities/Users/UserToken';
 
 import { EXPENSE_TABLE_COLUMNS } from '../constants';
 import { TABLE_ROW_COUNT_OPTIONS } from '../../../Custom/CustomTable/constants';
@@ -37,15 +37,8 @@ import { get } from 'lodash';
 import { UserRole } from '../../../../Constants/Users';
 
 const SeeExpensesTable = (props: SeeExpensesTableProps) => {
-    const {
-        loggedInUser,
-        expenses,
-        expensesCount,
-        showLoader,
-        hideLoader,
-        getAllExpenses,
-        deleteSingleExpense,
-    } = props;
+    const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses, deleteSingleExpense } =
+        props;
 
     const [selectedExpense, setSelectedExpense] = useState<ExpenseType | null>(null);
 
@@ -60,7 +53,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         useState<null | HTMLElement>(null);
     const [editExpenseModal, setEditExpenseModal] = useState(false);
 
-    const user = jwtDecode(loggedInUser || '');
+    const user = getUserFromToken();
     const userRole = get(user, 'role', null);
 
     const getActionColumnMenuItems = () => {
