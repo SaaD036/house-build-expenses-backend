@@ -21,7 +21,7 @@ const FORM_DATA: TotalExpenseFormDataType = {
 };
 
 const TotalExpense = (props: TotalExpensePropsType) => {
-    const { totalExpense, getTotalExpense } = props;
+    const { hideDateFilters, totalExpense, getTotalExpense } = props;
 
     const [formValue, setFormValue] = useState<TotalExpenseFormDataType>(FORM_DATA);
     const [loading, setLoading] = useState(false);
@@ -44,19 +44,21 @@ const TotalExpense = (props: TotalExpensePropsType) => {
     const renderTotalExpenseBody = () => {
         return (
             <div className={styles.totalExpenseBody}>
-                <div style={{ flex: 'auto' }}>
-                    <Form
-                        initialValue={FORM_DATA}
-                        validationObject={DISPLAY_TOTAL_EXPENSE_VALIDATOR}
-                        onFormValueChange={(formValue: TotalExpenseFormDataType) =>
-                            setFormValue(formValue)
-                        }
-                        onSubmit={noop}
-                    >
-                        <FormDate id="formDate" name="formDate" label="From" />
-                        <FormDate id="toDate" name="toDate" label="To" />
-                    </Form>
-                </div>
+                {!hideDateFilters && (
+                    <div style={{ flex: 'auto' }}>
+                        <Form
+                            initialValue={FORM_DATA}
+                            validationObject={DISPLAY_TOTAL_EXPENSE_VALIDATOR}
+                            onFormValueChange={(formValue: TotalExpenseFormDataType) =>
+                                setFormValue(formValue)
+                            }
+                            onSubmit={noop}
+                        >
+                            <FormDate id="formDate" name="formDate" label="From" />
+                            <FormDate id="toDate" name="toDate" label="To" />
+                        </Form>
+                    </div>
+                )}
                 <div className={`center ${styles.totalExpenseText}`}>
                     {loading ? (
                         <Circles height={50} width={50} color="#158901" visible />

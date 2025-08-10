@@ -1,22 +1,22 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { cookieName, getCookie } from '../Utilities/Cookies';
+import { getUserFromToken } from '../Utilities/Users/UserToken';
 
 import { ProtectedRoutePropType } from './interfaces';
 
 const ProtectedRoutes = (props: ProtectedRoutePropType) => {
     const { children, auth, redirectIfNotLoggedIn, redirect } = props;
-    const userToken = getCookie(cookieName.USER_TOKEN);
+    const user = getUserFromToken();
 
     if (auth) {
-        if (!userToken) {
+        if (!user) {
             return <Navigate to={redirectIfNotLoggedIn || '/auth/login'} replace />;
         }
 
         return children;
     } else {
-        if (userToken) {
+        if (user) {
             return <Navigate to={redirect || '/'} replace />;
         }
 
