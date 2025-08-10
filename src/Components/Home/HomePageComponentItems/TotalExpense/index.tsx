@@ -45,7 +45,7 @@ const TotalExpense = (props: TotalExpensePropsType) => {
         return (
             <div className={styles.totalExpenseBody}>
                 {!hideDateFilters && (
-                    <div style={{ flex: 'auto' }}>
+                    <div style={{ flexGrow: '1' }}>
                         <Form
                             initialValue={FORM_DATA}
                             validationObject={DISPLAY_TOTAL_EXPENSE_VALIDATOR}
