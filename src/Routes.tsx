@@ -1,13 +1,15 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
-import ProtectedRoutes from './protectedRoutes';
+import ProtectedRoutes from './ProtectedRoutes';
 
 import Layout from './Layouts';
 import LoginPage from './Pages/Auth/Login';
 import ExpensesPage from './Pages/Expenses';
 import HomePage from './Pages/Home';
 import UsersPage from './Pages/Users';
+
+import { UserRole } from './Constants/Users';
 
 const router = createBrowserRouter([
     {
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
     {
         path: '/users',
         element: (
-            <ProtectedRoutes auth>
+            <ProtectedRoutes auth role={[UserRole.ADMIN, UserRole.VISITOR]}>
                 <Layout>
                     <UsersPage />
                 </Layout>
