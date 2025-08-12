@@ -30,7 +30,7 @@ export const SIDEBAR_ITEMS: SidebarItemsTypes[] = [
     {
         key: 'account',
         label: 'Account',
-        access: 'self',
+        access: 'all',
         Icon: AccountIcon,
     },
     {

@@ -3,13 +3,15 @@ import { NavLink } from 'react-router-dom';
 
 import { Divider } from '@mui/material';
 
-import { SIDEBAR_ITEMS } from './constants';
+import { getSidebarItemsToRender } from '../utilities';
+import { getUserFromToken } from '../../Utilities/Users/UserToken';
 
 import { SidebarPropsTypes, SidebarItemsTypes } from '../interfaces';
 import styles from '../styles.module.css';
 
 const SideBar = (props: SidebarPropsTypes) => {
     const { onCloseSidebarDrawer } = props;
+    const loggedInUser = getUserFromToken();
 
     const getSidebarItemStyle = ({
         isActive,
@@ -29,7 +31,7 @@ const SideBar = (props: SidebarPropsTypes) => {
 
     const renderSidebarItem = (sidebarItem: SidebarItemsTypes, index: number): JSX.Element => {
         const { key, label, Icon } = sidebarItem;
-        const shouldShowDivider = index !== SIDEBAR_ITEMS.length - 1;
+        const shouldShowDivider = index !== getSidebarItemsToRender(loggedInUser).length - 1;
 
         return (
             <>
@@ -57,7 +59,7 @@ const SideBar = (props: SidebarPropsTypes) => {
 
     return (
         <div className={`center ${styles.sidebar}`}>
-            {SIDEBAR_ITEMS.map((sidebarItem, index) => {
+            {getSidebarItemsToRender(loggedInUser).map((sidebarItem, index) => {
                 return renderSidebarItem(sidebarItem, index);
             })}
         </div>

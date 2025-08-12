@@ -14,6 +14,8 @@ export type SidebarPropsTypes = {
 export type SidebarItemsTypes = {
     key: string;
     label: string;
-    access: string;
+    access: SidebarItemAccessType;
     Icon?: OverridableComponent<SvgIconTypeMap<any, 'svg'>> & { muiName: string };
 };
+
+export type SidebarItemAccessType = 'all' | 'admin' | 'self';
