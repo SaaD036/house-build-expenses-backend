@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
+import UsersPageComponent from '../../Components/Users/UsersPageComponent';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 
@@ -26,7 +27,7 @@ const UsersPage = () => {
                     />
                 }
             />
-            This is Users page
+            <UsersPageComponent tabName={activeTab} />
         </div>
     );
 };
