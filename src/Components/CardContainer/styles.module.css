@@ -1,5 +1,4 @@
 .cardContainerWrapper {
-    /* width: calc(100% - 70px); */
     width: 100%;
     padding: 15px 35px;
     background-color: white;
@@ -11,4 +10,10 @@
     font-size: 25px;
     font-weight: 600;
     margin-bottom: 8px;
+}
+
+.switchViewButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
 }
