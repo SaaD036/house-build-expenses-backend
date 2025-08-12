@@ -7,6 +7,7 @@ import Layout from './Layouts';
 import LoginPage from './Pages/Auth/Login';
 import ExpensesPage from './Pages/Expenses';
 import HomePage from './Pages/Home';
+import UsersPage from './Pages/Users';
 
 const router = createBrowserRouter([
     {
@@ -46,7 +47,9 @@ const router = createBrowserRouter([
         path: '/users',
         element: (
             <ProtectedRoutes auth>
-                <Layout>User page</Layout>
+                <Layout>
+                    <UsersPage />
+                </Layout>
             </ProtectedRoutes>
         ),
     },
