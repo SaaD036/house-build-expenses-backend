@@ -1,5 +1,7 @@
 import React from 'react';
 
+import SeeUsers from './SeeUsers';
+
 import { USERS_PAGE_TABS_VALUES } from '../../Pages/Users/constants';
 
 import { UsersPagePropType } from './interfaces';
@@ -9,7 +11,7 @@ const UsersPageComponent = (props: UsersPagePropType) => {
 
     const renderTabComponents = () => {
         if (tabName === USERS_PAGE_TABS_VALUES.SEE_USERS) {
-            return 'See Users';
+            return <SeeUsers />;
         }
 
         if (tabName === USERS_PAGE_TABS_VALUES.CREATE_USER) {
