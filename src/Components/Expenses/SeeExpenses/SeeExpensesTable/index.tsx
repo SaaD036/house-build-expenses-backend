@@ -19,7 +19,8 @@ import CustomModal from '../../../Custom/CustomModal';
 
 import { getAllExpenses, deleteSingleExpense } from '../../../../Redux/actions/expenseAction';
 
-import { createActionColumnMenuItem, getExpenseTableRows } from './utilities';
+import { getExpenseTableRows } from './utilities';
+import { createActionColumnMenuItem } from '../../../Custom/CustomTable/utilities';
 import { getUserFromToken } from '../../../../Utilities/Users/UserToken';
 
 import { EXPENSE_TABLE_COLUMNS } from '../constants';
