@@ -3,9 +3,9 @@ import { get } from 'lodash';
 
 import { cookieName, getCookie } from '../Cookies';
 
-import { UserType } from '../../Types/Users';
+import { LoggedinUserType } from '../../Types/Users';
 
-export const getUserFromToken = (): UserType | null => {
+export const getUserFromToken = (): LoggedinUserType | null => {
     const userToken = getCookie(cookieName.USER_TOKEN);
     const CURRENT_DATE = new Date();
     const CURRENT_TIME_IN_SECOND = CURRENT_DATE.getTime() / 1000;

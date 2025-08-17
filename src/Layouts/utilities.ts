@@ -1,9 +1,9 @@
 import { UserRole } from '../Constants/Users';
 import { SIDEBAR_ITEMS } from './Sidebar/constants';
 
-import { UserType } from '../Types/Users';
+import { LoggedinUserType } from '../Types/Users';
 
-export const getSidebarItemsToRender = (loggedInUser: UserType | null) => {
+export const getSidebarItemsToRender = (loggedInUser: LoggedinUserType | null) => {
     const isLoggedInUserAdmin = [UserRole.ADMIN, UserRole.VISITOR].includes(
         loggedInUser?.role || ''
     );
