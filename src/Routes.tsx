@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
-import ProtectedRoutes from './ProtectedRoutes';
+import ProtectedRoutes from './RoutesProtection';
 
 import Layout from './Layouts';
 import LoginPage from './Pages/Auth/Login';
