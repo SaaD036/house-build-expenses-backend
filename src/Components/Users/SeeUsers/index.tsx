@@ -12,7 +12,7 @@ import { Views } from '../../../Constants/General';
 import { SeeUsersPropsType } from './interfaces';
 
 const SeeUsers = (props: SeeUsersPropsType) => {
-    const { currentView, getAllUsers } = props;
+    const { currentView, users, totalUsers, getAllUsers } = props;
 
     const [isLoadingExpenseData, setIsLoadingExpenseData] = useState(false);
 
@@ -43,6 +43,8 @@ const SeeUsers = (props: SeeUsersPropsType) => {
 
 const mapStateToProps = (state: any) => ({
     currentView: state.general.currentView,
+    users: state.user.users,
+    totalUsers: state.user.totalUsers,
 });
 
 const mapDispatchToProps = {
