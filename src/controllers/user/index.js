@@ -85,7 +85,7 @@ const createUser = async (req, res, next) => {
             firstName,
             lastName,
             password: hashedPassword,
-            role: UserRole.VISITOR,
+            role,
             accountStatus,
         });
 
