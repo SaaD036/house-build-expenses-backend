@@ -38,7 +38,7 @@ module.exports = {
                 type: DataTypes.STRING,
                 defaultValue: UserRole.USER,
                 validate: {
-                    isIn: [UserRole.ADMIN, UserRole.USER, UserRole.VISITOR],
+                    isIn: [[UserRole.ADMIN, UserRole.USER, UserRole.VISITOR]],
                 },
             },
             accountStatus: {
@@ -47,10 +47,12 @@ module.exports = {
                 allowNull: false,
                 validate: {
                     isIn: [
-                        UserAccountStatus.ACTIVE,
-                        UserAccountStatus.DEACTIVE,
-                        UserAccountStatus.DELETED,
-                        UserAccountStatus.WAITING_FOR_USER_APPROVAL,
+                        [
+                            UserAccountStatus.ACTIVE,
+                            UserAccountStatus.DEACTIVE,
+                            UserAccountStatus.DELETED,
+                            UserAccountStatus.WAITING_FOR_USER_APPROVAL,
+                        ],
                     ],
                 },
                 field: 'account_status',
