@@ -14,7 +14,7 @@ const forgotPasswordValidator = [
 const resetPasswordValidator = [
     check('email').isEmail().withMessage('Email is required and should be valid.'),
     check('verificationCode')
-        .custom((value) => (value || '').toString().length === 6)
+        .custom((value) => (value || '').toString().length === 10)
         .withMessage('Invalid code.'),
     check('password')
         .custom((value) => (value || '').length >= 8)

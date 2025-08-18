@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { get } = require('lodash');
 
 const { User } = require('../../models');
 
@@ -83,16 +84,16 @@ const forgotPassword = async (req, res, next) => {
 
         const verificationCode = generateFixDigitInteger(6);
 
-        user.resetPasswordToken = verificationCode.toString();
+        user.resetPasswordToken = `HBE-${verificationCode.toString()}`;
         user.accountEditHistory = {
-            ...JSON.parse(user.accountEditHistory),
+            ...user.accountEditHistory,
             last_reset_pass_request_time: new Date(),
         };
         await user.save();
 
         return res.status(HTTP_STATUS.OK).json({
             message: 'verification code generated',
-            verificationCode,
+            verificationCode: `HBE-${verificationCode.toString()}`,
         });
     } catch (error) {
         next(error.message || error);
@@ -110,21 +111,21 @@ const resetPassword = async (req, res, next) => {
         if (!user || user.accountStatus === UserAccountStatus.DELETED) {
             return res
                 .status(HTTP_STATUS.NOT_FOUND)
-                .json(getErrorResponse('No user found with this email.'));
+                .json(getErrorResponse('No user found with this email'));
         }
 
         if ((user.resetPasswordToken || '').toString() !== verificationCode.toString()) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json(getErrorResponse('Invalid code.'));
+            return res.status(HTTP_STATUS.NOT_FOUND).json(getErrorResponse('Invalid code'));
         }
 
-        const accountEditHistory = JSON.parse(user.accountEditHistory);
+        const accountEditHistory = user.accountEditHistory;
         const codeExpirationTime = accountEditHistory.last_reset_pass_request_time
             ? new Date(accountEditHistory.last_reset_pass_request_time)
             : new Date();
         codeExpirationTime.setHours(codeExpirationTime.getHours() + 3);
 
         if (new Date() > codeExpirationTime) {
-            return res.status(HTTP_STATUS.BAD_REQUEST).json(getErrorResponse('Code expired.'));
+            return res.status(HTTP_STATUS.BAD_REQUEST).json(getErrorResponse('Code expired'));
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -135,7 +136,7 @@ const resetPassword = async (req, res, next) => {
         user.accountEditHistory = {
             ...accountEditHistory,
             history: [
-                ...accountEditHistory.history,
+                ...get(accountEditHistory, 'history', []),
                 { title: 'Password reset', created_at: new Date() },
             ],
             last_reset_pass_request_time: null,
