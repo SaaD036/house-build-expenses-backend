@@ -1,9 +1,12 @@
 const { get } = require('lodash');
 const { literal } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 const { User } = require('../../models');
 
 const { prepareQueryFilterForAllusers } = require('../../queryHelper/users');
+
+const { generateRandomPassword } = require('../../utilities/stringUtilities');
 
 const { HTTP_STATUS } = require('../../constants/http');
 const { UserRole } = require('../../constants/roles');
@@ -72,6 +75,29 @@ const getAllUser = async (req, res, next) => {
     }
 };
 
+const createUser = async (req, res, next) => {
+    try {
+        const { email, firstName, lastName, role, accountStatus } = req.body;
+        const hashedPassword = await bcrypt.hash(generateRandomPassword(), 10);
+
+        await User.create({
+            email,
+            firstName,
+            lastName,
+            password: hashedPassword,
+            role: UserRole.VISITOR,
+            accountStatus,
+        });
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'successfull',
+        });
+    } catch (error) {
+        next(error.message || error);
+    }
+};
+
 module.exports = {
     getAllUser,
+    createUser,
 };
