@@ -1,5 +1,6 @@
 import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
+import { noop } from 'lodash';
 
 import FormObserver from './FormObserver';
 
@@ -16,7 +17,7 @@ const Form = <T,>(props: FormPropsType<T>) => {
             validateOnChange={false}
             validateOnBlur={false}
             onSubmit={(values: object, formikHelpers: FormikHelpers<object>) =>
-                onSubmit(values as T, formikHelpers)
+                onSubmit ? onSubmit(values as T, formikHelpers) : noop()
             }
         >
             {(formik) => (

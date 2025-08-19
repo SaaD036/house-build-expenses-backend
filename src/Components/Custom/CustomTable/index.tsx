@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material';
 
 import CustomPagination from '../CustomPagination';
+import TableFilterGroups from './TableFilterGroups';
 
 import { CustomTablePropsType, CustomTableRowDataType } from './interfaces';
 import styles from './styles.module.css';
@@ -31,7 +32,9 @@ const CustomTable = (props: CustomTablePropsType) => {
         showRefreshButton,
         pagination,
         sort,
-        loadTableData = () => {},
+        loadTableData,
+        filterItems,
+        onChangeFilterData,
     } = props;
 
     const onSortIconClick = (columnKey: string) => {
@@ -79,7 +82,9 @@ const CustomTable = (props: CustomTablePropsType) => {
     };
 
     const loadData = async () => {
-        await loadTableData();
+        if (loadTableData) {
+            await loadTableData();
+        }
     };
 
     const renderRefreshButton = () => {
@@ -89,6 +94,28 @@ const CustomTable = (props: CustomTablePropsType) => {
                     <RefreshIcon className={`icon ${styles.refreshIcon}`} onClick={loadData} />
                 </Tooltip>
             </Stack>
+        );
+    };
+
+    const renderFiltersAndRefreshButton = () => {
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'flex-end',
+                    margin: '5px 1px',
+                }}
+            >
+                <div style={{ flexGrow: '1' }}>
+                    <TableFilterGroups
+                        filterItems={filterItems || []}
+                        loadTableData={loadTableData}
+                        onChangeFilterData={onChangeFilterData}
+                    />
+                </div>
+                {showRefreshButton && renderRefreshButton()}
+            </div>
         );
     };
 
@@ -153,7 +180,7 @@ const CustomTable = (props: CustomTablePropsType) => {
 
     return (
         <div>
-            {showRefreshButton && renderRefreshButton()}
+            {renderFiltersAndRefreshButton()}
             <TableContainer component={Paper} className={styles.tableContainer}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     {renderTableHead()}

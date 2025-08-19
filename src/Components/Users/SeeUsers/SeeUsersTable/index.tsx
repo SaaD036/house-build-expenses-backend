@@ -4,7 +4,6 @@ import {
     MoreVert as ActionColumnIcon,
     Edit as EditIcon,
     Delete as DeleteIcon,
-    AddToPhotos as AddToAlbumIcon,
     WorkHistory as EditHistoryIcon,
     Info as SeeDetailsIcon,
 } from '@mui/icons-material';

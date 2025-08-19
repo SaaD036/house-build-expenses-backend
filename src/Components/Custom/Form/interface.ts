@@ -6,7 +6,7 @@ export type FormPropsType<initialValueTypes> = {
     initialValue: initialValueTypes;
     validationObject: object;
     onFormValueChange?: (formValue: initialValueTypes) => void;
-    onSubmit: (formValue: initialValueTypes, formikHelpers: FormikHelpers<object>) => void;
+    onSubmit?: (formValue: initialValueTypes, formikHelpers: FormikHelpers<object>) => void;
 };
 
 export type FormObserverPropsType<initialValueTypes> = {
