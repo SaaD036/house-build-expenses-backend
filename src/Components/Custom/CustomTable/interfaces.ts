@@ -16,6 +16,14 @@ export type CustomTablePropsType = {
     };
     loadTableData?: (filterAndParams?: CustomTableLoadDataTypes) => Promise<void>;
     showRefreshButton?: boolean;
+    filterItems?: CustomTableFilterItemType[];
+    onChangeFilterData?: (data: CustomTableFilterFormDataType) => void;
+};
+
+export type TableFilterGroupsPropsType = {
+    filterItems: CustomTableFilterItemType[];
+    loadTableData?: (filterAndParams?: CustomTableLoadDataTypes) => Promise<void>;
+    onChangeFilterData?: (data: CustomTableFilterFormDataType) => void;
 };
 
 export type CustomTableColumnDataType = {
@@ -37,8 +45,16 @@ export type CustomTableColumnSortDataType = {
 };
 
 export type CustomTableLoadDataTypes = {
-    page: number;
-    itemsPerPage: number;
+    page?: number;
+    itemsPerPage?: number;
     sort?: CustomTableColumnSortDataType;
-    filters?: any;
+    filters?: CustomTableFilterFormDataType;
 };
+
+export type CustomTableFilterItemType = {
+    key: string;
+    label: string;
+    type: 'string' | 'date' | 'boolean' | 'dropdown';
+};
+
+export type CustomTableFilterFormDataType = Record<CustomTableFilterItemType['key'], any>;

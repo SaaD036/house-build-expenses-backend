@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material';
 
 import CustomPagination from '../CustomPagination';
+import TableFilterGroups from './TableFilterGroups';
 
 import { CustomTablePropsType, CustomTableRowDataType } from './interfaces';
 import styles from './styles.module.css';
@@ -31,7 +32,9 @@ const CustomTable = (props: CustomTablePropsType) => {
         showRefreshButton,
         pagination,
         sort,
-        loadTableData = () => {},
+        loadTableData,
+        filterItems,
+        onChangeFilterData,
     } = props;
 
     const onSortIconClick = (columnKey: string) => {
@@ -79,7 +82,9 @@ const CustomTable = (props: CustomTablePropsType) => {
     };
 
     const loadData = async () => {
-        await loadTableData();
+        if (loadTableData) {
+            await loadTableData();
+        }
     };
 
     const renderRefreshButton = () => {
@@ -153,6 +158,11 @@ const CustomTable = (props: CustomTablePropsType) => {
 
     return (
         <div>
+            <TableFilterGroups
+                filterItems={filterItems || []}
+                loadTableData={loadTableData}
+                onChangeFilterData={onChangeFilterData}
+            />
             {showRefreshButton && renderRefreshButton()}
             <TableContainer component={Paper} className={styles.tableContainer}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
