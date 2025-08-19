@@ -97,6 +97,28 @@ const CustomTable = (props: CustomTablePropsType) => {
         );
     };
 
+    const renderFiltersAndRefreshButton = () => {
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'flex-end',
+                    margin: '5px 1px',
+                }}
+            >
+                <div style={{ flexGrow: '1' }}>
+                    <TableFilterGroups
+                        filterItems={filterItems || []}
+                        loadTableData={loadTableData}
+                        onChangeFilterData={onChangeFilterData}
+                    />
+                </div>
+                {showRefreshButton && renderRefreshButton()}
+            </div>
+        );
+    };
+
     const renderTableHead = () => {
         return (
             <TableHead className="bg-color-green">
@@ -158,12 +180,7 @@ const CustomTable = (props: CustomTablePropsType) => {
 
     return (
         <div>
-            <TableFilterGroups
-                filterItems={filterItems || []}
-                loadTableData={loadTableData}
-                onChangeFilterData={onChangeFilterData}
-            />
-            {showRefreshButton && renderRefreshButton()}
+            {renderFiltersAndRefreshButton()}
             <TableContainer component={Paper} className={styles.tableContainer}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     {renderTableHead()}

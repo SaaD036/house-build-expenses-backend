@@ -43,7 +43,7 @@ const TableFilterGroups = (props: TableFilterGroupsPropsType) => {
                 }
             }}
         >
-            <Grid2 container spacing={4} marginTop={3}>
+            <Grid2 container columnSpacing={4} rowSpacing={1}>
                 {filterItems.map((item) => (
                     <Grid2
                         key={`table-flter-item-${item.key}`}
