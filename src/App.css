@@ -62,6 +62,10 @@ a {
     font-family: 'Times New Roman', Times, serif;
 }
 
+.table-text {
+    color: rgb(68, 73, 81);
+}
+
 .button {
     padding: 6px 12px !important;
     background-color: #158901 !important;
