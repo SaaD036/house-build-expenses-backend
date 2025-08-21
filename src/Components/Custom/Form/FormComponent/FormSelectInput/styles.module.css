@@ -1,0 +1,36 @@
+.formSelectInputContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.formSelectInputContainer div {
+    margin: 2px 0px 2px 2px;
+    font-size: 15px;
+}
+
+.formSelectInput {
+    padding: 5px 8px;
+    height: 35px;
+    outline: none;
+    color: #878787;
+    border-radius: 4px;
+}
+
+.formSelectInputOptions {
+    font-size: 16px;
+    border-radius: 4px !important;
+    margin: 1.5px 4px !important;
+}
+
+.formSelectInputOptions:hover {
+    background-color: #d0f2ca !important;
+}
+
+.inputError {
+    border: 1px solid red;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 13px !important;
+}
