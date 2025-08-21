@@ -159,7 +159,7 @@ const CustomTable = (props: CustomTablePropsType) => {
             if (typeof tableRowCellContent === 'string' && tableRowCellContent.length >= 20) {
                 tableRowCellContent = (
                     <Tooltip title={tableRowCellContent}>
-                        <div>{tableRowCellContent}</div>
+                        <div className="table-text">{tableRowCellContent}</div>
                     </Tooltip>
                 );
             }
@@ -170,7 +170,9 @@ const CustomTable = (props: CustomTablePropsType) => {
                     align="center"
                     className={styles.tableRowCell}
                 >
-                    <div className={styles.tableRowCellContent}>{tableRowCellContent}</div>
+                    <div className={`table-text ${styles.tableRowCellContent}`}>
+                        {tableRowCellContent}
+                    </div>
                 </TableCell>
             );
         });
