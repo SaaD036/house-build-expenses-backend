@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Container } from '@mui/material';
+import { Container, Grid2 } from '@mui/material';
 
 import Form from '../../Custom/Form';
 import FormTextInput from '../../Custom/Form/FormComponent/FormTextInput';
@@ -13,6 +13,7 @@ import {
     CREATE_USER_FORM_INITIAL_VALUE,
     CREATE_USER_FORM_ROLE_DROPDOWN_ITEM,
     CREATE_USER_FORM_VALIDATOR,
+    CREATE_USER_FORM_ACCOUNT_STATUS_DROPDOWN_ITEM,
 } from './constants';
 
 import { CreateUserFormDataType, CreateUserPagePropsType } from './interfaces';
@@ -51,15 +52,34 @@ const CreateUser = (props: CreateUserPagePropsType) => {
                         }
                         onSubmit={() => {}}
                     >
-                        <FormTextInput id="firstName" name="firstName" label="First Name" />
-                        <FormTextInput id="lastName" name="lastName" label="Last Name" />
+                        <Grid2 container spacing={3} marginTop={3}>
+                            <Grid2 size={{ xs: 12, sm: 6 }}>
+                                <FormTextInput id="firstName" name="firstName" label="First Name" />
+                            </Grid2>
+                            <Grid2 size={{ xs: 12, sm: 6 }}>
+                                <FormTextInput id="lastName" name="lastName" label="Last Name" />
+                            </Grid2>
+                        </Grid2>
                         <FormTextInput id="email" name="email" label="Email" />
-                        <FormSelectInput
-                            id="role"
-                            name="role"
-                            label="Role"
-                            options={CREATE_USER_FORM_ROLE_DROPDOWN_ITEM}
-                        />
+                        <Grid2 container spacing={3}>
+                            <Grid2 size={{ xs: 12, sm: 6 }}>
+                                <FormSelectInput
+                                    id="role"
+                                    name="role"
+                                    label="Role"
+                                    options={CREATE_USER_FORM_ROLE_DROPDOWN_ITEM}
+                                />
+                            </Grid2>
+                            <Grid2 size={{ xs: 12, sm: 6 }}>
+                                <FormSelectInput
+                                    id="accountStatus"
+                                    name="accountStatus"
+                                    label="Account Status"
+                                    options={CREATE_USER_FORM_ACCOUNT_STATUS_DROPDOWN_ITEM}
+                                />
+                            </Grid2>
+                        </Grid2>
+
                         <ButtonSection className={styles.buttonSection}>
                             <button className="button" type="submit">
                                 SUBMIT
