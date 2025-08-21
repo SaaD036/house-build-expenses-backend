@@ -2,5 +2,9 @@
     "GET_ALL_USERS": {
         "path": "/user",
         "method": "GET"
+    },
+    "CREATE_USER": {
+        "path": "/user",
+        "method": "POST"
     }
 }
