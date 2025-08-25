@@ -17,6 +17,7 @@ import { UserRole } from '../../Constants/Users';
 
 import { UserAccountEditHistoryType, UserType } from '../../Types/Users';
 import { UserReducerStateType } from '../reducers/reducerDataType';
+import { CreateUserFormDataType } from '../../Components/Users/CreateUser/interfaces';
 type DispatchType = { type: string; payload: Partial<UserReducerStateType> };
 
 export const getAllUsers = (filters: any) => async (dispatch: Dispatch<DispatchType>) => {
@@ -32,9 +33,9 @@ export const getAllUsers = (filters: any) => async (dispatch: Dispatch<DispatchT
         });
 
         if (status === UNAUTHENTICATED) {
-            throw new ValidationError('User does not have access to expenses');
+            throw new ValidationError('User does not have access to users');
         } else if (status === INTERNAL_SERVER_ERROR) {
-            throw new ValidationError('Can not fetch expenses');
+            throw new ValidationError('Can not fetch users');
         }
 
         const users: UserType[] = get(data, 'users', []).map((user: any) => ({
@@ -63,3 +64,32 @@ export const getAllUsers = (filters: any) => async (dispatch: Dispatch<DispatchT
         }
     }
 };
+
+export const createUser =
+    (userData: CreateUserFormDataType) => async (dispatch: Dispatch<DispatchType>) => {
+        try {
+            const { path, method } = userAPIs.CREATE_USER;
+            const { UNAUTHENTICATED, BAD_REQUEST, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+
+            const URLwithVarsANDparams = buildURL(path);
+            const { data, status } = await callAxiosAPI({
+                url: URLwithVarsANDparams,
+                method: method as Method,
+                data: userData,
+            });
+
+            if (status === UNAUTHENTICATED) {
+                throw new ValidationError('User is not allowed to create new user');
+            } else if (status === BAD_REQUEST) {
+                throw new ValidationError(get(data, 'error.message', 'Can not create user'));
+            } else if (status === INTERNAL_SERVER_ERROR) {
+                throw new ValidationError('Can not create user');
+            }
+
+            toast('User created');
+        } catch (error) {
+            if (error instanceof Error) {
+                toast(error.message.toString());
+            }
+        }
+    };

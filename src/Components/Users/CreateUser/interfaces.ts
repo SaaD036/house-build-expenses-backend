@@ -1,6 +1,6 @@
 export type CreateUserPagePropsType = {
     disabledForm?: boolean;
-    // createExpense: (createExpenseFormData: CreateExpenseFormDataType) => Promise<void>;
+    createUser: (createUserFormData: CreateUserFormDataType) => Promise<void>;
 };
 
 export type CreateUserFormDataType = {
