@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { getUserFromToken } from '../Utilities/Users/UserToken';
+import { useQuery } from '../Redux/apiServices/buildURL';
 
 import { ProtectedRoutePropType } from './interfaces';
 
@@ -11,6 +12,7 @@ const ProtectedRoutes = (props: ProtectedRoutePropType) => {
 
     const user = getUserFromToken();
     const locations = useLocation();
+    const query = useQuery();
 
     if (auth) {
         const isRoleAuthenticated = (role || []).includes(user?.role || '');
@@ -26,8 +28,10 @@ const ProtectedRoutes = (props: ProtectedRoutePropType) => {
 
         return children;
     } else {
+        const nextURL = query.get('next') || '/';
+
         if (user) {
-            return <Navigate to={redirect || '/'} replace />;
+            return <Navigate to={redirect || nextURL} replace />;
         }
 
         return children;
