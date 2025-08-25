@@ -1,20 +1,25 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import { getUserFromToken } from '../Utilities/Users/UserToken';
+import { useQuery } from '../Redux/apiServices/buildURL';
 
 import { ProtectedRoutePropType } from './interfaces';
 
 const ProtectedRoutes = (props: ProtectedRoutePropType) => {
     const { children, auth, role, redirectIfNotLoggedIn, redirectIfNotAuthenticated, redirect } =
         props;
+
     const user = getUserFromToken();
+    const locations = useLocation();
+    const query = useQuery();
 
     if (auth) {
         const isRoleAuthenticated = (role || []).includes(user?.role || '');
 
         if (!user) {
-            return <Navigate to={redirectIfNotLoggedIn || '/auth/login'} replace />;
+            const nextURL = `?next=${locations.pathname}${locations.search}`;
+            return <Navigate to={redirectIfNotLoggedIn || `/auth/login${nextURL}`} replace />;
         }
 
         if (role && !isRoleAuthenticated) {
@@ -23,8 +28,10 @@ const ProtectedRoutes = (props: ProtectedRoutePropType) => {
 
         return children;
     } else {
+        const nextURL = query.get('next') || '/';
+
         if (user) {
-            return <Navigate to={redirect || '/'} replace />;
+            return <Navigate to={redirect || nextURL} replace />;
         }
 
         return children;

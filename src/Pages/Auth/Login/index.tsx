@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { Divider } from '@mui/material';
 
@@ -9,6 +10,7 @@ import ButtonSection from '../../../Components/Custom/CustomButton/ButtonSection
 import LinearLoadingItem from '../../../Components/Custom/CustomLoadingItems/LinearLoadingItem';
 
 import { login } from '../../../Redux/actions/authAction';
+import { useQuery } from '../../../Redux/apiServices/buildURL';
 
 import { isEmailValid } from '../../../Utilities/String';
 
@@ -19,6 +21,9 @@ import styles from './styles.module.css';
 
 const Login = (props: LoginPagePropTypes) => {
     const { login } = props;
+
+    const navigate = useNavigate();
+    const query = useQuery();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -39,9 +44,16 @@ const Login = (props: LoginPagePropTypes) => {
     };
 
     const onLoginButtonClick = async () => {
-        setIsLoading(true);
-        await login(email, password);
-        setIsLoading(false);
+        try {
+            setIsLoading(true);
+            await login(email, password);
+            setIsLoading(false);
+
+            const nextURLcontent = query.get('next');
+            navigate(nextURLcontent || '/', { replace: true });
+        } catch (err) {
+            setIsLoading(false);
+        }
     };
 
     const renderWelcomeSection = () => {
