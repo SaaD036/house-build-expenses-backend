@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 import { Dispatch } from 'react';
-import { toast } from 'react-toastify';
 import { Method } from 'axios';
 
 import { callAxiosAPIWithoutUserCredential } from '../apiServices/calAPPI';
@@ -8,6 +7,7 @@ import { buildURL } from '../apiServices/buildURL';
 import authAPIs from '../apiServices/APIs/authAPIs.json';
 
 import { setCookie } from '../../Utilities/Cookies';
+import { initiateToast } from '../../Components/Custom/CustomToast';
 
 import { LOG_IN } from '../types/auth';
 
@@ -47,9 +47,17 @@ export const login =
                 type: LOG_IN,
                 payload: token,
             });
+
+            initiateToast({
+                type: 'success',
+                message: 'Logged in',
+            });
         } catch (error) {
             if (error instanceof Error) {
-                toast(error.message.toString());
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
             }
         }
     };
