@@ -1,11 +1,11 @@
 /* eslint-disable indent */
 import { Dispatch } from 'react';
-import { toast } from 'react-toastify';
 import { Method } from 'axios';
 import { get } from 'lodash';
 
 import { buildURL } from '../apiServices/buildURL';
 import { callAxiosAPI } from '../apiServices/calAPPI';
+import { initiateToast } from '../../Components/Custom/CustomToast';
 
 import ValidationError from '../../ErrorHandlers/ValidationError';
 
@@ -18,6 +18,7 @@ import { UserRole } from '../../Constants/Users';
 import { UserAccountEditHistoryType, UserType } from '../../Types/Users';
 import { UserReducerStateType } from '../reducers/reducerDataType';
 import { CreateUserFormDataType } from '../../Components/Users/CreateUser/interfaces';
+
 type DispatchType = { type: string; payload: Partial<UserReducerStateType> };
 
 export const getAllUsers = (filters: any) => async (dispatch: Dispatch<DispatchType>) => {
@@ -60,7 +61,10 @@ export const getAllUsers = (filters: any) => async (dispatch: Dispatch<DispatchT
         });
     } catch (error) {
         if (error instanceof Error) {
-            toast(error.message.toString());
+            initiateToast({
+                type: 'error',
+                message: error.message.toString(),
+            });
         }
     }
 };
@@ -86,10 +90,13 @@ export const createUser =
                 throw new ValidationError('Can not create user');
             }
 
-            toast('User created');
+            initiateToast({ type: 'success', message: 'User created' });
         } catch (error) {
             if (error instanceof Error) {
-                toast(error.message.toString());
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
             }
         }
     };
