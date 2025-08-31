@@ -4,6 +4,10 @@
     align-items: flex-end;
 }
 
+.nameAndRoleSection {
+    padding: 15px 3px;
+}
+
 .avatarCircle {
     font-size: 22px;
     cursor: pointer;
