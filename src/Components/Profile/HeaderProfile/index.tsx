@@ -13,6 +13,9 @@ import { OverridableComponent } from '@mui/material/OverridableComponent';
 import Avatar from '../../Custom/Avatar';
 import CustomMenu from '../../Custom/CustomMenu';
 
+import { getUserFromToken } from '../../../Utilities/Users/UserToken';
+import { getAvatarContentFromName } from './utilites';
+
 import styles from './styles.module.css';
 
 const HeaderProfile = () => {
@@ -51,10 +54,17 @@ const HeaderProfile = () => {
     };
 
     const renderAvatarContent = () => {
+        const loggedInUser = getUserFromToken();
+        const avatarContent = getAvatarContentFromName(loggedInUser?.name || '');
+
+        if (!loggedInUser) {
+            return;
+        }
+
         return (
             <div className={styles.avatarCircle}>
-                <Tooltip title="SaaD Ibne Jamal">
-                    <b>SIJ</b>
+                <Tooltip title={loggedInUser.name}>
+                    <b>{avatarContent}</b>
                 </Tooltip>
             </div>
         );
