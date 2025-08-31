@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +18,8 @@ import WelcomeTextImage from '../../../Assets/Images/welcome_text.png';
 
 import { LoginPagePropTypes } from './interfaces';
 import styles from './styles.module.css';
+
+const LOGIN_PAGE_TITLE = 'Log in';
 
 const Login = (props: LoginPagePropTypes) => {
     const { login } = props;
@@ -95,6 +97,10 @@ const Login = (props: LoginPagePropTypes) => {
             </div>
         );
     };
+
+    useEffect(() => {
+        document.title = LOGIN_PAGE_TITLE;
+    }, []);
 
     return (
         <>
