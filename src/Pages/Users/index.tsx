@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
@@ -10,11 +10,17 @@ import { USERS_PAGE_TABS, USERS_PAGE_TABS_VALUES } from './constants';
 
 import styles from './styles.module.css';
 
+const USER_PAGE_TITLE = 'Users';
+
 const UsersPage = () => {
     const query = useQuery();
     const tabName = query.get('tab') || USERS_PAGE_TABS_VALUES.SEE_USERS;
 
     const [activeTab, setActiveTab] = useState(tabName);
+
+    useEffect(() => {
+        document.title = USER_PAGE_TITLE;
+    }, []);
 
     return (
         <div className={`pageComponent center ${styles.usersPage}`}>
