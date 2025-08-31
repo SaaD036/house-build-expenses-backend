@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { SvgIconTypeMap, Tooltip } from '@mui/material';
+import { Chip, Container, SvgIconTypeMap, Tooltip } from '@mui/material';
 import {
     ExpandCircleDownOutlined as ArrowDropDownIcon,
     ArrowCircleUpOutlined as ArrowUpIcon,
@@ -39,6 +39,25 @@ const HeaderProfile = () => {
                 onClick: () => {},
             },
         ];
+    };
+
+    const renderMenuHeader = () => {
+        const loggedInUser = getUserFromToken();
+
+        if (!loggedInUser) {
+            return;
+        }
+
+        return (
+            <Container className={styles.nameAndRoleSection}>
+                <h5 className="center">{loggedInUser.name}</h5>
+                <Chip
+                    label={loggedInUser.role}
+                    variant="outlined"
+                    sx={{ color: '#158901', borderColor: '#158901', padding: '-4px -0.5px' }}
+                />
+            </Container>
+        );
     };
 
     const renderProfileMenuLabel = (
@@ -80,6 +99,7 @@ const HeaderProfile = () => {
         <div className={styles.headerProfileContainer}>
             <CustomMenu
                 id="header-profile-menu"
+                header={renderMenuHeader()}
                 items={getProfileMenuItems()}
                 open={Boolean(anchorEl)}
                 anchorEl={anchorEl}
