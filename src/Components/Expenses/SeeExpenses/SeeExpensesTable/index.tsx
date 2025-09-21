@@ -1,27 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
-import {
-    MoreVert as ActionColumnIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    AddToPhotos as AddToAlbumIcon,
-    WorkHistory as EditHistoryIcon,
-    Info as SeeDetailsIcon,
-} from '@mui/icons-material';
-
-import EditExepense from '../../EditExepense';
+import { MoreVert as ActionColumnIcon } from '@mui/icons-material';
 
 import CustomTable from '../../../Custom/CustomTable';
-import CustomMenu from '../../../Custom/CustomMenu';
-import ConfirmationPopover from '../../../Custom/CustomPopover/ConfirmationPopover';
-import CustomModal from '../../../Custom/CustomModal';
+import SeeExpensesTablePopers from './SeeExpensesTablePopers';
 
 import { getAllExpenses, deleteSingleExpense } from '../../../../Redux/actions/expenseAction';
 
 import { getExpenseTableRows } from './utilities';
-import { createActionColumnMenuItem } from '../../../Custom/CustomTable/utilities';
-import { getUserFromToken } from '../../../../Utilities/Users/UserToken';
 
 import { EXPENSE_TABLE_COLUMNS } from '../constants';
 import { TABLE_ROW_COUNT_OPTIONS } from '../../../Custom/CustomTable/constants';
@@ -34,8 +21,6 @@ import {
 import { ExpenseType } from '../../../../Types/expenses';
 
 import styles from '../styles.module.css';
-import { get } from 'lodash';
-import { UserRole } from '../../../../Constants/Users';
 
 const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses, deleteSingleExpense } =
@@ -50,45 +35,6 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     const [actionColumMenuAnchorEl, setActionColumMenuAnchorEl] = useState<null | HTMLElement>(
         null
     );
-    const [deleteExpensePopoverAnchorEl, setDdeleteExpensePopoverAnchorEl] =
-        useState<null | HTMLElement>(null);
-    const [editExpenseModal, setEditExpenseModal] = useState(false);
-
-    const user = getUserFromToken();
-    const userRole = get(user, 'role', null);
-
-    const getActionColumnMenuItems = () => {
-        let actionColumnMenuItems: any[] = [];
-
-        if (!userRole) {
-            return actionColumnMenuItems;
-        }
-
-        actionColumnMenuItems = [
-            createActionColumnMenuItem('add_to_album', 'Add to Album', AddToAlbumIcon, () => {}),
-            createActionColumnMenuItem('see_details', 'See Details', SeeDetailsIcon, () => {}),
-        ];
-
-        if (userRole !== UserRole.USER) {
-            actionColumnMenuItems = [
-                createActionColumnMenuItem('edit', 'Edit', EditIcon, () =>
-                    setEditExpenseModal(true)
-                ),
-                createActionColumnMenuItem(
-                    'see_edit_history',
-                    'See Edit History',
-                    EditHistoryIcon,
-                    () => {}
-                ),
-                createActionColumnMenuItem('delete', 'Delete', DeleteIcon, () =>
-                    setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl)
-                ),
-                ...actionColumnMenuItems,
-            ];
-        }
-
-        return actionColumnMenuItems;
-    };
 
     const getActionColumnItem = (expense: ExpenseType) => {
         return (
@@ -103,15 +49,6 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         );
     };
 
-    const onActionColumnMenuClose = () => {
-        setActionColumMenuAnchorEl(null);
-    };
-
-    const onDeletePopoverClose = () => {
-        setDdeleteExpensePopoverAnchorEl(null);
-        setSelectedExpense(null);
-    };
-
     const onDeleteExpense = async () => {
         if (!selectedExpense) {
             return;
@@ -122,18 +59,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
         await deleteSingleExpense(selectedExpense.id);
         await getAllExpenses({ page: currentPage, itemsPerPage: expensesPerPage });
 
-        onDeletePopoverClose();
         hideLoader();
-    };
-
-    const onEditModalClose = () => {
-        loadExpenseData({
-            page: currentPage,
-            itemsPerPage: expensesPerPage,
-        });
-
-        setEditExpenseModal(false);
-        setSelectedExpense(null);
     };
 
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
@@ -157,38 +83,19 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     return (
         <>
             {selectedExpense && (
-                <>
-                    <CustomMenu
-                        id={`see-expense-table-menu-${selectedExpense.id}`}
-                        items={getActionColumnMenuItems()}
-                        open={Boolean(actionColumMenuAnchorEl)}
-                        anchorEl={actionColumMenuAnchorEl}
-                        onClose={onActionColumnMenuClose}
-                    />
-                    <ConfirmationPopover
-                        id={`see-expense-table-delete-confirm-${selectedExpense.id}`}
-                        isDeletion
-                        confirmationMessage="Are you sure to delete this expense?"
-                        anchorEl={deleteExpensePopoverAnchorEl}
-                        onClose={onDeletePopoverClose}
-                        onYes={onDeleteExpense}
-                    />
-                    <CustomModal
-                        open={editExpenseModal}
-                        onClose={() => setEditExpenseModal(false)}
-                        title="Edit expense"
-                    >
-                        <EditExepense
-                            disableForm={userRole !== UserRole.ADMIN}
-                            expense={selectedExpense}
-                            onEditSuccess={onEditModalClose}
-                            onEditUnsuccess={() => {
-                                setEditExpenseModal(false);
-                                setSelectedExpense(null);
-                            }}
-                        />
-                    </CustomModal>
-                </>
+                <SeeExpensesTablePopers
+                    selectedExpense={selectedExpense}
+                    setSelectedExpense={(expense: ExpenseType | null) =>
+                        setSelectedExpense(expense)
+                    }
+                    actionColumMenuAnchorEl={actionColumMenuAnchorEl}
+                    setActionColumMenuAnchorEl={(el: HTMLElement | null) =>
+                        setActionColumMenuAnchorEl(el)
+                    }
+                    showLoader={showLoader}
+                    onDeleteExpense={onDeleteExpense}
+                    loadExpenseData={loadExpenseData}
+                />
             )}
             <CustomTable
                 columns={EXPENSE_TABLE_COLUMNS}
