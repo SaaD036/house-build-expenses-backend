@@ -1,0 +1,16 @@
+.userProfilePopupContainer {
+    max-width: 280px;
+}
+
+.avatarCircle {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.avatarCircle b {
+    color: #158901;
+}
+
+.userName {
+    margin-left: 10px;
+}

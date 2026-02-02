@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { MoreVert as ActionColumnIcon } from '@mui/icons-material';
+import { Popover } from '@mui/material';
 
 import CustomTable from '../../../Custom/CustomTable';
 import SeeExpensesTablePopers from './SeeExpensesTablePopers';
+import UserProfilePopup from '../../../Users/UserProfilePopup';
 
 import { getAllExpenses, deleteSingleExpense } from '../../../../Redux/actions/expenseAction';
 
@@ -21,6 +23,7 @@ import {
 import { ExpenseType } from '../../../../Types/expenses';
 
 import styles from '../styles.module.css';
+import CustomPopover from '../../../Custom/CustomPopover';
 
 const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses, deleteSingleExpense } =
@@ -35,6 +38,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     const [actionColumMenuAnchorEl, setActionColumMenuAnchorEl] = useState<null | HTMLElement>(
         null
     );
+    const [showUserPopupAnchorEl, setShowUserPopupAnchorEl] = useState<HTMLElement | null>(null);
 
     const getActionColumnItem = (expense: ExpenseType) => {
         return (
@@ -46,6 +50,31 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             >
                 <ActionColumnIcon sx={{ color: '#158901' }} className={styles.actionColumnIcon} />
             </span>
+        );
+    };
+
+    const getUserNameColumnItem = (expense: ExpenseType) => {
+        return (
+            <>
+                <div
+                    id={`expense-table-name-row-${expense.id}`}
+                    onMouseEnter={async (e) => {
+                        setShowUserPopupAnchorEl(e.currentTarget);
+                    }}
+                    onMouseLeave={() => setShowUserPopupAnchorEl(null)}
+                >
+                    <p>
+                        {expense.creator.firstName} {expense.creator.lastName}
+                    </p>
+                </div>
+                <CustomPopover
+                    id="mouse-over-popover"
+                    anchorEl={showUserPopupAnchorEl}
+                    onClose={() => setShowUserPopupAnchorEl(null)}
+                >
+                    <UserProfilePopup id={expense.creator.creatorID} />
+                </CustomPopover>
+            </>
         );
     };
 
@@ -99,7 +128,11 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             )}
             <CustomTable
                 columns={EXPENSE_TABLE_COLUMNS}
-                rowData={getExpenseTableRows(expenses || [], getActionColumnItem)}
+                rowData={getExpenseTableRows(
+                    expenses || [],
+                    getUserNameColumnItem,
+                    getActionColumnItem
+                )}
                 loadTableData={loadExpenseData}
                 showRefreshButton
                 pagination={{

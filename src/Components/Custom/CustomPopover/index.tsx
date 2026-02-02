@@ -21,9 +21,13 @@ const CustomPopover = (props: CustomPopoverProps) => {
         <div>
             <Overlay show={Boolean(anchorEl)} target={anchorEl} rootClose onHide={onClose}>
                 <Popover id={id} className={`${styles.popover}  ${className || ''}`}>
-                    <Popover.Header className={`${styles.popoverHeader} ${headerClassName || ''}`}>
-                        {renderPopoverHeader()}
-                    </Popover.Header>
+                    {title && (
+                        <Popover.Header
+                            className={`${styles.popoverHeader} ${headerClassName || ''}`}
+                        >
+                            {renderPopoverHeader()}
+                        </Popover.Header>
+                    )}
                     <Popover.Body className={bodyClassname}>{children}</Popover.Body>
                 </Popover>
             </Overlay>
