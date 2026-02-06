@@ -14,3 +14,11 @@
 .userName {
     margin-left: 10px;
 }
+
+.userPopupIcon {
+    font-size: 16px;
+}
+
+.userPopUpInfoRow {
+    margin-left: 5px;
+}

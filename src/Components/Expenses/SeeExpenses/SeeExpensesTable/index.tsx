@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { MoreVert as ActionColumnIcon } from '@mui/icons-material';
-import { Popover } from '@mui/material';
 
 import CustomTable from '../../../Custom/CustomTable';
 import SeeExpensesTablePopers from './SeeExpensesTablePopers';
@@ -15,7 +14,7 @@ import { getExpenseTableRows } from './utilities';
 import { EXPENSE_TABLE_COLUMNS } from '../constants';
 import { TABLE_ROW_COUNT_OPTIONS } from '../../../Custom/CustomTable/constants';
 
-import { SeeExpensesTableProps } from './interfaces';
+import { SeeExpensesTableProps, ShowUserProfilePopupType } from './interfaces';
 import {
     CustomTableColumnSortDataType,
     CustomTableLoadDataTypes,
@@ -38,7 +37,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     const [actionColumMenuAnchorEl, setActionColumMenuAnchorEl] = useState<null | HTMLElement>(
         null
     );
-    const [showUserPopupAnchorEl, setShowUserPopupAnchorEl] = useState<HTMLElement | null>(null);
+    const [showUserPopup, setShowUserPopup] = useState<ShowUserProfilePopupType | null>(null);
 
     const getActionColumnItem = (expense: ExpenseType) => {
         return (
@@ -58,22 +57,18 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             <>
                 <div
                     id={`expense-table-name-row-${expense.id}`}
-                    onMouseEnter={async (e) => {
-                        setShowUserPopupAnchorEl(e.currentTarget);
+                    onMouseEnter={(e) => {
+                        setShowUserPopup({
+                            showUserProfileAnchorEl: e.currentTarget,
+                            userId: expense.creator.creatorID,
+                        });
                     }}
-                    onMouseLeave={() => setShowUserPopupAnchorEl(null)}
+                    onMouseLeave={() => setShowUserPopup(null)}
                 >
                     <p>
                         {expense.creator.firstName} {expense.creator.lastName}
                     </p>
                 </div>
-                <CustomPopover
-                    id="mouse-over-popover"
-                    anchorEl={showUserPopupAnchorEl}
-                    onClose={() => setShowUserPopupAnchorEl(null)}
-                >
-                    <UserProfilePopup id={expense.creator.creatorID} />
-                </CustomPopover>
             </>
         );
     };
@@ -111,6 +106,15 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
 
     return (
         <>
+            {showUserPopup && (
+                <CustomPopover
+                    id="expense-table-show-user-popover"
+                    anchorEl={showUserPopup.showUserProfileAnchorEl}
+                    onClose={() => setShowUserPopup(null)}
+                >
+                    <UserProfilePopup id={showUserPopup.userId} />
+                </CustomPopover>
+            )}
             {selectedExpense && (
                 <SeeExpensesTablePopers
                     selectedExpense={selectedExpense}

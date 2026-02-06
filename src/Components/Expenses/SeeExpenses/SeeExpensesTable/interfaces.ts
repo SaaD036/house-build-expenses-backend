@@ -20,3 +20,8 @@ export type SeeExpensesTablePopersProps = {
     onDeleteExpense: () => Promise<void>;
     loadExpenseData: () => Promise<void>;
 };
+
+export type ShowUserProfilePopupType = {
+    showUserProfileAnchorEl: HTMLElement;
+    userId: number;
+};
