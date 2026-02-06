@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { Divider } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 
 import CustomInput from '../../../Components/Custom/CustomInput';
 import CustomButton from '../../../Components/Custom/CustomButton';
@@ -111,6 +111,11 @@ const Login = (props: LoginPagePropTypes) => {
                     {renderWelcomeSection()}
                     <Divider orientation="vertical" className={styles.divider} />
                     {renderLoginInputs()}
+                </div>
+                <div className={`${styles.forgotPassword} center`}>
+                    <a href="/auth/forget-password" className="text">
+                        Forgot Password
+                    </a>
                 </div>
                 {renderFooterSection()}
             </div>

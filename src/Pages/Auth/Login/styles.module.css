@@ -36,9 +36,28 @@
     gap: 10px;
 }
 
+.forgotPassword {
+    height: 30px;
+    padding: 0px 20px;
+}
+
+.forgotPassword:hover {
+    background-color: #158901;
+    border-radius: 15px;
+}
+
+.forgotPassword a {
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.forgotPassword a:hover {
+    color: white;
+}
+
 .footer {
     width: 100%;
-    height: calc(50vh - 200px);
+    height: calc(50vh - 230px);
     align-items: flex-end !important;
 }
 
