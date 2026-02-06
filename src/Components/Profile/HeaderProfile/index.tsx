@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { SvgIconTypeMap, Tooltip } from '@mui/material';
+import { Chip, Container, SvgIconTypeMap, Tooltip } from '@mui/material';
 import {
     ExpandCircleDownOutlined as ArrowDropDownIcon,
     ArrowCircleUpOutlined as ArrowUpIcon,
@@ -12,6 +12,9 @@ import { OverridableComponent } from '@mui/material/OverridableComponent';
 
 import Avatar from '../../Custom/Avatar';
 import CustomMenu from '../../Custom/CustomMenu';
+
+import { getUserFromToken } from '../../../Utilities/Users/UserToken';
+import { getAvatarContentFromName } from './utilites';
 
 import styles from './styles.module.css';
 
@@ -38,6 +41,25 @@ const HeaderProfile = () => {
         ];
     };
 
+    const renderMenuHeader = () => {
+        const loggedInUser = getUserFromToken();
+
+        if (!loggedInUser) {
+            return;
+        }
+
+        return (
+            <Container className={styles.nameAndRoleSection}>
+                <h5 className="center">{loggedInUser.name}</h5>
+                <Chip
+                    label={loggedInUser.role}
+                    variant="outlined"
+                    sx={{ color: '#158901', borderColor: '#158901', padding: '-4px -0.5px' }}
+                />
+            </Container>
+        );
+    };
+
     const renderProfileMenuLabel = (
         Icon: OverridableComponent<SvgIconTypeMap<any, 'svg'>> & { muiName: string },
         label: string
@@ -51,10 +73,17 @@ const HeaderProfile = () => {
     };
 
     const renderAvatarContent = () => {
+        const loggedInUser = getUserFromToken();
+        const avatarContent = getAvatarContentFromName(loggedInUser?.name || '');
+
+        if (!loggedInUser) {
+            return;
+        }
+
         return (
             <div className={styles.avatarCircle}>
-                <Tooltip title="SaaD Ibne Jamal">
-                    <b>SIJ</b>
+                <Tooltip title={loggedInUser.name}>
+                    <b>{avatarContent}</b>
                 </Tooltip>
             </div>
         );
@@ -70,6 +99,7 @@ const HeaderProfile = () => {
         <div className={styles.headerProfileContainer}>
             <CustomMenu
                 id="header-profile-menu"
+                header={renderMenuHeader()}
                 items={getProfileMenuItems()}
                 open={Boolean(anchorEl)}
                 anchorEl={anchorEl}

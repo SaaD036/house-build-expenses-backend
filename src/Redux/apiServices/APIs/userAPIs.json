@@ -6,5 +6,9 @@
     "CREATE_USER": {
         "path": "/user",
         "method": "POST"
+    },
+    "GET_SINGLE_USER": {
+        "path": "/user/{userId}",
+        "method": "GET"
     }
 }

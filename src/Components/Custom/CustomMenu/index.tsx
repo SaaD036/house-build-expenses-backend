@@ -8,7 +8,7 @@ import { CustomMenuProps, CutomMenuItemsType } from './interfaces';
 import styles from './styles.module.css';
 
 const CustomMenu = (props: CustomMenuProps) => {
-    const { id, items, open, anchorEl, onClose } = props;
+    const { id, header, items, open, anchorEl, onClose } = props;
 
     const onMenuItemClick = (menuItem: CutomMenuItemsType) => {
         const { onClick } = menuItem;
@@ -53,6 +53,7 @@ const CustomMenu = (props: CustomMenuProps) => {
                 },
             }}
         >
+            {header}
             {items.map((menuItem) => (
                 <MenuItem
                     key={menuItem.key}

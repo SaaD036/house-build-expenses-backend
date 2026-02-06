@@ -1,12 +1,13 @@
 /* eslint-disable indent */
 import { Dispatch } from 'react';
-import { toast } from 'react-toastify';
 import { Method } from 'axios';
 import { get, isArray } from 'lodash';
 
 import { callAxiosAPI } from '../apiServices/calAPPI';
 import { buildURL } from '../apiServices/buildURL';
 import expenseAPIs from '../apiServices/APIs/expenseAPIs.json';
+
+import { initiateToast } from '../../Components/Custom/CustomToast';
 
 import { GET_ALL_EXPENSES, GET_TOTAL_EXPENSE } from '../types/expenses';
 
@@ -52,7 +53,7 @@ export const getAllExpenses =
                 expenseAt: expense.expenseAt,
                 lastUpdatedAt: expense.updatedAt,
                 creator: {
-                    creatorID: expense.createdBy,
+                    creatorID: expense.creator.id,
                     firstName: expense.creator.firstName,
                     lastName: expense.creator.lastName,
                 },
@@ -69,7 +70,10 @@ export const getAllExpenses =
             });
         } catch (error) {
             if (error instanceof Error) {
-                toast(error.message.toString());
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
             }
         }
     };
@@ -103,10 +107,16 @@ export const createExpense =
                 throw new ValidationError('Can not add expenses');
             }
 
-            toast('Expense added successfully');
+            initiateToast({
+                type: 'success',
+                message: 'Expense added successfully',
+            });
         } catch (error) {
             if (error instanceof Error) {
-                toast(error.message.toString());
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
             }
         }
     };
@@ -141,10 +151,16 @@ export const deleteSingleExpense = (id: number) => async (dispatch: Dispatch<Dis
             throw new ValidationError('Can not delete expense.');
         }
 
-        toast('Expense deleted successfully');
+        initiateToast({
+            type: 'success',
+            message: 'Expense deleted successfully',
+        });
     } catch (error) {
         if (error instanceof Error) {
-            toast(error.message.toString());
+            initiateToast({
+                type: 'error',
+                message: error.message.toString(),
+            });
         }
     }
 };
@@ -182,10 +198,13 @@ export const editExpense =
                 throw new ValidationError('Can not edit expense.');
             }
 
-            toast('Expense edited successfully');
+            initiateToast({ type: 'success', message: 'Expense edited successfully' });
         } catch (error) {
             if (error instanceof Error) {
-                toast(error.message.toString());
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
             }
         }
     };
@@ -222,7 +241,10 @@ export const getTotalExpense =
             });
         } catch (error) {
             if (error instanceof Error) {
-                toast(error.message.toString());
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
             }
         }
     };

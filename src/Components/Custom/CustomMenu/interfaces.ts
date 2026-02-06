@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 import { SvgIconTypeMap } from '@mui/material';
@@ -12,6 +12,7 @@ export type CutomMenuItemsType = {
 
 export type CustomMenuProps = {
     id: string;
+    header?: ReactNode;
     items: CutomMenuItemsType[];
     open: boolean;
     anchorEl: null | HTMLElement;

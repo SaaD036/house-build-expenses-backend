@@ -21,3 +21,8 @@
     min-width: 200px;
     margin: 15px 0px;
 }
+
+.loaderShimmer {
+    min-width: 200px;
+    color: #158901;
+}

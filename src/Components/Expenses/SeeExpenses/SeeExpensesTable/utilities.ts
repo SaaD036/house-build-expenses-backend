@@ -2,6 +2,7 @@ import { ExpenseType } from '../../../../Types/expenses';
 
 export const getExpenseTableRows = (
     expenses: ExpenseType[],
+    getUserNameColumnItem: (expense: ExpenseType) => JSX.Element,
     getActionColumnItem: (expense: ExpenseType) => JSX.Element
 ) => {
     const expenseTableRows = expenses.map((expense) => ({
@@ -18,7 +19,7 @@ export const getExpenseTableRows = (
             value: expense.expenseAt,
         },
         creator: {
-            value: `${expense.creator.firstName} ${expense.creator.lastName}`,
+            value: getUserNameColumnItem(expense),
         },
         action: {
             value: getActionColumnItem(expense),

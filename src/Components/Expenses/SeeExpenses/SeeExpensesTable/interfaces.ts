@@ -10,3 +10,18 @@ export type SeeExpensesTableProps = {
     showLoader: () => void;
     hideLoader: () => void;
 };
+
+export type SeeExpensesTablePopersProps = {
+    selectedExpense: ExpenseType;
+    setSelectedExpense: (expense: ExpenseType | null) => void;
+    actionColumMenuAnchorEl: HTMLElement | null;
+    setActionColumMenuAnchorEl: (el: HTMLElement | null) => void;
+    showLoader: () => void;
+    onDeleteExpense: () => Promise<void>;
+    loadExpenseData: () => Promise<void>;
+};
+
+export type ShowUserProfilePopupType = {
+    showUserProfileAnchorEl: HTMLElement;
+    userId: number;
+};

@@ -1,6 +1,6 @@
 export type CustomPopoverProps = {
     id: string;
-    title: string | React.ReactNode;
+    title?: string | React.ReactNode;
     children: string | React.ReactNode;
     anchorEl: null | HTMLElement;
     onClose: () => void;

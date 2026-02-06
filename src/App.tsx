@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
-import { ToastContainer, Bounce } from 'react-toastify';
 import { connect } from 'react-redux';
+
+import CustomToast from './Components/Custom/CustomToast';
 
 import router from './Routes';
 
@@ -35,13 +36,7 @@ function App(props: any) {
 
     return (
         <div className="App">
-            <ToastContainer
-                position="bottom-left"
-                autoClose={5000}
-                pauseOnFocusLoss
-                pauseOnHover
-                transition={Bounce}
-            />
+            <CustomToast />
             <RouterProvider router={router} />
         </div>
     );

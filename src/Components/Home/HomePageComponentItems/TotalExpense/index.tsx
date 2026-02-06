@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { noop } from 'lodash';
-import { Circles } from 'react-loader-spinner';
+import { ShimmerTitle } from 'shimmer-effects-react';
 
 import CardContainer from '../../../CardContainer';
 
@@ -60,13 +60,20 @@ const TotalExpense = (props: TotalExpensePropsType) => {
                     </div>
                 )}
                 <div className={`center ${styles.totalExpenseText}`}>
-                    {loading ? (
-                        <Circles height={50} width={50} color="#158901" visible />
-                    ) : (
+                    <ShimmerTitle
+                        mode="custom"
+                        line={2}
+                        gap={5}
+                        className={styles.loaderShimmer}
+                        from="#158901"
+                        via="#9ef48fff"
+                        to="#158901"
+                        loading={loading}
+                    >
                         <h2>
                             <b className="text">{totalExpense ? `${totalExpense} BDT` : 'N/A'}</b>
                         </h2>
-                    )}
+                    </ShimmerTitle>
                 </div>
             </div>
         );

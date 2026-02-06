@@ -14,6 +14,8 @@ import { tabValueItem } from './constants';
 import styles from './styles.module.css';
 import { UserRole } from '../../Constants/Users';
 
+const EXPENSE_PAGE_TITLE = 'Expenses';
+
 const ExpensesPage = () => {
     const query = useQuery();
     const tabName = query.get('tab') || tabValueItem.SEE_EXPENSES;
@@ -28,6 +30,8 @@ const ExpensesPage = () => {
         if (isLoggedInUserAsUser && activeTab === tabValueItem.CREATE_EXPENSE) {
             setActiveTab(tabValueItem.SEE_EXPENSES);
         }
+
+        document.title = EXPENSE_PAGE_TITLE;
     }, []);
 
     return (
