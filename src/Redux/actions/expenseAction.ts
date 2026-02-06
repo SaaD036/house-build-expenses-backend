@@ -53,7 +53,7 @@ export const getAllExpenses =
                 expenseAt: expense.expenseAt,
                 lastUpdatedAt: expense.updatedAt,
                 creator: {
-                    creatorID: expense.createdBy,
+                    creatorID: expense.creator.id,
                     firstName: expense.creator.firstName,
                     lastName: expense.creator.lastName,
                 },

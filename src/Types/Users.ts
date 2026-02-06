@@ -5,6 +5,13 @@ export type LoggedinUserType = {
     role: 'admin' | 'user' | 'visitor';
 };
 
+export type UserExpenseType = {
+    id: number;
+    amount: number;
+    title: string;
+    description: string;
+};
+
 export type UserType = {
     id: string;
     email: string;
@@ -13,6 +20,7 @@ export type UserType = {
     role: 'admin' | 'user' | 'visitor';
     accountStatus: string;
     accountEditHistory?: UserAccountEditHistoryType;
+    expenses?: UserExpenseType[];
     totalExpenseCount?: number;
 };
 
