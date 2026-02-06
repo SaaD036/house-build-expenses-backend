@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Divider } from '@mui/material';
+import { Divider } from '@mui/material';
 
 import CustomInput from '../../../Components/Custom/CustomInput';
 import CustomButton from '../../../Components/Custom/CustomButton';
