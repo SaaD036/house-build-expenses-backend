@@ -97,7 +97,51 @@ const createUser = async (req, res, next) => {
     }
 };
 
+const getSingleUser = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const loggedInUserRole = get(req, 'user.role', UserRole.USER);
+
+        const user = await User.findOne({
+            where: { id: userId },
+            include: {
+                association: 'expenses',
+                attributes: ['id', 'amount', 'title', 'description'],
+            },
+            attributes: [
+                'id',
+                'firstName',
+                'lastName',
+                'email',
+                'role',
+                'accountStatus',
+                'accountEditHistory',
+                [
+                    literal(`(
+                        SELECT COUNT("expenses"."id") FROM "expenses"
+                        WHERE "expenses"."created_by" = "User"."id"
+                    )`),
+                    'totalExpenseCount',
+                ],
+            ],
+        });
+
+        if (!user) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: 'user not found',
+            });
+        }
+
+        return res.status(HTTP_STATUS.OK).json({
+            user,
+        });
+    } catch (error) {
+        next(error.message || error);
+    }
+};
+
 module.exports = {
     getAllUser,
     createUser,
+    getSingleUser,
 };
