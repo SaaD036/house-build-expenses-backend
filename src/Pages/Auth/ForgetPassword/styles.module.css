@@ -36,6 +36,17 @@
     gap: 10px;
 }
 
+.forgotPasswordInput {
+    width: 350px;
+    display: grid;
+    gap: 10px;
+}
+
+.errorMessage {
+    font-size: 13px;
+    margin-left: 10px;
+}
+
 .login {
     height: 30px;
     padding: 0px 20px;

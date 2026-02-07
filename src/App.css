@@ -73,6 +73,10 @@ a {
     font-family: 'Times New Roman', Times, serif;
 }
 
+.text-error {
+    color: #e00b0b;
+}
+
 .table-text {
     color: rgb(68, 73, 81);
 }
