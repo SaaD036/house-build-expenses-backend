@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 
 import { Divider } from '@mui/material';
 
+import ResetPassword from './ResetPassword';
+import CustomInput from '../../../Components/Custom/CustomInput';
+import CustomButton from '../../../Components/Custom/CustomButton';
+import ButtonSection from '../../../Components/Custom/CustomButton/ButtonSection';
 import LinearLoadingItem from '../../../Components/Custom/CustomLoadingItems/LinearLoadingItem';
+
+import { isEmailValid } from '../../../Utilities/String';
 
 import WelcomeTextImage from '../../../Assets/Images/welcome_text.png';
 import styles from './styles.module.css';
-import CustomInput from '../../../Components/Custom/CustomInput';
-import ButtonSection from '../../../Components/Custom/CustomButton/ButtonSection';
-import CustomButton from '../../../Components/Custom/CustomButton';
-import { isEmailValid } from '../../../Utilities/String';
 
 const FORGER_PASSWORD_PAGE_TITLE = 'Forget Password';
 
@@ -19,21 +21,6 @@ const ForgetPasswordPage = () => {
     const [lastEmailSent, setLastEmailSent] = useState('');
 
     const [email, setEmail] = useState('');
-    const [resetCode, setResetCode] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-
-    const isSubmitButtonDisabled = () => {
-        if (!resetCode || !newPassword || !confirmPassword) {
-            return true;
-        }
-
-        if (newPassword !== confirmPassword) {
-            return true;
-        }
-
-        return false;
-    };
 
     const onEmailChange = (email: string) => {
         setEmail(email.replace(' ', '').toLowerCase());
@@ -50,13 +37,6 @@ const ForgetPasswordPage = () => {
             setIsEmailSent(false);
             setIsLoading(false);
         }
-    };
-
-    const onBackButtonClick = () => {
-        setIsEmailSent(false);
-        setResetCode('');
-        setNewPassword('');
-        setConfirmPassword('');
     };
 
     const renderWelcomeSection = () => {
@@ -104,42 +84,14 @@ const ForgetPasswordPage = () => {
         );
     };
 
-    const renderCodeInput = () => {
-        return (
-            <div className={styles.forgotPasswordInput}>
-                <CustomInput
-                    label="Code"
-                    type="number"
-                    value={resetCode}
-                    onChange={(e: string) => setResetCode(e)}
-                />
-                <CustomInput
-                    label="New Password"
-                    value={newPassword}
-                    onChange={(e: string) => setNewPassword(e)}
-                />
-                <CustomInput
-                    label="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(e: string) => setConfirmPassword(e)}
-                />
-                <ButtonSection>
-                    <CustomButton onClick={onBackButtonClick} disabled={false}>
-                        Back
-                    </CustomButton>
-                    <div style={{ width: '5px' }}></div>
-                    <CustomButton onClick={() => {}} disabled={isSubmitButtonDisabled()}>
-                        Submit
-                    </CustomButton>
-                </ButtonSection>
-            </div>
-        );
-    };
-
     const renderInputsSection = () => {
         return (
             <div className={styles.forgotPassInputSection}>
-                {isEmailSent ? renderCodeInput() : renderEmailInput()}
+                {isEmailSent ? (
+                    <ResetPassword makeSentEmailFlagFalse={() => setIsEmailSent(false)} />
+                ) : (
+                    renderEmailInput()
+                )}
             </div>
         );
     };
