@@ -1,4 +1,4 @@
-.loginPage {
+.forgotPasswordPage {
     min-height: 100vh;
     min-width: 100vw;
     flex-direction: column;
@@ -9,9 +9,9 @@
     height: calc(50vh - 200px);
 }
 
-.loginSectionContainer {
-    width: 100%;
+.forgotPasswordSectionContainer {
     height: 400px;
+    width: 100%;
 }
 
 .welcomeSection {
@@ -30,28 +30,39 @@
     margin: 0px 20px !important;
 }
 
-.loginInputSection {
+.forgotPassInputSection {
     width: 350px;
     display: grid;
     gap: 10px;
 }
 
-.forgotPassword {
+.forgotPasswordInput {
+    width: 350px;
+    display: grid;
+    gap: 10px;
+}
+
+.errorMessage {
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.login {
     height: 30px;
     padding: 0px 20px;
 }
 
-.forgotPassword:hover {
+.login:hover {
     background-color: #158901;
     border-radius: 15px;
 }
 
-.forgotPassword a {
+.login a {
     text-decoration: none;
     font-size: 17px;
 }
 
-.forgotPassword a:hover {
+.login a:hover {
     color: white;
 }
 
@@ -72,7 +83,7 @@
 }
 
 @media only screen and (max-width: 768px) {
-    .loginSectionContainer {
+    .forgotPasswordSectionContainer {
         flex-direction: column;
     }
 
@@ -80,7 +91,7 @@
         display: none;
     }
 
-    .loginInputSection {
+    .forgotPassInputSection {
         min-width: 340px;
         width: 90%;
     }

@@ -112,6 +112,11 @@ const Login = (props: LoginPagePropTypes) => {
                     <Divider orientation="vertical" className={styles.divider} />
                     {renderLoginInputs()}
                 </div>
+                <div className={`${styles.forgotPassword} center`}>
+                    <a href="/auth/forget-password" className="text">
+                        Forgot Password
+                    </a>
+                </div>
                 {renderFooterSection()}
             </div>
         </>
