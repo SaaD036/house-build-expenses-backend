@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 
 import { Divider } from '@mui/material';
 
@@ -8,14 +9,20 @@ import CustomButton from '../../../Components/Custom/CustomButton';
 import ButtonSection from '../../../Components/Custom/CustomButton/ButtonSection';
 import LinearLoadingItem from '../../../Components/Custom/CustomLoadingItems/LinearLoadingItem';
 
+import { forgetPassword } from '../../../Redux/actions/authAction';
+
 import { isEmailValid } from '../../../Utilities/String';
+
+import { ForgetPasswordPagePropsType } from './interfaces';
 
 import WelcomeTextImage from '../../../Assets/Images/welcome_text.png';
 import styles from './styles.module.css';
 
 const FORGER_PASSWORD_PAGE_TITLE = 'Forget Password';
 
-const ForgetPasswordPage = () => {
+const ForgetPasswordPage = (props: ForgetPasswordPagePropsType) => {
+    const { forgetPassword } = props;
+
     const [isLoading, setIsLoading] = useState(false);
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [lastEmailSent, setLastEmailSent] = useState('');
@@ -30,10 +37,16 @@ const ForgetPasswordPage = () => {
         setIsLoading(true);
 
         try {
+            const responseForgetPass = await forgetPassword(email);
+
+            if (responseForgetPass === 'fail') {
+                throw new Error();
+            }
+
             setLastEmailSent(email);
             setIsEmailSent(true);
             setIsLoading(false);
-        } catch (err) {
+        } catch (error) {
             setIsEmailSent(false);
             setIsLoading(false);
         }
@@ -88,7 +101,10 @@ const ForgetPasswordPage = () => {
         return (
             <div className={styles.forgotPassInputSection}>
                 {isEmailSent ? (
-                    <ResetPassword makeSentEmailFlagFalse={() => setIsEmailSent(false)} />
+                    <ResetPassword
+                        email={email}
+                        makeSentEmailFlagFalse={() => setIsEmailSent(false)}
+                    />
                 ) : (
                     renderEmailInput()
                 )}
@@ -134,4 +150,8 @@ const ForgetPasswordPage = () => {
     );
 };
 
-export default ForgetPasswordPage;
+const mapDispatchToProps = {
+    forgetPassword,
+};
+
+export default connect(null, mapDispatchToProps)(ForgetPasswordPage);

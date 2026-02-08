@@ -38,7 +38,7 @@ const getToastMessageWithIcon = (params: InitiateToastType, dismissToast: () => 
         <div className={`center-v ${styles.customToastMessageBody}`}>
             <div className="center-v">
                 <Icon sx={{ fontSize: '20px', marginRight: '5px', marginLeft: '6px', color }} />
-                {message}
+                <div style={{ fontSize: '14px' }}>{message}</div>
             </div>
             <CancelIcon
                 sx={{ fontSize: '20px' }}
