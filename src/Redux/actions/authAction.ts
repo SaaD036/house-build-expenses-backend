@@ -69,3 +69,42 @@ export const setLoggedinUserToken =
             payload: token,
         });
     };
+
+export const forgetPassword =
+    (email: string) =>
+    async (dispatch: Dispatch<{ type: string; payload: any }>): Promise<'success' | 'fail'> => {
+        try {
+            const { path, method } = authAPIs.FORGOT_PASSWORD;
+            const { status } = await callAxiosAPIWithoutUserCredential({
+                url: buildURL(path),
+                method: method as Method,
+                data: {
+                    email,
+                },
+            });
+
+            if (status === HTTP_STATUS_CODE.NOT_FOUND) {
+                throw new ValidationError('No user found with this email');
+            } else if (status === HTTP_STATUS_CODE.BAD_REQUEST) {
+                throw new ValidationError('Bad request');
+            } else if (status === HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR) {
+                throw new ValidationError('Can not send reset password code');
+            }
+
+            initiateToast({
+                type: 'success',
+                message: 'Reset password code sent to email',
+            });
+
+            return 'success';
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
+
+            return 'fail';
+        }
+    };
