@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import CustomInput from '../../../Components/Custom/CustomInput';
 import ButtonSection from '../../../Components/Custom/CustomButton/ButtonSection';
@@ -7,12 +8,15 @@ import CustomButton from '../../../Components/Custom/CustomButton';
 
 import { resetPassword } from '../../../Redux/actions/authAction';
 
+import { CUSTOM_INPUT_BOX_TYPES } from '../../../Constants/CustomInputs';
 import { ResetPasswordPagePropsType } from './interfaces';
 
 import styles from './styles.module.css';
 
 const ResetPassword = (props: ResetPasswordPagePropsType) => {
     const { email, makeSentEmailFlagFalse, resetPassword } = props;
+
+    const navigate = useNavigate();
 
     const [resetCode, setResetCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -48,6 +52,8 @@ const ResetPassword = (props: ResetPasswordPagePropsType) => {
             if (resetPasswordResponse === 'fail') {
                 throw new Error();
             }
+
+            return navigate('/auth/login');
         } catch (error) {
             //
         }
@@ -57,26 +63,24 @@ const ResetPassword = (props: ResetPasswordPagePropsType) => {
         <div className={styles.forgotPasswordInput}>
             <CustomInput
                 label="Code"
-                type="number"
+                type={CUSTOM_INPUT_BOX_TYPES.NUMBER}
                 value={resetCode}
                 onChange={(e: string) => setResetCode(e)}
             />
             <CustomInput
                 label="New Password"
                 value={newPassword}
-                type="password"
+                type={CUSTOM_INPUT_BOX_TYPES.PASSWORD}
                 onChange={(e: string) => setNewPassword(e)}
             />
             <CustomInput
                 label="Confirm Password"
                 value={confirmPassword}
-                type="password"
+                type={CUSTOM_INPUT_BOX_TYPES.PASSWORD}
                 onChange={(e: string) => setConfirmPassword(e)}
             />
             <ButtonSection>
-                <CustomButton onClick={onBackButtonClick} disabled={false}>
-                    Back
-                </CustomButton>
+                <CustomButton onClick={onBackButtonClick}>Back</CustomButton>
                 <div style={{ width: '5px' }}></div>
                 <CustomButton onClick={onResetButtonClick} disabled={isSubmitButtonDisabled()}>
                     Reset
