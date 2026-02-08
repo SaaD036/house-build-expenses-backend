@@ -101,7 +101,10 @@ const ForgetPasswordPage = (props: ForgetPasswordPagePropsType) => {
         return (
             <div className={styles.forgotPassInputSection}>
                 {isEmailSent ? (
-                    <ResetPassword makeSentEmailFlagFalse={() => setIsEmailSent(false)} />
+                    <ResetPassword
+                        email={email}
+                        makeSentEmailFlagFalse={() => setIsEmailSent(false)}
+                    />
                 ) : (
                     renderEmailInput()
                 )}

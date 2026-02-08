@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 
 import CustomInput from '../../../Components/Custom/CustomInput';
 import ButtonSection from '../../../Components/Custom/CustomButton/ButtonSection';
 import CustomButton from '../../../Components/Custom/CustomButton';
+
+import { resetPassword } from '../../../Redux/actions/authAction';
 
 import { ResetPasswordPagePropsType } from './interfaces';
 
 import styles from './styles.module.css';
 
 const ResetPassword = (props: ResetPasswordPagePropsType) => {
-    const { makeSentEmailFlagFalse } = props;
+    const { email, makeSentEmailFlagFalse, resetPassword } = props;
 
     const [resetCode, setResetCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -34,6 +37,22 @@ const ResetPassword = (props: ResetPasswordPagePropsType) => {
         setConfirmPassword('');
     };
 
+    const onResetButtonClick = async () => {
+        try {
+            const resetPasswordResponse = await resetPassword(
+                email,
+                `HBE-${resetCode}`,
+                newPassword
+            );
+
+            if (resetPasswordResponse === 'fail') {
+                throw new Error();
+            }
+        } catch (error) {
+            //
+        }
+    };
+
     return (
         <div className={styles.forgotPasswordInput}>
             <CustomInput
@@ -45,11 +64,13 @@ const ResetPassword = (props: ResetPasswordPagePropsType) => {
             <CustomInput
                 label="New Password"
                 value={newPassword}
+                type="password"
                 onChange={(e: string) => setNewPassword(e)}
             />
             <CustomInput
                 label="Confirm Password"
                 value={confirmPassword}
+                type="password"
                 onChange={(e: string) => setConfirmPassword(e)}
             />
             <ButtonSection>
@@ -57,12 +78,16 @@ const ResetPassword = (props: ResetPasswordPagePropsType) => {
                     Back
                 </CustomButton>
                 <div style={{ width: '5px' }}></div>
-                <CustomButton onClick={() => {}} disabled={isSubmitButtonDisabled()}>
-                    Submit
+                <CustomButton onClick={onResetButtonClick} disabled={isSubmitButtonDisabled()}>
+                    Reset
                 </CustomButton>
             </ButtonSection>
         </div>
     );
 };
 
-export default ResetPassword;
+const mapDispatchToProps = {
+    resetPassword,
+};
+
+export default connect(null, mapDispatchToProps)(ResetPassword);
