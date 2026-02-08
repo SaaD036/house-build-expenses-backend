@@ -4,6 +4,7 @@ const { get } = require('lodash');
 
 const { User } = require('../../models');
 
+const { sendForgetPasswordMail } = require('../../utilities/mail/authMail');
 const { getErrorResponse } = require('../../utilities/api');
 const { generateFixDigitInteger } = require('../../utilities/integer');
 
@@ -91,9 +92,10 @@ const forgotPassword = async (req, res, next) => {
         };
         await user.save();
 
+        await sendForgetPasswordMail(email, user.firstName, user.lastName, verificationCode);
+
         return res.status(HTTP_STATUS.OK).json({
             message: 'verification code generated',
-            verificationCode: `HBE-${verificationCode.toString()}`,
         });
     } catch (error) {
         next(error.message || error);
