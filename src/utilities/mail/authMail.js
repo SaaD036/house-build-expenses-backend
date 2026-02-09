@@ -1,4 +1,5 @@
 const { sendMail } = require('./index');
+const { replaceVariablesByDynamicValue } = require('../stringUtilities');
 
 const {
     MAIL_TEMPLATE_LAYOUT,
@@ -6,10 +7,12 @@ const {
 } = require('../../constants/templates/email');
 
 const sendForgetPasswordMail = async (email, firstName, lastName, code) => {
-    const body = FORGET_PASSWORD_MAIL_TEMPLATE.replaceAll('{code}', code)
-        .replaceAll('{firstName}', firstName)
-        .replaceAll('{lastName}', lastName);
-    const mailHTML = MAIL_TEMPLATE_LAYOUT.replaceAll('{body}', body);
+    const body = replaceVariablesByDynamicValue(FORGET_PASSWORD_MAIL_TEMPLATE, {
+        firstName,
+        lastName,
+        code,
+    });
+    const mailHTML = replaceVariablesByDynamicValue(MAIL_TEMPLATE_LAYOUT, { body });
 
     await sendMail(email, 'Reset password code', mailHTML);
 };

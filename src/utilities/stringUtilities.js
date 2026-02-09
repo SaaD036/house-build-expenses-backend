@@ -30,6 +30,17 @@ const generateRandomPassword = (
     return password;
 };
 
+const replaceVariablesByDynamicValue = (content, variables) => {
+    let updatedContent = content;
+
+    Object.keys(variables).forEach((key) => {
+        updatedContent = updatedContent.replace(`{${key}}`, variables[key]);
+    });
+
+    return updatedContent;
+};
+
 module.exports = {
     generateRandomPassword,
+    replaceVariablesByDynamicValue,
 };
