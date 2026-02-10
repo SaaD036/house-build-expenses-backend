@@ -4,7 +4,10 @@ const bcrypt = require('bcrypt');
 
 const { User } = require('../../models');
 
-const { prepareQueryFilterForAllusers } = require('../../queryHelper/users');
+const {
+    prepareQueryFilterForAllusers,
+    prepareQueryToFetchSingleUser,
+} = require('../../queryHelper/users');
 
 const { generateRandomPassword } = require('../../utilities/stringUtilities');
 
@@ -101,30 +104,34 @@ const getSingleUser = async (req, res, next) => {
     try {
         const { userId } = req.params;
         const loggedInUserRole = get(req, 'user.role', UserRole.USER);
+        const query = prepareQueryToFetchSingleUser(userId);
 
-        const user = await User.findOne({
-            where: { id: userId },
-            include: {
-                association: 'expenses',
-                attributes: ['id', 'amount', 'title', 'description'],
-            },
-            attributes: [
-                'id',
-                'firstName',
-                'lastName',
-                'email',
-                'role',
-                'accountStatus',
-                'accountEditHistory',
-                [
-                    literal(`(
-                        SELECT COUNT("expenses"."id") FROM "expenses"
-                        WHERE "expenses"."created_by" = "User"."id"
-                    )`),
-                    'totalExpenseCount',
-                ],
-            ],
+        const user = await User.findOne(query);
+
+        if (!user) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: 'user not found',
+            });
+        }
+
+        if (loggedInUserRole === UserRole.USER) {
+            delete user.accountEditHistory;
+        }
+
+        return res.status(HTTP_STATUS.OK).json({
+            user,
         });
+    } catch (error) {
+        next(error.message || error);
+    }
+};
+
+const getLoggedInUser = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const query = prepareQueryToFetchSingleUser(id);
+
+        const user = await User.findOne(query);
 
         if (!user) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -144,4 +151,5 @@ module.exports = {
     getAllUser,
     createUser,
     getSingleUser,
+    getLoggedInUser,
 };
