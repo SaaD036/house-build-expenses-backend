@@ -9,6 +9,7 @@ import { useQuery } from '../../Redux/apiServices/buildURL';
 import { ACCOUNT_PAGE_TABS, ACCOUNT_PAGE_TABS_VALUES } from './constants';
 
 import styles from './styles.module.css';
+import AccountPageComponent from '../../Components/Account/AccountPageComponent';
 
 const USER_PAGE_TITLE = 'Account';
 
@@ -33,7 +34,7 @@ const AccountPage = () => {
                     />
                 }
             />
-            Account page here
+            <AccountPageComponent tabName={activeTab} />
         </div>
     );
 };
