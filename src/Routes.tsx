@@ -11,6 +11,7 @@ import ForgetPasswordPage from './Pages/Auth/ForgetPassword';
 import ExpensesPage from './Pages/Expenses';
 import HomePage from './Pages/Home';
 import UsersPage from './Pages/Users';
+import AccountPage from './Pages/Account';
 
 import { UserRole } from './Constants/Users';
 
@@ -70,7 +71,9 @@ const router = createBrowserRouter([
         path: '/account',
         element: (
             <ProtectedRoutes auth>
-                <Layout>Account page</Layout>
+                <Layout>
+                    <AccountPage />
+                </Layout>
             </ProtectedRoutes>
         ),
     },
