@@ -1,5 +1,7 @@
 import React from 'react';
 
+import PersonalInformation from './PersonalInformation';
+
 import { ACCOUNT_PAGE_TABS_VALUES } from '../../Pages/Account/constants';
 
 import { AccountPageComponentPropsType } from './interfaces';
@@ -9,7 +11,7 @@ const AccountPageComponent = (props: AccountPageComponentPropsType) => {
 
     const renderTabComponents = () => {
         if (tabName === ACCOUNT_PAGE_TABS_VALUES.PERSONAL_INFO) {
-            return <div>Personal Info tab</div>;
+            return <PersonalInformation />;
         }
 
         if (tabName === ACCOUNT_PAGE_TABS_VALUES.EXPENSES) {
