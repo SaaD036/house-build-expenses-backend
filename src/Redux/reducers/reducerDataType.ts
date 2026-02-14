@@ -2,13 +2,6 @@ import { ExpenseType } from '../../Types/expenses';
 import { CurrentViewType } from '../../Types';
 import { AccountUserType, UserType } from '../../Types/Users';
 
-export type ReducerStateType = {
-    auth: AuthReducerStateType;
-    general: GeneralReducerStateType;
-    expense: ExpenseReducerStateType;
-    user: UserReducerStateType;
-};
-
 export type GeneralReducerStateType = {
     currentView: CurrentViewType | null;
 };

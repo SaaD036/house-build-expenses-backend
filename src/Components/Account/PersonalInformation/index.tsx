@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { Avatar, Box } from '@mui/material';
-import { Edit as EditIcon } from '@mui/icons-material';
+import { Edit as EditIcon, ContentCopy as CopyIcon } from '@mui/icons-material';
 
 import CardContainer from '../../CardContainer';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
@@ -11,8 +11,10 @@ import CustomTooltip from '../../Custom/CustomTooltip';
 import { getLoggedInUser } from '../../../Redux/actions/userAction';
 
 import { PersonalInformationPropsType } from './interfaces';
+import { ReducerStateType } from '../../../Redux/reducers';
 
 import styles from './styles.module.css';
+import { initiateToast } from '../../Custom/CustomToast';
 
 const PersonalInformation = (props: PersonalInformationPropsType) => {
     const { getLoggedInUser, accountUser } = props;
@@ -37,18 +39,41 @@ const PersonalInformation = (props: PersonalInformationPropsType) => {
             <div style={{ display: 'grid', gap: '7px' }}>
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Email</Box>
+                    <Box sx={{ cursor: 'pointer' }}>{accountUser?.email}</Box>
+                    <CustomTooltip title="Click here to copy">
+                        <div
+                            onClick={async () => {
+                                if (accountUser?.email) {
+                                    await navigator.clipboard.writeText(accountUser.email);
+                                    initiateToast({
+                                        type: 'success',
+                                        message: 'Email copied to clipboard',
+                                    });
+                                }
+                            }}
+                        >
+                            <CopyIcon
+                                sx={{ cursor: 'pointer', fontSize: '14px' }}
+                                className="icon"
+                            />
+                        </div>
+                    </CustomTooltip>
                 </Box>
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Role</Box>
+                    <Box>{accountUser?.role}</Box>
                 </Box>
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Account Status</Box>
+                    <Box>{accountUser?.accountStatus}</Box>
                 </Box>
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Total Expense</Box>
+                    <Box>{accountUser?.totalExpense || 0} BDT</Box>
                 </Box>
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Total Expense Count</Box>
+                    <Box>{accountUser?.totalExpenseCount || 0}</Box>
                 </Box>
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Total Album</Box>
@@ -56,10 +81,6 @@ const PersonalInformation = (props: PersonalInformationPropsType) => {
             </div>
         );
     };
-
-    useEffect(() => {
-        console.log('SaaD account user : ', accountUser);
-    }, [accountUser]);
 
     useEffect(() => {
         loadAccountUserData();
@@ -73,7 +94,9 @@ const PersonalInformation = (props: PersonalInformationPropsType) => {
                 <Box sx={{ borderRadius: '50%', border: '2px solid #158901', padding: '3px' }}>
                     <Avatar sx={{ padding: '2px' }} className={styles.avatar} src="/" />
                 </Box>
-                <h1 className={styles.userFullName}>SaaD Ibne Jamal</h1>
+                <h1 className={styles.userFullName}>
+                    {accountUser?.firstName} {accountUser?.lastName}
+                </h1>
                 <CustomTooltip title="Edit">
                     <EditIcon className={`icon ${styles.editIcon}`} />
                 </CustomTooltip>
@@ -83,7 +106,7 @@ const PersonalInformation = (props: PersonalInformationPropsType) => {
     );
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: ReducerStateType) => ({
     accountUser: state.user.accountUser,
 });
 
