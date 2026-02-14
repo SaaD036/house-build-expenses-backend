@@ -24,6 +24,11 @@ export type UserType = {
     totalExpenseCount?: number;
 };
 
+export type AccountUserType = UserType & {
+    totalExpense?: number;
+};
+
 export type UserAccountEditHistoryType = {
-    last_reset_pass_request_time?: Date | null;
+    lastResetPasswordTime?: Date | null;
+    history?: { title?: string; createdAt?: Date }[];
 };

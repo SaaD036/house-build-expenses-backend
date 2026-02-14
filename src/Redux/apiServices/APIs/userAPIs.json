@@ -10,5 +10,9 @@
     "GET_SINGLE_USER": {
         "path": "/user/{userId}",
         "method": "GET"
+    },
+    "GET_LOGGED_IN_USER": {
+        "path": "/user/logged-in-user",
+        "method": "GET"
     }
 }

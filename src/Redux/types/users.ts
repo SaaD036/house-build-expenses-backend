@@ -1,1 +1,2 @@
 export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const GET_ACCOUNT_USER = 'GET_ACCOUNT_USER';

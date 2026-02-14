@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 
-import { Avatar, Box, Tooltip } from '@mui/material';
+import { Avatar, Box } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 
 import CardContainer from '../../CardContainer';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
+import CustomTooltip from '../../Custom/CustomTooltip';
+
+import { getLoggedInUser } from '../../../Redux/actions/userAction';
+
+import { PersonalInformationPropsType } from './interfaces';
 
 import styles from './styles.module.css';
 
-const PersonalInformation = () => {
+const PersonalInformation = (props: PersonalInformationPropsType) => {
+    const { getLoggedInUser, accountUser } = props;
+
     const [isLoadingUserData, setIsLoadingUserData] = useState(false);
+
+    const loadAccountUserData = async () => {
+        setIsLoadingUserData(true);
+        await getLoggedInUser();
+        setIsLoadingUserData(false);
+    };
 
     const renderOtherInfo = () => {
         const sxOuter = { display: 'flex', alignItems: 'center', gap: '15px' };
@@ -43,6 +57,14 @@ const PersonalInformation = () => {
         );
     };
 
+    useEffect(() => {
+        console.log('SaaD account user : ', accountUser);
+    }, [accountUser]);
+
+    useEffect(() => {
+        loadAccountUserData();
+    }, []);
+
     return (
         <div style={{ display: 'grid', gap: '20px' }}>
             {isLoadingUserData && <TabComponentLoader />}
@@ -52,13 +74,19 @@ const PersonalInformation = () => {
                     <Avatar sx={{ padding: '2px' }} className={styles.avatar} src="/" />
                 </Box>
                 <h1 className={styles.userFullName}>SaaD Ibne Jamal</h1>
-                <Tooltip title="Edit" arrow>
+                <CustomTooltip title="Edit">
                     <EditIcon className={`icon ${styles.editIcon}`} />
-                </Tooltip>
+                </CustomTooltip>
             </Box>
             {renderOtherInfo()}
         </div>
     );
 };
 
-export default PersonalInformation;
+const mapStateToProps = (state: any) => ({
+    accountUser: state.user.accountUser,
+});
+
+const mapDispatchToProps = { getLoggedInUser };
+
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalInformation);
