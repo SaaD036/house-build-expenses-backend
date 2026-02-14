@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { Avatar, Box } from '@mui/material';
-import { Edit as EditIcon, ContentCopy as CopyIcon } from '@mui/icons-material';
+import { Edit as EditIcon } from '@mui/icons-material';
 
 import CardContainer from '../../CardContainer';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
 import CustomTooltip from '../../Custom/CustomTooltip';
+import CustomCopyIcon from '../../Custom/CustomIcons/CustomCopyIcon';
 
 import { getLoggedInUser } from '../../../Redux/actions/userAction';
 
@@ -14,7 +15,6 @@ import { PersonalInformationPropsType } from './interfaces';
 import { ReducerStateType } from '../../../Redux/reducers';
 
 import styles from './styles.module.css';
-import { initiateToast } from '../../Custom/CustomToast';
 
 const PersonalInformation = (props: PersonalInformationPropsType) => {
     const { getLoggedInUser, accountUser } = props;
@@ -40,24 +40,12 @@ const PersonalInformation = (props: PersonalInformationPropsType) => {
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Email</Box>
                     <Box sx={{ cursor: 'pointer' }}>{accountUser?.email}</Box>
-                    <CustomTooltip title="Click here to copy">
-                        <div
-                            onClick={async () => {
-                                if (accountUser?.email) {
-                                    await navigator.clipboard.writeText(accountUser.email);
-                                    initiateToast({
-                                        type: 'success',
-                                        message: 'Email copied to clipboard',
-                                    });
-                                }
-                            }}
-                        >
-                            <CopyIcon
-                                sx={{ cursor: 'pointer', fontSize: '14px' }}
-                                className="icon"
-                            />
-                        </div>
-                    </CustomTooltip>
+                    {accountUser?.email && (
+                        <CustomCopyIcon
+                            textToCopy={accountUser.email}
+                            toastMessage="Email copied to clipboard"
+                        />
+                    )}
                 </Box>
                 <Box sx={sxOuter}>
                     <Box sx={sxInner}>Role</Box>
