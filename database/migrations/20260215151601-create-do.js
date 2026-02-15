@@ -3,12 +3,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, DataTypes) {
-        await queryInterface.createTable('expenses', {
+        await queryInterface.createTable('dos', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: DataTypes.INTEGER,
+            },
+            shopName: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                field: 'shop_name',
+            },
+            shopAddress: {
+                type: DataTypes.JSON,
+                allowNull: false,
+                field: 'shop_address',
+            },
+            doItem: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                field: 'do_item',
+            },
+            description: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                field: 'description',
             },
             amount: {
                 type: DataTypes.FLOAT,
@@ -18,20 +38,16 @@ module.exports = {
                     min: 1,
                 },
             },
-            title: {
-                type: DataTypes.STRING,
+            doDate: {
+                type: DataTypes.DATE,
                 allowNull: false,
-                field: 'title',
+                defaultValue: DataTypes.fn('NOW'),
+                field: 'do_date',
             },
-            description: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                field: 'description',
-            },
-            expenseEditHistory: {
+            doEditHistory: {
                 type: DataTypes.JSON,
                 allowNull: true,
-                field: 'expense_edit_history',
+                field: 'do_edit_history',
             },
             createdBy: {
                 type: DataTypes.INTEGER,
@@ -43,19 +59,13 @@ module.exports = {
                 field: 'created_by',
                 onDelete: 'CASCADE',
             },
-            expenseAt: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: DataTypes.fn('NOW'),
-                field: 'expense_at',
-            },
-            attachmentURL: {
+            imageURL: {
                 type: DataTypes.STRING,
                 allowNull: true,
                 validate: {
                     isUrl: true,
                 },
-                field: 'attachment_url',
+                field: 'image_url',
             },
             isDeleted: {
                 type: DataTypes.BOOLEAN,
@@ -77,6 +87,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('expenses');
+        await queryInterface.dropTable('dos');
     },
 };
