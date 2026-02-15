@@ -1,7 +1,7 @@
 'use strict';
 const { Sequelize, Model } = require('sequelize');
 
-const PROTECTED_ATTRIBUTES = ['createdBy'];
+const PROTECTED_ATTRIBUTES = ['createdBy', 'doId'];
 
 module.exports = (sequelize, DataTypes) => {
     class Expense extends Model {
@@ -54,6 +54,16 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 references: {
                     model: 'Users',
+                    key: 'id',
+                },
+                field: 'created_by',
+                onDelete: 'CASCADE',
+            },
+            doId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'DOs',
                     key: 'id',
                 },
                 field: 'created_by',
