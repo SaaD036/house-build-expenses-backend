@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize');
 
 const { Expenses } = require('../../models');
 
@@ -23,10 +23,16 @@ const getAllExpenses = async (req, res, next) => {
 
         const [expenses, expensesCount] = await Promise.all([
             Expenses.findAll({
-                include: {
-                    association: 'creator',
-                    attributes: ['id', 'firstName', 'lastName'],
-                },
+                include: [
+                    {
+                        association: 'creator',
+                        attributes: ['id', 'firstName', 'lastName'],
+                    },
+                    {
+                        association: 'do',
+                        attributes: ['id', 'shopName', 'doItem', 'amount', 'doDate'],
+                    },
+                ],
                 where: filter.where,
                 limit: filter.limit,
                 offset: filter.offset,

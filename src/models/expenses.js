@@ -5,11 +5,17 @@ const PROTECTED_ATTRIBUTES = ['createdBy', 'doId'];
 
 module.exports = (sequelize, DataTypes) => {
     class Expense extends Model {
-        static associate({ User }) {
+        static associate({ User, DOs }) {
             this.belongsTo(User, {
                 foreignKey: 'createdBy',
                 onDelete: 'CASCADE',
                 as: 'creator',
+            });
+
+            this.belongsTo(DOs, {
+                foreignKey: 'doId',
+                onDelete: 'CASCADE',
+                as: 'do',
             });
         }
 
@@ -61,12 +67,12 @@ module.exports = (sequelize, DataTypes) => {
             },
             doId: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
                 references: {
                     model: 'DOs',
                     key: 'id',
                 },
-                field: 'created_by',
+                field: 'do_id',
                 onDelete: 'CASCADE',
             },
             expenseAt: {
