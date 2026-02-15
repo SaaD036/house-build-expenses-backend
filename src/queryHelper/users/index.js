@@ -1,4 +1,4 @@
-const { Op, Sequelize } = require('sequelize');
+const { Op, Sequelize, literal } = require('sequelize');
 
 const { preparePaginationQuery } = require('..');
 
@@ -46,6 +46,40 @@ const prepareQueryFilterForAllusers = (params) => {
     };
 };
 
+const prepareQueryToFetchSingleUser = (id) => {
+    return {
+        where: { id },
+        include: {
+            association: 'expenses',
+            attributes: [],
+        },
+        attributes: [
+            'id',
+            'firstName',
+            'lastName',
+            'email',
+            'role',
+            'accountStatus',
+            'accountEditHistory',
+            [
+                literal(`(
+                            SELECT COUNT("expenses"."id") FROM "expenses"
+                            WHERE "expenses"."created_by" = "User"."id"
+                        )`),
+                'totalExpenseCount',
+            ],
+            [
+                literal(`(
+                            SELECT SUM("expenses"."amount") FROM "expenses"
+                            WHERE "expenses"."created_by" = "User"."id"
+                        )`),
+                'totalExpense',
+            ],
+        ],
+    };
+};
+
 module.exports = {
     prepareQueryFilterForAllusers,
+    prepareQueryToFetchSingleUser,
 };
