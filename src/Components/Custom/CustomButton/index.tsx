@@ -12,6 +12,7 @@ const CustomButton = (props: CustomButtonPropsType) => {
         <Button
             className={`${disabled ? 'button-disabled' : 'button'} ${className || ''}`}
             disabled={disabled}
+            sx={{ textTransform: 'none' }}
             {...rest}
         >
             {children}

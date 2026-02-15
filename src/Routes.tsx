@@ -4,10 +4,14 @@ import { createBrowserRouter } from 'react-router-dom';
 import ProtectedRoutes from './RoutesProtection';
 
 import Layout from './Layouts';
+
 import LoginPage from './Pages/Auth/Login';
+import ForgetPasswordPage from './Pages/Auth/ForgetPassword';
+
 import ExpensesPage from './Pages/Expenses';
 import HomePage from './Pages/Home';
 import UsersPage from './Pages/Users';
+import AccountPage from './Pages/Account';
 
 import { UserRole } from './Constants/Users';
 
@@ -30,6 +34,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoutes>
                         <LoginPage />
+                    </ProtectedRoutes>
+                ),
+            },
+            {
+                path: 'forget-password',
+                element: (
+                    <ProtectedRoutes>
+                        <ForgetPasswordPage />
                     </ProtectedRoutes>
                 ),
             },
@@ -59,7 +71,9 @@ const router = createBrowserRouter([
         path: '/account',
         element: (
             <ProtectedRoutes auth>
-                <Layout>Account page</Layout>
+                <Layout>
+                    <AccountPage />
+                </Layout>
             </ProtectedRoutes>
         ),
     },

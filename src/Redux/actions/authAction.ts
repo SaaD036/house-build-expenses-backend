@@ -14,6 +14,7 @@ import { LOG_IN } from '../types/auth';
 import { cookieName } from '../../Utilities/Cookies';
 import { HTTP_STATUS_CODE } from '../../Constants/HTTP';
 import ValidationError from '../../ErrorHandlers/ValidationError';
+import { CreateUpdateActionMethodReturnType } from '../../Types';
 
 export const login =
     (email: string, password: string) =>
@@ -68,4 +69,88 @@ export const setLoggedinUserToken =
             type: LOG_IN,
             payload: token,
         });
+    };
+
+export const forgetPassword =
+    (email: string) =>
+    async (
+        dispatch: Dispatch<{ type: string; payload: any }>
+    ): Promise<CreateUpdateActionMethodReturnType> => {
+        try {
+            const { path, method } = authAPIs.FORGOT_PASSWORD;
+            const { status } = await callAxiosAPIWithoutUserCredential({
+                url: buildURL(path),
+                method: method as Method,
+                data: {
+                    email,
+                },
+            });
+
+            if (status === HTTP_STATUS_CODE.NOT_FOUND) {
+                throw new ValidationError('No user found with this email');
+            } else if (status === HTTP_STATUS_CODE.BAD_REQUEST) {
+                throw new ValidationError('Bad request');
+            } else if (status === HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR) {
+                throw new ValidationError('Can not send reset password code');
+            }
+
+            initiateToast({
+                type: 'success',
+                message: 'Reset password code sent to email',
+            });
+
+            return 'success';
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
+
+            return 'fail';
+        }
+    };
+
+export const resetPassword =
+    (email: string, verificationCode: string, password: string) =>
+    async (
+        dispatch: Dispatch<{ type: string; payload: any }>
+    ): Promise<CreateUpdateActionMethodReturnType> => {
+        try {
+            const { path, method } = authAPIs.RESET_PASSWORD;
+            const { status } = await callAxiosAPIWithoutUserCredential({
+                url: buildURL(path),
+                method: method as Method,
+                data: {
+                    email,
+                    verificationCode,
+                    password,
+                },
+            });
+
+            if (status === HTTP_STATUS_CODE.NOT_FOUND) {
+                throw new ValidationError('No user found with this email');
+            } else if (status === HTTP_STATUS_CODE.BAD_REQUEST) {
+                throw new ValidationError('Bad request');
+            } else if (status === HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR) {
+                throw new ValidationError('Can not send reset password code');
+            }
+
+            initiateToast({
+                type: 'success',
+                message: 'Password has been reset',
+            });
+
+            return 'success';
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
+
+            return 'fail';
+        }
     };

@@ -6,16 +6,22 @@ import { get } from 'lodash';
 import { buildURL } from '../apiServices/buildURL';
 import { callAxiosAPI } from '../apiServices/calAPPI';
 import { initiateToast } from '../../Components/Custom/CustomToast';
+import { prepareUserEditHistoryFromAPIresponse } from '../../Utilities/Users/UserAPI';
 
 import ValidationError from '../../ErrorHandlers/ValidationError';
 
-import { GET_ALL_USERS } from '../types/users';
+import { GET_ACCOUNT_USER, GET_ALL_USERS } from '../types/users';
 
 import userAPIs from '../apiServices/APIs/userAPIs.json';
 import { HTTP_STATUS_CODE } from '../../Constants/HTTP';
 import { UserRole } from '../../Constants/Users';
 
-import { UserAccountEditHistoryType, UserExpenseType, UserType } from '../../Types/Users';
+import {
+    AccountUserType,
+    UserAccountEditHistoryType,
+    UserExpenseType,
+    UserType,
+} from '../../Types/Users';
 import { UserReducerStateType } from '../reducers/reducerDataType';
 import { CreateUserFormDataType } from '../../Components/Users/CreateUser/interfaces';
 
@@ -131,7 +137,7 @@ export const getSingleUser = (userId: number) => async (dispatch: Dispatch<Dispa
             lastName: data.user.lastName || '',
             role: data.user.role || UserRole.USER,
             accountStatus: data.user.accountStatus,
-            accountEditHistory: data.user.accountEditHistory as UserAccountEditHistoryType,
+            accountEditHistory: prepareUserEditHistoryFromAPIresponse(data.user.accountEditHistory),
             expenses: data.user.expenses as UserExpenseType[],
             totalExpenseCount: isNaN(data.user.totalExpenseCount)
                 ? undefined
@@ -139,6 +145,56 @@ export const getSingleUser = (userId: number) => async (dispatch: Dispatch<Dispa
         };
 
         return user;
+    } catch (error) {
+        if (error instanceof Error) {
+            initiateToast({
+                type: 'error',
+                message: error.message.toString(),
+            });
+        }
+    }
+};
+
+export const getLoggedInUser = () => async (dispatch: Dispatch<DispatchType>) => {
+    try {
+        const { path, method } = userAPIs.GET_LOGGED_IN_USER;
+        const { UNAUTHENTICATED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+
+        const URLwithVarsANDparams = buildURL(path);
+        const { status, data } = await callAxiosAPI({
+            url: URLwithVarsANDparams,
+            method: method as Method,
+        });
+
+        if (status === UNAUTHENTICATED) {
+            throw new ValidationError('User does not have access to users');
+        } else if (status === INTERNAL_SERVER_ERROR) {
+            throw new ValidationError('Can not fetch users');
+        }
+
+        const user: AccountUserType = {
+            id: data.user.id,
+            email: data.user.email,
+            firstName: data.user.firstName || '',
+            lastName: data.user.lastName || '',
+            role: data.user.role || UserRole.USER,
+            accountStatus: data.user.accountStatus,
+            accountEditHistory: prepareUserEditHistoryFromAPIresponse(data.user.accountEditHistory),
+            expenses: data.user.expenses as UserExpenseType[],
+            totalExpense: isNaN(data.user.totalExpense)
+                ? undefined
+                : Number(data.user.totalExpense),
+            totalExpenseCount: isNaN(data.user.totalExpenseCount)
+                ? undefined
+                : Number(data.user.totalExpenseCount),
+        };
+
+        dispatch({
+            type: GET_ACCOUNT_USER,
+            payload: {
+                accountUser: user,
+            },
+        });
     } catch (error) {
         if (error instanceof Error) {
             initiateToast({

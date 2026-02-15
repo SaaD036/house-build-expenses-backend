@@ -1,0 +1,22 @@
+.avatar {
+    height: 120px !important;
+    width: 120px !important;
+}
+
+.userFullName {
+    color: #158901;
+    font-weight: 700;
+}
+
+.editIcon {
+    padding: 3.5px;
+    font-size: 30px !important;
+    border-radius: 50%;
+    border: 1.5px solid #158901;
+    cursor: pointer;
+}
+
+.editIcon:hover {
+    background-color: #158901;
+    color: white !important;
+}

@@ -1,21 +1,31 @@
-import { GET_ALL_USERS } from '../types/users';
+import { GET_ALL_USERS, GET_ACCOUNT_USER } from '../types/users';
 
 import { UserReducerStateType } from './reducerDataType';
 
 const initialState: UserReducerStateType = {
     users: null,
     totalUsers: null,
+    accountUser: null,
 };
 
 const reducer = (
     state = initialState,
     action: { type: string; payload: Partial<UserReducerStateType> }
 ) => {
-    if (action.type === GET_ALL_USERS) {
+    const { type, payload } = action;
+
+    if (type === GET_ALL_USERS) {
         return {
             ...state,
-            users: action.payload.users,
-            totalUsers: action.payload.totalUsers,
+            users: payload.users,
+            totalUsers: payload.totalUsers,
+        };
+    }
+
+    if (type === GET_ACCOUNT_USER) {
+        return {
+            ...state,
+            accountUser: payload.accountUser,
         };
     }
 
