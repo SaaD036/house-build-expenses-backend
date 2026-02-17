@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { createDO } = require('../../controllers/do');
+const { getAllDOs, createDO } = require('../../controllers/do');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
 
@@ -9,6 +9,7 @@ const validtorHandler = require('../validatorHandler');
 
 const router = express.Router();
 
+router.get('/', getAllDOs);
 router.post('/', adminMiddleware, createDOvalidator, validtorHandler, createDO);
 
 module.exports = router;
