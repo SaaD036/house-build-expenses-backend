@@ -3,6 +3,7 @@ import { SidebarItemsTypes } from '../interfaces';
 import {
     Home as HomeIcon,
     Receipt as TransactionIcon,
+    ReceiptLong as DOicon,
     Person as UserIcon,
     ManageAccounts as AccountIcon,
     CollectionsBookmark as AlbumIcon,
@@ -25,7 +26,7 @@ export const SIDEBAR_ITEMS: SidebarItemsTypes[] = [
         key: 'do',
         label: 'DO',
         access: 'all',
-        Icon: TransactionIcon,
+        Icon: DOicon,
     },
     {
         key: 'users',

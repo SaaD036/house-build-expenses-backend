@@ -8,6 +8,7 @@ import Layout from './Layouts';
 import LoginPage from './Pages/Auth/Login';
 import ForgetPasswordPage from './Pages/Auth/ForgetPassword';
 
+import DOpage from './Pages/DOs';
 import ExpensesPage from './Pages/Expenses';
 import HomePage from './Pages/Home';
 import UsersPage from './Pages/Users';
@@ -61,7 +62,9 @@ const router = createBrowserRouter([
         path: '/do',
         element: (
             <ProtectedRoutes auth>
-                <Layout>DO contents</Layout>
+                <Layout>
+                    <DOpage />
+                </Layout>
             </ProtectedRoutes>
         ),
     },
