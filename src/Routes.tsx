@@ -58,6 +58,14 @@ const router = createBrowserRouter([
         ),
     },
     {
+        path: '/do',
+        element: (
+            <ProtectedRoutes auth>
+                <Layout>DO contents</Layout>
+            </ProtectedRoutes>
+        ),
+    },
+    {
         path: '/users',
         element: (
             <ProtectedRoutes auth role={[UserRole.ADMIN, UserRole.VISITOR]}>

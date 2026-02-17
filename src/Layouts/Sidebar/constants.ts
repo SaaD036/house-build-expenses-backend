@@ -22,6 +22,12 @@ export const SIDEBAR_ITEMS: SidebarItemsTypes[] = [
         Icon: TransactionIcon,
     },
     {
+        key: 'do',
+        label: 'DO',
+        access: 'all',
+        Icon: TransactionIcon,
+    },
+    {
         key: 'users',
         label: 'Users',
         access: 'admin',
