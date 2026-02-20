@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
 import CardContainer from '../../CardContainer';
 import SwitchViewButtonSectionContainer from '../../CardContainer/SwitchViewButtonSectionContainer';
-import CustomPagination from '../../Custom/CustomPagination';
 import SeeDOtable from './SeeDOtable';
 
 import { getAllDOs } from '../../../Redux/actions/doAction';
@@ -41,7 +40,6 @@ const SeeDOs = (props: SeeDOsPropsType) => {
             ) : (
                 <SeeDOtable DOs={dos || null} loadDOs={loadDOs} />
             )}
-            <CustomPagination page={1} setPage={() => {}} pageCount={1} />
         </div>
     );
 };
