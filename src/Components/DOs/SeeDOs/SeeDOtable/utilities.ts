@@ -1,4 +1,5 @@
 import { DO } from '../../../../Types/DOs';
+import { formatDate } from '../../../../Utilities/Date';
 
 export const getDOtableRows = (DOs: DO[]) => {
     const DOtableRows = DOs.map((DO) => ({
@@ -22,7 +23,7 @@ export const getDOtableRows = (DOs: DO[]) => {
             value: DO.description,
         },
         doDate: {
-            value: DO.doDate.toISOString(),
+            value: formatDate(DO.doDate, 'D,M,Y'),
         },
         creator: {
             value: `${DO.creator.firstName} ${DO.creator.lastName}`,
