@@ -1,11 +1,15 @@
 import React from 'react';
+import { get } from 'lodash';
 
 import SeeDOs from './SeeDOs';
+import CreateDO from './CreateDO';
 
 import { getUserFromToken } from '../../Utilities/Users/UserToken';
 
-import { DOpageComponentPropsType } from './interfaces';
 import { DO_PAGE_TABS_VALUES } from '../../Pages/DOs/constants';
+import { UserRole } from '../../Constants/Users';
+
+import { DOpageComponentPropsType } from './interfaces';
 
 const DOpageComponent = (props: DOpageComponentPropsType) => {
     const { tabName } = props;
@@ -16,13 +20,13 @@ const DOpageComponent = (props: DOpageComponentPropsType) => {
             return <SeeDOs />;
         }
 
-        // if (tabName === DO_PAGE_TABS_VALUES.CREATE_DO) {
-        //     return (
-        //         <CreateDo
-        //             disabledForm={get(loggedInUser, 'role', UserRole.USER) !== UserRole.ADMIN}
-        //         />
-        //     );
-        // }
+        if (tabName === DO_PAGE_TABS_VALUES.CREATE_DO) {
+            return (
+                <CreateDO
+                    disabledForm={get(loggedInUser, 'role', UserRole.USER) !== UserRole.ADMIN}
+                />
+            );
+        }
 
         return <div>Page not found</div>;
     };
