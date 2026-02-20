@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
+import DOpageComponent from '../../Components/DOs/DOpageComponent';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 
@@ -32,7 +33,7 @@ const DOpage = () => {
                     />
                 }
             />
-            {/* <UsersPageComponent tabName={activeTab} /> */}
+            <DOpageComponent tabName={activeTab} />
         </div>
     );
 };
