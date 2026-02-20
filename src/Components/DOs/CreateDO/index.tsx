@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FormikHelpers } from 'formik';
+import { connect } from 'react-redux';
 
 import { Container, Grid2 } from '@mui/material';
 
@@ -13,6 +14,8 @@ import CardContainer from '../../CardContainer';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
 import ButtonSection from '../../Custom/CustomButton/ButtonSection';
 
+import { createDo } from '../../../Redux/actions/doAction';
+
 import { CREATE_DO_FORM_VALIDATION, CREATE_DO_INITIAL_VALUE } from './constants';
 
 import { CreateDOformValueType, CreateDOpropsType } from './interfaces';
@@ -20,12 +23,20 @@ import { CreateDOformValueType, CreateDOpropsType } from './interfaces';
 import styles from './styles.module.css';
 
 const CreateDO = (props: CreateDOpropsType) => {
-    const { disabledForm } = props;
+    const { disabledForm, createDo } = props;
 
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = (formValue: CreateDOformValueType, formikHelpers: FormikHelpers<object>) => {
-        console.log('SaaD : ', formValue);
+    const onSubmit = async (
+        formValue: CreateDOformValueType,
+        formikHelpers: FormikHelpers<object>
+    ) => {
+        setLoading(true);
+
+        await createDo(formValue);
+        formikHelpers.setValues(CREATE_DO_INITIAL_VALUE);
+
+        setLoading(false);
     };
 
     return (
@@ -93,4 +104,8 @@ const CreateDO = (props: CreateDOpropsType) => {
     );
 };
 
-export default CreateDO;
+const mapDispatchToProps = {
+    createDo,
+};
+
+export default connect(null, mapDispatchToProps)(CreateDO);

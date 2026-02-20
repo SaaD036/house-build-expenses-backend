@@ -1,5 +1,6 @@
 export type CreateDOpropsType = {
     disabledForm: boolean;
+    createDo: (formData: CreateDOformValueType) => Promise<void>;
 };
 
 export type CreateDOformValueType = {
