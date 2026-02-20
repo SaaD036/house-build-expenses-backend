@@ -15,8 +15,9 @@ import { DOreducerType } from '../reducers/reducerDataType';
 
 import doAPIs from '../apiServices/APIs/doAPIs.json';
 import { HTTP_STATUS_CODE } from '../../Constants/HTTP';
-import { get } from 'lodash';
+import { get, isArray } from 'lodash';
 import { DO } from '../../Types/DOs';
+import { CreateDOformValueType } from '../../Components/DOs/CreateDO/interfaces';
 
 type DispatchType = { type: string; payload: Partial<DOreducerType> };
 
@@ -77,3 +78,61 @@ export const getAllDOs = (filters: any) => async (dispatch: Dispatch<DispatchTyp
         }
     }
 };
+
+export const createDo =
+    (doData: CreateDOformValueType) => async (dispatch: Dispatch<DispatchType>) => {
+        try {
+            const { path, method } = doAPIs.CREATE_DO;
+            const { BAD_REQUEST, UNAUTHENTICATED } = HTTP_STATUS_CODE;
+
+            const doDataForPayload = {
+                shopName: doData.shopname,
+                shopAddress: {
+                    area: doData.area,
+                    ward: doData.ward,
+                    upazilla: doData.upazilla,
+                    district: doData.district,
+                },
+                doItem: doData.doItem,
+                description: doData.description,
+                amount: doData.amount,
+                doDate: doData.doDate?.toISOString(),
+            };
+
+            const { status, data } = await callAxiosAPI({
+                url: buildURL(path),
+                method: method as Method,
+                data: doDataForPayload,
+            });
+
+            if (status === UNAUTHENTICATED) {
+                throw new ValidationError('User does not have access to DOs');
+            } else if (status === BAD_REQUEST) {
+                const errorMessage = get(data, 'error.message', null);
+
+                if (typeof errorMessage === 'string') {
+                    throw new ValidationError(errorMessage);
+                }
+
+                if (isArray(errorMessage) && errorMessage.length > 0) {
+                    throw new ValidationError(errorMessage[0]);
+                }
+
+                throw new ValidationError('Can not add DOs');
+            } else if (status > 299) {
+                throw new ValidationError('Can not add DOs');
+            }
+
+            initiateToast({
+                type: 'success',
+                message: 'DO added successfully',
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
+        }
+    };
