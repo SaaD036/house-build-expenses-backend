@@ -257,6 +257,48 @@ const getTotalExpense = async (req, res, next) => {
     }
 };
 
+const addExpensesToDOs = async (req, res, next) => {
+    try {
+        const payload = Array.isArray(req.body) ? req.body : _.get(req, 'body.idx', []);
+
+        if (!Array.isArray(payload) || payload.length === 0) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: 'Invalid payload',
+            });
+        }
+
+        const expenseIDX = payload.map((item) => Number(item.expenseId));
+        const expenseToDOMap = payload.reduce((acc, item) => {
+            acc[Number(item.expenseId)] = Number(item.doId);
+
+            return acc;
+        }, {});
+
+        const expenses = await Expenses.findAll({
+            where: {
+                id: {
+                    [Op.in]: expenseIDX,
+                },
+                isDeleted: false,
+            },
+        });
+
+        (expenses || []).forEach((expense) => {
+            if (expenseToDOMap[expense.id]) {
+                expense.doId = expenseToDOMap[expense.id];
+            }
+        });
+
+        await Promise.all((expenses || []).map(async (expense) => await expense.save()));
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'successfull',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
@@ -264,4 +306,5 @@ module.exports = {
     deleteExpense,
     deleteMultipleExpenses,
     getTotalExpense,
+    addExpensesToDOs,
 };

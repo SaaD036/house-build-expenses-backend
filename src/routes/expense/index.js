@@ -7,11 +7,16 @@ const {
     deleteExpense,
     deleteMultipleExpenses,
     getTotalExpense,
+    addExpensesToDOs,
 } = require('../../controllers/expense');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
 
-const { createExpenseValidator, deleteMultipleExpensesValidator } = require('./expenseValidators');
+const {
+    createExpenseValidator,
+    deleteMultipleExpensesValidator,
+    addToDOvalidator,
+} = require('./expenseValidators');
 const validatorHandler = require('../validatorHandler');
 
 const router = express.Router();
@@ -36,5 +41,6 @@ router.patch(
 );
 
 router.get('/get-total-expense', getTotalExpense);
+router.post('/add-to-do', addToDOvalidator, validatorHandler, addExpensesToDOs);
 
 module.exports = router;
