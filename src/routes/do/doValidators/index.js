@@ -1,6 +1,8 @@
 const { check } = require('express-validator');
 const { isDate } = require('lodash');
 
+const validtorHandler = require('../../validatorHandler');
+
 const createDOvalidator = [
     check('shopName')
         .trim()
@@ -57,4 +59,10 @@ const createDOvalidator = [
         .withMessage('DO date format invalid'),
 ];
 
-module.exports = { createDOvalidator };
+const addExpensesValidator = [
+    check('expenseIdx').isArray({ min: 1 }).withMessage('expense id is required'),
+    check('expenseIdx.*.id').trim().isLength({ min: 1 }).withMessage('expense id must be valid'),
+    validtorHandler,
+];
+
+module.exports = { createDOvalidator, addExpensesValidator };
