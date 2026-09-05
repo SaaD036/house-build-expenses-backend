@@ -9,7 +9,7 @@ const auth = (req, res, next) => {
 
     try {
         if (!authorization || !token) {
-            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+            return res.status(HTTP_STATUS.UNAUTHENTICATED).json({
                 message: 'unauthenticated',
             });
         }
@@ -17,7 +17,7 @@ const auth = (req, res, next) => {
         const user = jwt.verify(token, process.env.JWT_SECRET);
 
         if (!user) {
-            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+            return res.status(HTTP_STATUS.UNAUTHENTICATED).json({
                 message: 'unauthenticated',
             });
         }
@@ -26,7 +26,7 @@ const auth = (req, res, next) => {
 
         next();
     } catch (err) {
-        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        return res.status(HTTP_STATUS.UNAUTHENTICATED).json({
             message: 'unauthenticated',
         });
     }

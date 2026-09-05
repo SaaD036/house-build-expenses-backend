@@ -7,7 +7,7 @@ const { DOs, Expenses } = require('../../../models');
 const createExpenseValidator = [
     check('amount')
         .custom((value) => !isNaN(Number(value) && Number(value) > 0))
-        .withMessage('Amount must be a number.'),
+        .withMessage('Amount must be a number'),
     check('title')
         .custom((value) => {
             if (typeof value !== 'string') {
@@ -119,4 +119,13 @@ const addToDOvalidator = [
         .withMessage('Some expense/do id does not exist'),
 ];
 
-module.exports = { createExpenseValidator, deleteMultipleExpensesValidator, addToDOvalidator };
+const addSingleExpenseToDoValidator = [
+    check('doId').isLength({ min: 1 }).withMessage('DO ID is required'),
+];
+
+module.exports = {
+    createExpenseValidator,
+    deleteMultipleExpensesValidator,
+    addToDOvalidator,
+    addSingleExpenseToDoValidator,
+};

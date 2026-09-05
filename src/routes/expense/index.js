@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 
 const {
     getAllExpenses,
@@ -8,6 +9,7 @@ const {
     deleteMultipleExpenses,
     getTotalExpense,
     addExpensesToDOs,
+    addSingleExpenseToDo,
 } = require('../../controllers/expense');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
@@ -16,10 +18,9 @@ const {
     createExpenseValidator,
     deleteMultipleExpensesValidator,
     addToDOvalidator,
+    addSingleExpenseToDoValidator,
 } = require('./expenseValidators');
 const validatorHandler = require('../validatorHandler');
-
-const router = express.Router();
 
 router.get('/', getAllExpenses);
 router.post('/', adminMiddleware, createExpenseValidator, validatorHandler, createExpense);
@@ -32,7 +33,7 @@ router.patch(
     updateExpense
 );
 router.delete('/:expenseID', adminMiddleware, deleteExpense);
-router.patch(
+router.delete(
     '/delete-multiple',
     adminMiddleware,
     deleteMultipleExpensesValidator,
@@ -42,5 +43,11 @@ router.patch(
 
 router.get('/get-total-expense', getTotalExpense);
 router.post('/add-to-do', addToDOvalidator, validatorHandler, addExpensesToDOs);
+router.post(
+    '/:expenseId/add-to-do',
+    addSingleExpenseToDoValidator,
+    validatorHandler,
+    addSingleExpenseToDo
+);
 
 module.exports = router;

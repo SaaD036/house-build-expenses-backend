@@ -3,9 +3,10 @@ const { Op } = require('sequelize');
 
 const { Expenses } = require('../../models');
 
-const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
+const { addSingleExpenseInTheDoService } = require('../../services/expense');
 
-const { createExpenseEditHistoryItem } = require('../../services/expense');
+const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
+const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
 const { HTTP_STATUS } = require('../../constants/http');
 
@@ -299,6 +300,21 @@ const addExpensesToDOs = async (req, res, next) => {
     }
 };
 
+const addSingleExpenseToDo = async (req, res, next) => {
+    try {
+        const { expenseId } = req.params;
+        const { doId } = req.body;
+
+        await addSingleExpenseInTheDoService(req.user.id, expenseId, doId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            mesaage: 'expense added to DO',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
@@ -307,4 +323,5 @@ module.exports = {
     deleteMultipleExpenses,
     getTotalExpense,
     addExpensesToDOs,
+    addSingleExpenseToDo,
 };
