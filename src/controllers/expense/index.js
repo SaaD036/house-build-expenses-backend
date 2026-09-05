@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const { Op } = require('sequelize');
 
-const { Expenses } = require('../../models');
+const { Expense } = require('../../models');
 
 const { addSingleExpenseInTheDoService } = require('../../services/expense');
 
@@ -23,7 +23,7 @@ const getAllExpenses = async (req, res, next) => {
         });
 
         const [expenses, expensesCount] = await Promise.all([
-            Expenses.findAll({
+            Expense.findAll({
                 include: [
                     {
                         association: 'creator',
@@ -39,7 +39,7 @@ const getAllExpenses = async (req, res, next) => {
                 offset: filter.offset,
                 order: ['expenseAt'],
             }),
-            Expenses.count({ where: filter.where }),
+            Expense.count({ where: filter.where }),
         ]);
 
         return res.status(HTTP_STATUS.OK).json({ expenses, expensesCount });
@@ -52,7 +52,7 @@ const createExpense = async (req, res, next) => {
     try {
         const { amount, title, description, expenseAt } = req.body;
 
-        await Expenses.create({
+        await Expense.create({
             amount: Number(amount),
             title,
             description,
@@ -77,11 +77,11 @@ const updateExpense = async (req, res, next) => {
 
         if (isNaN(Number(expenseID))) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'Invalid expense ID.',
+                message: 'invalid expense ID',
             });
         }
 
-        const expense = await Expenses.findOne({
+        const expense = await Expense.findOne({
             where: {
                 isDeleted: false,
                 id: expenseID,
@@ -90,13 +90,13 @@ const updateExpense = async (req, res, next) => {
 
         if (!expense) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'Expense not found.',
+                message: 'expense not found',
             });
         }
 
         if (expense.createdBy !== userId) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-                message: 'You can not delete this expense.',
+                message: 'you can not delete this expense',
             });
         }
 
@@ -161,11 +161,11 @@ const deleteExpense = async (req, res, next) => {
 
         if (isNaN(Number(expenseID))) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'Invalid expense ID.',
+                message: 'invalid expense ID.',
             });
         }
 
-        const expense = await Expenses.findOne({
+        const expense = await Expense.findOne({
             where: {
                 isDeleted: false,
                 id: expenseID,
@@ -174,7 +174,7 @@ const deleteExpense = async (req, res, next) => {
 
         if (!expense) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'Expense not found.',
+                message: 'expense not found',
             });
         }
 
@@ -206,7 +206,7 @@ const deleteMultipleExpenses = async (req, res, next) => {
         const { expenseIDX } = req.body;
         const expenseIDXasTableID = (expenseIDX || []).map((item) => parseInt(item.id));
 
-        const expenses = await Expenses.findAll({
+        const expenses = await Expense.findAll({
             where: {
                 id: {
                     [Op.in]: expenseIDXasTableID,
@@ -250,7 +250,7 @@ const getTotalExpense = async (req, res, next) => {
             toDate,
         });
 
-        const totalExpense = await Expenses.sum('amount', { where: filter.where });
+        const totalExpense = await Expense.sum('amount', { where: filter.where });
 
         return res.status(HTTP_STATUS.OK).json({ totalExpense });
     } catch (error) {
@@ -275,7 +275,7 @@ const addExpensesToDOs = async (req, res, next) => {
             return acc;
         }, {});
 
-        const expenses = await Expenses.findAll({
+        const expenses = await Expense.findAll({
             where: {
                 id: {
                     [Op.in]: expenseIDX,
