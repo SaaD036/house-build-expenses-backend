@@ -17,7 +17,7 @@ export default [
                     reportUsedIgnorePattern: false,
                 },
             ],
-            'no-undef': 0,
+            'no-undef': 2,
             semi: 2,
             'indent-legacy': ['error', 4],
             quotes: [2, 'single'],

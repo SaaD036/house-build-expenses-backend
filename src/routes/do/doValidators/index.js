@@ -59,10 +59,10 @@ const createDOvalidator = [
         .withMessage('DO date format invalid'),
 ];
 
-const addExpensesValidator = [
+const addRemoveExpensesValidator = [
     check('expenseIdx').isArray({ min: 1 }).withMessage('expense id is required'),
     check('expenseIdx.*.id').trim().isLength({ min: 1 }).withMessage('expense id must be valid'),
     validtorHandler,
 ];
 
-module.exports = { createDOvalidator, addExpensesValidator };
+module.exports = { createDOvalidator, addRemoveExpensesValidator };

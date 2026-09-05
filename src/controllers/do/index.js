@@ -1,6 +1,10 @@
 const { DOs } = require('../../models');
 
-const { addDoToExpensesService } = require('../../services/dos/doExpenses');
+const {
+    addDoToExpensesService,
+    removeDoFromExpensesService,
+    removeDoFromAllExpensesService,
+} = require('../../services/dos/doExpenses');
 
 const { prepareFiltersForAllDos } = require('../../queryHelper/dos');
 
@@ -80,8 +84,41 @@ const addDoToExpenses = async (req, res, next) => {
     }
 };
 
+const removeDoFromExpenses = async (req, res, next) => {
+    try {
+        const { doId } = req.params;
+        const { expenseIdx } = req.body;
+
+        const expenseIdxArray = expenseIdx.map((idObj) => idObj.id);
+
+        await removeDoFromExpensesService(req.user.id, doId, expenseIdxArray);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'do removed successfully from expenses',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const removeDoFromAllExpenses = async (req, res, next) => {
+    try {
+        const { doId } = req.params;
+
+        await removeDoFromAllExpensesService(req.user.id, doId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'do removed successfully from expenses',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllDOs,
     createDO,
     addDoToExpenses,
+    removeDoFromExpenses,
+    removeDoFromAllExpenses,
 };
