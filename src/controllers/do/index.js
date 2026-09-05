@@ -1,5 +1,11 @@
 const { DOs } = require('../../models');
 
+const {
+    addDoToExpensesService,
+    removeDoFromExpensesService,
+    removeDoFromAllExpensesService,
+} = require('../../services/dos/doExpenses');
+
 const { prepareFiltersForAllDos } = require('../../queryHelper/dos');
 
 const { HTTP_STATUS } = require('../../constants/http');
@@ -61,7 +67,58 @@ const createDO = async (req, res, next) => {
     }
 };
 
+const addDoToExpenses = async (req, res, next) => {
+    try {
+        const { doId } = req.params;
+        const { expenseIdx } = req.body;
+
+        const expenseIdxArray = expenseIdx.map((idObj) => idObj.id);
+
+        await addDoToExpensesService(req.user.id, doId, expenseIdxArray);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'do addedd successfully to expenses',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const removeDoFromExpenses = async (req, res, next) => {
+    try {
+        const { doId } = req.params;
+        const { expenseIdx } = req.body;
+
+        const expenseIdxArray = expenseIdx.map((idObj) => idObj.id);
+
+        await removeDoFromExpensesService(req.user.id, doId, expenseIdxArray);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'do removed successfully from expenses',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const removeDoFromAllExpenses = async (req, res, next) => {
+    try {
+        const { doId } = req.params;
+
+        await removeDoFromAllExpensesService(req.user.id, doId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'do removed successfully from expenses',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllDOs,
     createDO,
+    addDoToExpenses,
+    removeDoFromExpenses,
+    removeDoFromAllExpenses,
 };
