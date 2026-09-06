@@ -1,4 +1,4 @@
-const { DOs } = require('../../models');
+const { DO } = require('../../models');
 
 const {
     addDoToExpensesService,
@@ -23,7 +23,7 @@ const getAllDOs = async (req, res, next) => {
             createdBy,
         });
 
-        const allDOs = await DOs.findAll({
+        const allDOs = await DO.findAll({
             where: filters.where,
             include: [
                 {
@@ -49,7 +49,7 @@ const createDO = async (req, res, next) => {
         const { id } = req.user;
         const { shopName, shopAddress, doItem, description, amount, doDate } = req.body;
 
-        await DOs.create({
+        await DO.create({
             shopName,
             shopAddress,
             doItem,

@@ -3,18 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const process = require('process');
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../../database/config/config.json')[env];
-const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-    sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-    sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+const basename = path.basename(__filename);
+const config = require(__dirname + '/../../database/config.js');
+
+const db = {};
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 fs.readdirSync(__dirname)
     .filter((file) => {
@@ -39,4 +33,16 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+/**
+ * @typedef {Object} Database
+ * @property {Sequelize.Sequelize} sequelize
+ * @property {typeof Sequelize} Sequelize
+ * @property {import('./do')} DO
+ * @property {import('./expense')} Expense
+ * @property {import('./user')} User
+ */
+
+/** @type {Database & Record<string, any>} */
+const exportedDb = db;
+
+module.exports = exportedDb;
