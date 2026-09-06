@@ -1,11 +1,12 @@
 const _ = require('lodash');
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize');
 
-const { Expenses } = require('../../models');
+const { Expense } = require('../../models');
+
+const { addSingleExpenseInTheDoService } = require('../../services/expense');
 
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
-
-const { createExpenseEditHistoryItem } = require('../../services/expense');
+const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
 const { HTTP_STATUS } = require('../../constants/http');
 
@@ -22,17 +23,23 @@ const getAllExpenses = async (req, res, next) => {
         });
 
         const [expenses, expensesCount] = await Promise.all([
-            Expenses.findAll({
-                include: {
-                    association: 'creator',
-                    attributes: ['id', 'firstName', 'lastName'],
-                },
+            Expense.findAll({
+                include: [
+                    {
+                        association: 'creator',
+                        attributes: ['id', 'firstName', 'lastName'],
+                    },
+                    {
+                        association: 'do',
+                        attributes: ['id', 'shopName', 'doItem', 'amount', 'doDate'],
+                    },
+                ],
                 where: filter.where,
                 limit: filter.limit,
                 offset: filter.offset,
                 order: ['expenseAt'],
             }),
-            Expenses.count({ where: filter.where }),
+            Expense.count({ where: filter.where }),
         ]);
 
         return res.status(HTTP_STATUS.OK).json({ expenses, expensesCount });
@@ -45,7 +52,7 @@ const createExpense = async (req, res, next) => {
     try {
         const { amount, title, description, expenseAt } = req.body;
 
-        await Expenses.create({
+        await Expense.create({
             amount: Number(amount),
             title,
             description,
@@ -70,11 +77,11 @@ const updateExpense = async (req, res, next) => {
 
         if (isNaN(Number(expenseID))) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'Invalid expense ID.',
+                message: 'invalid expense ID',
             });
         }
 
-        const expense = await Expenses.findOne({
+        const expense = await Expense.findOne({
             where: {
                 isDeleted: false,
                 id: expenseID,
@@ -83,13 +90,13 @@ const updateExpense = async (req, res, next) => {
 
         if (!expense) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'Expense not found.',
+                message: 'expense not found',
             });
         }
 
         if (expense.createdBy !== userId) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-                message: 'You can not delete this expense.',
+                message: 'you can not delete this expense',
             });
         }
 
@@ -154,11 +161,11 @@ const deleteExpense = async (req, res, next) => {
 
         if (isNaN(Number(expenseID))) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'Invalid expense ID.',
+                message: 'invalid expense ID.',
             });
         }
 
-        const expense = await Expenses.findOne({
+        const expense = await Expense.findOne({
             where: {
                 isDeleted: false,
                 id: expenseID,
@@ -167,7 +174,7 @@ const deleteExpense = async (req, res, next) => {
 
         if (!expense) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'Expense not found.',
+                message: 'expense not found',
             });
         }
 
@@ -199,7 +206,7 @@ const deleteMultipleExpenses = async (req, res, next) => {
         const { expenseIDX } = req.body;
         const expenseIDXasTableID = (expenseIDX || []).map((item) => parseInt(item.id));
 
-        const expenses = await Expenses.findAll({
+        const expenses = await Expense.findAll({
             where: {
                 id: {
                     [Op.in]: expenseIDXasTableID,
@@ -243,9 +250,66 @@ const getTotalExpense = async (req, res, next) => {
             toDate,
         });
 
-        const totalExpense = await Expenses.sum('amount', { where: filter.where });
+        const totalExpense = await Expense.sum('amount', { where: filter.where });
 
         return res.status(HTTP_STATUS.OK).json({ totalExpense });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const addExpensesToDOs = async (req, res, next) => {
+    try {
+        const payload = Array.isArray(req.body) ? req.body : _.get(req, 'body.idx', []);
+
+        if (!Array.isArray(payload) || payload.length === 0) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                message: 'Invalid payload',
+            });
+        }
+
+        const expenseIDX = payload.map((item) => Number(item.expenseId));
+        const expenseToDOMap = payload.reduce((acc, item) => {
+            acc[Number(item.expenseId)] = Number(item.doId);
+
+            return acc;
+        }, {});
+
+        const expenses = await Expense.findAll({
+            where: {
+                id: {
+                    [Op.in]: expenseIDX,
+                },
+                isDeleted: false,
+            },
+        });
+
+        (expenses || []).forEach((expense) => {
+            if (expenseToDOMap[expense.id]) {
+                expense.doId = expenseToDOMap[expense.id];
+            }
+        });
+
+        await Promise.all((expenses || []).map(async (expense) => await expense.save()));
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'successfull',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const addSingleExpenseToDo = async (req, res, next) => {
+    try {
+        const { expenseId } = req.params;
+        const { doId } = req.body;
+
+        await addSingleExpenseInTheDoService(req.user.id, expenseId, doId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            mesaage: 'expense added to DO',
+        });
     } catch (error) {
         next(error);
     }
@@ -258,4 +322,6 @@ module.exports = {
     deleteExpense,
     deleteMultipleExpenses,
     getTotalExpense,
+    addExpensesToDOs,
+    addSingleExpenseToDo,
 };

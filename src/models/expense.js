@@ -1,15 +1,21 @@
 'use strict';
 const { Sequelize, Model } = require('sequelize');
 
-const PROTECTED_ATTRIBUTES = ['createdBy'];
+const PROTECTED_ATTRIBUTES = ['createdBy', 'doId'];
 
 module.exports = (sequelize, DataTypes) => {
     class Expense extends Model {
-        static associate({ User }) {
+        static associate({ User, DO }) {
             this.belongsTo(User, {
                 foreignKey: 'createdBy',
                 onDelete: 'CASCADE',
                 as: 'creator',
+            });
+
+            this.belongsTo(DO, {
+                foreignKey: 'doId',
+                onDelete: 'CASCADE',
+                as: 'do',
             });
         }
 
@@ -59,6 +65,16 @@ module.exports = (sequelize, DataTypes) => {
                 field: 'created_by',
                 onDelete: 'CASCADE',
             },
+            doId: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'DOs',
+                    key: 'id',
+                },
+                field: 'do_id',
+                onDelete: 'CASCADE',
+            },
             expenseAt: {
                 type: DataTypes.DATE,
                 allowNull: false,
@@ -93,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            modelName: 'Expenses',
+            modelName: 'Expense',
             tableName: 'expenses',
         }
     );

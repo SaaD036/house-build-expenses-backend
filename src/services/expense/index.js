@@ -1,34 +1,45 @@
-const createExpenseEditHistoryItem = (task_type, field, task_by, new_value, old_value) => {
-    let item = {
-        task_type,
-        task_by,
-        task_at: new Date(),
+const { get } = require('lodash');
+
+const { Expenses, DOs } = require('../../models');
+
+const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
+
+const { NotFoundError } = require('../../utilities/errors/ApiError');
+
+const addSingleExpenseInTheDoService = async (userId, expenseId, doId) => {
+    const [expense, theDo] = await Promise.all([
+        Expenses.findOne({ where: { id: expenseId } }),
+        DOs.findOne({ where: { id: doId } }),
+    ]);
+
+    if (!expense) {
+        throw new NotFoundError(`expense with id=${expenseId} not found`);
+    }
+
+    if (!theDo) {
+        throw new NotFoundError(`do with id=${doId} not found`);
+    }
+
+    const existingCombination = await Expenses.findOne({ where: { id: expenseId, doId } });
+
+    if (existingCombination) {
+        return;
+    }
+
+    const newEditHistory = [];
+    newEditHistory.push(
+        createExpenseEditHistoryItem('add_update_do', 'do_id', userId, doId, expense.doId)
+    );
+
+    expense.doId = doId;
+    expense.expenseEditHistory = {
+        last_updated_by: userId,
+        history: [...get(expense, 'expenseEditHistory.history', []), ...newEditHistory],
     };
 
-    if (field) {
-        item = {
-            ...item,
-            field,
-        };
-    }
-
-    if (new_value) {
-        item = {
-            ...item,
-            new_value,
-        };
-    }
-
-    if (old_value) {
-        item = {
-            ...item,
-            old_value,
-        };
-    }
-
-    return item;
+    await expense.save();
 };
 
 module.exports = {
-    createExpenseEditHistoryItem,
+    addSingleExpenseInTheDoService,
 };

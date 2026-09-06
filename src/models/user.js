@@ -8,8 +8,8 @@ const PROTECTED_ATTRIBUTES = ['password', 'resetPasswordToken'];
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
-        static associate({ Expenses }) {
-            this.hasMany(Expenses, {
+        static associate({ Expense, DO }) {
+            this.hasMany(Expense, {
                 foreignKey: 'createdBy',
                 as: 'expenses',
             });
