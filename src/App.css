@@ -54,6 +54,7 @@ a {
     width: 100%;
     max-height: 100vh;
     overflow: none;
+    flex-direction: column;
 }
 
 .tabComponentWrapper {
@@ -113,4 +114,12 @@ a {
 
 .bg-color-green {
     background-color: #158901;
+}
+
+.form-disabled-message {
+    width: 90%;
+    border-radius: 5px;
+    background-color: #f7caca;
+    text-align: center;
+    padding: 7px 0px;
 }

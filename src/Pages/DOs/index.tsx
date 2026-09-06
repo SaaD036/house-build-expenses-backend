@@ -2,40 +2,40 @@ import React, { useEffect, useState } from 'react';
 
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
-import UsersPageComponent from '../../Components/Users/UsersPageComponent';
+import DOpageComponent from '../../Components/DOs/DOpageComponent';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 
-import { USERS_PAGE_TABS, USERS_PAGE_TABS_VALUES } from './constants';
+import { DO_PAGE_TABS, DO_PAGE_TABS_VALUES } from './constants';
 
 import styles from './styles.module.css';
 
-const USER_PAGE_TITLE = 'Users';
+const DO_PAGE_TITLE = 'DOs';
 
-const UsersPage = () => {
+const DOpage = () => {
     const query = useQuery();
-    const tabName = query.get('tab') || USERS_PAGE_TABS_VALUES.SEE_USERS;
+    const tabName = query.get('tab') || DO_PAGE_TABS_VALUES.SEE_DO;
 
     const [activeTab, setActiveTab] = useState(tabName);
 
     useEffect(() => {
-        document.title = USER_PAGE_TITLE;
+        document.title = DO_PAGE_TITLE;
     }, []);
 
     return (
-        <div className={'pageComponent center'}>
+        <div className={`pageComponent center ${styles.usersPage}`}>
             <Header
                 components={
                     <CustomNavTabs
-                        tabItems={USERS_PAGE_TABS}
+                        tabItems={DO_PAGE_TABS}
                         selectedTab={activeTab}
                         onTabSelect={(tab: string) => setActiveTab(tab)}
                     />
                 }
             />
-            <UsersPageComponent tabName={activeTab} />
+            <DOpageComponent tabName={activeTab} />
         </div>
     );
 };
 
-export default UsersPage;
+export default DOpage;

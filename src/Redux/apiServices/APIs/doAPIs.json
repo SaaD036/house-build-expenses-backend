@@ -1,0 +1,10 @@
+{
+    "GET_ALL_DOS": {
+        "path": "/do",
+        "method": "GET"
+    },
+    "CREATE_DO": {
+        "path": "/do",
+        "method": "POST"
+    }
+}

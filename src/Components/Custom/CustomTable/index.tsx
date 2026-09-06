@@ -8,7 +8,6 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Tooltip,
     Paper,
 } from '@mui/material';
 import {
@@ -20,6 +19,7 @@ import {
 
 import CustomPagination from '../CustomPagination';
 import TableFilterGroups from './TableFilterGroups';
+import CustomTooltip from '../CustomTooltip';
 
 import { CustomTablePropsType, CustomTableRowDataType } from './interfaces';
 import styles from './styles.module.css';
@@ -90,9 +90,9 @@ const CustomTable = (props: CustomTablePropsType) => {
     const renderRefreshButton = () => {
         return (
             <Stack className={styles.refreshButtonContainer} alignItems="flex-end">
-                <Tooltip title="Refresh">
+                <CustomTooltip title="Refresh">
                     <RefreshIcon className={`icon ${styles.refreshIcon}`} onClick={loadData} />
-                </Tooltip>
+                </CustomTooltip>
             </Stack>
         );
     };
@@ -158,9 +158,9 @@ const CustomTable = (props: CustomTablePropsType) => {
 
             if (typeof tableRowCellContent === 'string' && tableRowCellContent.length >= 20) {
                 tableRowCellContent = (
-                    <Tooltip title={tableRowCellContent}>
+                    <CustomTooltip title={tableRowCellContent}>
                         <div className="table-text">{tableRowCellContent}</div>
-                    </Tooltip>
+                    </CustomTooltip>
                 );
             }
 
