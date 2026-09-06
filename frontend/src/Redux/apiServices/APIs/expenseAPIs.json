@@ -1,0 +1,22 @@
+{
+    "GET_ALL_EXPENSES": {
+        "path": "/expense",
+        "method": "GET"
+    },
+    "CREATE_EXPENSE": {
+        "path": "/expense",
+        "method": "POST"
+    },
+    "DELETE_SINGLE_EXPENSE": {
+        "path": "/expense/{id}",
+        "method": "DELETE"
+    },
+    "EDIT_SINGLE_EXPENSE": {
+        "path": "/expense/{id}",
+        "method": "PATCH"
+    },
+    "GET_TOTAL_EXPENSE": {
+        "path": "/expense/get-total-expense",
+        "method": "GET"
+    }
+}

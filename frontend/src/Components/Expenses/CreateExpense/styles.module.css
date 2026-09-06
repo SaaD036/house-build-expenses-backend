@@ -1,0 +1,11 @@
+.buttonSection {
+    height: 36.5px;
+}
+
+.formDisabledMessage {
+    width: 90%;
+    border-radius: 5px;
+    background-color: #f7caca;
+    text-align: center;
+    padding: 7px 0px;
+}

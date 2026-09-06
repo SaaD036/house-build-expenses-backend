@@ -1,0 +1,21 @@
+.editExpenseFormWrapper {
+    min-width: 550px;
+    display: grid;
+}
+
+.editExpenseFormWrapperDisabled {
+    pointer-events: none;
+    cursor: no-drop;
+}
+
+.formDisabledMessage {
+    width: 80%;
+    border-radius: 5px;
+    background-color: #f7caca;
+    text-align: center;
+    padding: 7px 0px;
+}
+
+.submitButton {
+    margin-left: 5px;
+}

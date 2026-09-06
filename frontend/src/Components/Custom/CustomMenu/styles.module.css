@@ -1,0 +1,13 @@
+.menuItem {
+    border-radius: 5px;
+    margin: 2px;
+}
+
+.menuItem:hover {
+    background-color: #d1f4cb;
+}
+
+.menuItemLabelContainer {
+    display: flex;
+    align-items: center;
+}

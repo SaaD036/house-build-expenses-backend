@@ -1,0 +1,14 @@
+{
+    "LOGIN": {
+        "path": "/auth/login",
+        "method": "POST"
+    },
+    "FORGOT_PASSWORD": {
+        "path": "/auth/forgot-password",
+        "method": "POST"
+    },
+    "RESET_PASSWORD": {
+        "path": "/auth/reset-password",
+        "method": "POST"
+    }
+}

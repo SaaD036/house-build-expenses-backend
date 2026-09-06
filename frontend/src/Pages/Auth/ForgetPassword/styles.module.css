@@ -1,0 +1,98 @@
+.forgotPasswordPage {
+    min-height: 100vh;
+    min-width: 100vw;
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+    height: calc(50vh - 200px);
+}
+
+.forgotPasswordSectionContainer {
+    height: 400px;
+    width: 100%;
+}
+
+.welcomeSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.welcomeImage {
+    width: 360px;
+}
+
+.divider {
+    width: 1px;
+    height: 100%;
+    margin: 0px 20px !important;
+}
+
+.forgotPassInputSection {
+    width: 350px;
+    display: grid;
+    gap: 10px;
+}
+
+.forgotPasswordInput {
+    width: 350px;
+    display: grid;
+    gap: 10px;
+}
+
+.errorMessage {
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.login {
+    height: 30px;
+    padding: 0px 20px;
+}
+
+.login:hover {
+    background-color: #158901;
+    border-radius: 15px;
+}
+
+.login a {
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.login a:hover {
+    color: white;
+}
+
+.footer {
+    width: 100%;
+    height: calc(50vh - 230px);
+    align-items: flex-end !important;
+}
+
+.footer div {
+    height: 50px;
+}
+
+.footer div span {
+    color: #158901;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 22px;
+}
+
+@media only screen and (max-width: 768px) {
+    .forgotPasswordSectionContainer {
+        flex-direction: column;
+    }
+
+    .divider {
+        display: none;
+    }
+
+    .forgotPassInputSection {
+        min-width: 340px;
+        width: 90%;
+    }
+}

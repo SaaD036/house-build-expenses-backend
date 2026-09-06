@@ -1,0 +1,8 @@
+.avatarCircle {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    font-size: 25px;
+    color: #158901;
+    border: 3px solid #158901;
+}

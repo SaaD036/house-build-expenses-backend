@@ -1,0 +1,61 @@
+.formCurrencyInputContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.formCurrencyInputContainer div {
+    margin: 2px 0px 2px 2px;
+    font-size: 15px;
+}
+
+.currencyWithSymbolWrapper {
+    position: relative;
+}
+
+.currencyWithSymbolWrapper div {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    pointer-events: none;
+}
+
+.currencyWithSymbolWrapper input {
+    padding: 5px 45px 5px 5px;
+    height: 35px;
+    width: 100%;
+    outline: none;
+    color: #878787;
+    border-radius: 4px;
+    display: block;
+}
+
+.currencyWithSymbolWrapper input:focus {
+    border: 1px solid #158901;
+}
+
+.currencyTKsymbol {
+    width: 25px;
+    left: 0px;
+}
+
+.currencyBDTsymbol {
+    width: 45px;
+    right: 0px;
+}
+
+.currencyBDTsymbol span {
+    color: #5a5a5a;
+}
+
+.formCurrencyInputBox {
+    border: 1px solid #878787;
+}
+
+.inputError {
+    border: 1px solid red;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 13px !important;
+}
