@@ -1,0 +1,37 @@
+.paginationItem {
+    outline: none;
+}
+
+.paginationItem:hover {
+    background-color: #c1f5b8 !important;
+}
+
+.paginationItemArrow {
+    background-color: #158901 !important;
+}
+
+.paginationItemArrow:hover {
+    background-color: #158901 !important;
+}
+
+.paginationItemSelected {
+    background-color: white !important;
+}
+
+.paginationItemSelected:hover {
+    background-color: transparent !important;
+}
+
+.selectItemsPerPage {
+    height: 32px;
+    padding: 2px 10px;
+    color: #158901;
+    border: 1.5px solid #158901;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.selectItemsPerPageOptions {
+    cursor: pointer;
+}

@@ -1,0 +1,37 @@
+.formTextAreaContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.formTextAreaContainer div {
+    margin: 2px 0px 2px 2px;
+    font-size: 15px;
+}
+
+.formTextAreaContainer textarea {
+    width: 100%;
+    min-height: 70px;
+    max-height: 150px;
+    padding: 5px 8px;
+    outline: none;
+    color: #878787;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.formTextAreaContainer textarea:focus {
+    border: 1px solid #158901;
+}
+
+.formTextArea {
+    border: 1px solid #878787;
+}
+
+.inputError {
+    border: 1px solid red;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 13px !important;
+}

@@ -1,0 +1,125 @@
+body {
+    margin: 0;
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+        'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(242, 244, 247);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px #f1f1f1;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #158901;
+    border-radius: 2px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.App {
+    min-height: 100vh;
+}
+
+.container {
+    height: 100vh;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-v {
+    display: flex;
+    align-items: center;
+}
+
+.center-h {
+    display: flex;
+    justify-content: center;
+}
+
+.pageComponent {
+    width: 100%;
+    max-height: 100vh;
+    overflow: none;
+    flex-direction: column;
+}
+
+.tabComponentWrapper {
+    width: 95%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 8px 5px;
+}
+
+.links {
+    text-decoration: none;
+    color: black;
+}
+
+.text {
+    color: rgb(55 65 81);
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.text-error {
+    color: #e00b0b;
+}
+
+.table-text {
+    color: rgb(68, 73, 81);
+}
+
+.button {
+    padding: 6px 12px !important;
+    background-color: #158901 !important;
+    border-radius: 5px !important;
+    color: white !important;
+    border: none;
+    cursor: pointer;
+}
+
+.button-disabled {
+    padding: 6px 12px !important;
+    background-color: #4b4e49 !important;
+    border-radius: 5px !important;
+    color: white !important;
+    cursor: not-allowed;
+}
+
+.button-outlined {
+    border: 1px solid #158901;
+    color: black !important;
+}
+
+.button-cancel {
+    background-color: rgb(175, 5, 5) !important;
+}
+
+.icon {
+    color: #158901;
+}
+
+.bg-color-green {
+    background-color: #158901;
+}
+
+.form-disabled-message {
+    width: 90%;
+    border-radius: 5px;
+    background-color: #f7caca;
+    text-align: center;
+    padding: 7px 0px;
+}

@@ -1,0 +1,21 @@
+.cardContainerWrapper {
+    width: 100%;
+    padding: 15px 35px;
+    background-color: white;
+    border-radius: 15px;
+    /* border: 0.5px solid #b0f6a3; */
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 2px -1px, rgba(0, 0, 0, 0.14) 0px 2.5px 3px 1px;
+}
+
+.cardContainerTitle {
+    height: 100%;
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.switchViewButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
