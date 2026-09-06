@@ -1,0 +1,15 @@
+.tableSectionContainer {
+    margin-top: 20px;
+}
+
+.actionColumnIcon {
+    background-color: transparent;
+    cursor: pointer;
+    padding: 1.5px;
+}
+
+.actionColumnIcon:hover {
+    color: white;
+    background-color: #158901;
+    border-radius: 50%;
+}

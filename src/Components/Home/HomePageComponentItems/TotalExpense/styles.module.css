@@ -1,0 +1,28 @@
+.totalExpense {
+    height: 100%;
+    width: 100%;
+}
+
+.totalExpenseTitle {
+    font-size: 22px;
+    font-weight: lighter;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #158901;
+}
+
+.totalExpenseBody {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.totalExpenseText {
+    flex-grow: 1;
+    min-width: 200px;
+    margin: 15px 0px;
+}
+
+.loaderShimmer {
+    min-width: 200px;
+    color: #158901;
+}

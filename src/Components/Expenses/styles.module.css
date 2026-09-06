@@ -1,0 +1,6 @@
+.expenseTabComponentWrapper {
+    width: 95%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 8px 5px;
+}

@@ -1,0 +1,2 @@
+export const GET_ALL_EXPENSES = 'GET_ALL_EXPENSES';
+export const GET_TOTAL_EXPENSE = 'GET_TOTAL_EXPENSE';

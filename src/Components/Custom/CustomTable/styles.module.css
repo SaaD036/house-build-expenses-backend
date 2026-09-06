@@ -1,0 +1,35 @@
+.refreshButtonContainer {
+    padding: 10px 0px;
+}
+
+.refreshIcon {
+    cursor: pointer;
+}
+
+.tableContainer {
+    border: 1px solid #158901;
+    border-radius: 3px 3px 5px 5px;
+}
+
+.titleIcon {
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 17px !important;
+}
+
+.tableheaderCell {
+    color: white !important;
+}
+
+.tableRowCell {
+    border-color: #158901 !important;
+    max-width: 120px !important;
+}
+
+.tableRowCellContent {
+    max-height: 30px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
