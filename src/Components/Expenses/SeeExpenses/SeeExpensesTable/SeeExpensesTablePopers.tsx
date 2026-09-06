@@ -7,6 +7,7 @@ import {
     AddToPhotos as AddToAlbumIcon,
     WorkHistory as EditHistoryIcon,
     Info as SeeDetailsIcon,
+    AssignmentReturn as DoIcon,
 } from '@mui/icons-material';
 
 import CustomMenu from '../../../Custom/CustomMenu';
@@ -63,6 +64,7 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
                 createActionColumnMenuItem('delete', 'Delete', DeleteIcon, () =>
                     setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl)
                 ),
+                createActionColumnMenuItem('add_do', 'Add to DO', DoIcon, () => {}),
                 ...actionColumnMenuItems,
             ];
         }
