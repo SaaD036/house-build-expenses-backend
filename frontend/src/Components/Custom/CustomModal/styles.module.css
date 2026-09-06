@@ -19,7 +19,8 @@
 
 .title {
     font-size: 22px;
-    margin: 10px 0px 10px 8px;
+    margin: 10px 0px 10px 20px;
+    font-weight: 700;
 }
 
 .closeIcon {
@@ -30,7 +31,7 @@
 }
 
 .closeIcon:hover {
-    color: #2f7e23;
+    color: #158901;
 }
 
 .childrenContainer {
