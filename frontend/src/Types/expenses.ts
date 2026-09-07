@@ -1,3 +1,6 @@
+import { UserAccessRoleType } from '.';
+import { MultiTabModalTabItemType } from '../Components/Custom/CustomModal/MultiTabModal/interfaces';
+
 export type ExpenseType = {
     id: number;
     title: string;
@@ -18,3 +21,8 @@ export type CreateExpenseFormDataType = {
     description: string;
     expenseAt: string;
 };
+
+export type ExpenseModalTabType = Record<
+    string,
+    MultiTabModalTabItemType & { role: UserAccessRoleType }
+>;
