@@ -3,7 +3,10 @@ const { Op } = require('sequelize');
 
 const { Expense } = require('../../models');
 
-const { addSingleExpenseInTheDoService } = require('../../services/expense');
+const {
+    addSingleExpenseInTheDoService,
+    getSingleExpenseService,
+} = require('../../services/expense');
 
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
@@ -63,6 +66,18 @@ const createExpense = async (req, res, next) => {
         return res.status(HTTP_STATUS.OK).json({
             message: 'successfull',
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getSingleExpense = async (req, res, next) => {
+    try {
+        const { expenseID } = req.params;
+
+        const expense = await getSingleExpenseService(expenseID, req.user);
+
+        return res.status(HTTP_STATUS.OK).json({ expense });
     } catch (error) {
         next(error);
     }
@@ -318,6 +333,7 @@ const addSingleExpenseToDo = async (req, res, next) => {
 module.exports = {
     getAllExpenses,
     createExpense,
+    getSingleExpense,
     updateExpense,
     deleteExpense,
     deleteMultipleExpenses,

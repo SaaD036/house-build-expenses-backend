@@ -12,6 +12,12 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'creator',
             });
 
+            this.belongsTo(User, {
+                foreignKey: 'createdBy',
+                as: 'lastUpdater',
+                targetKey: 'id',
+            });
+
             this.belongsTo(DO, {
                 foreignKey: 'doId',
                 onDelete: 'CASCADE',
@@ -69,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 allowNull: true,
                 references: {
-                    model: 'DOs',
+                    model: 'dos',
                     key: 'id',
                 },
                 field: 'do_id',
