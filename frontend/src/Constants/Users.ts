@@ -4,6 +4,8 @@ export const UserRole = {
     VISITOR: 'visitor',
 };
 
+export const AdminRoleArray = [UserRole.ADMIN, UserRole.VISITOR];
+
 export const UserAccountStatus = {
     ACTIVE: 'active',
     DEACTIVE: 'deactive',
