@@ -4,6 +4,7 @@ const router = express.Router();
 const {
     getAllExpenses,
     createExpense,
+    getSingleExpense,
     updateExpense,
     deleteExpense,
     deleteMultipleExpenses,
@@ -25,6 +26,7 @@ const validatorHandler = require('../validatorHandler');
 router.get('/', getAllExpenses);
 router.post('/', adminMiddleware, createExpenseValidator, validatorHandler, createExpense);
 
+router.get('/:expenseID', getSingleExpense);
 router.patch(
     '/:expenseID',
     adminMiddleware,
