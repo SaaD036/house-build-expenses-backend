@@ -73,10 +73,7 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
     if (loggedInUser.role === UserRole.USER) {
         delete expense.expenseEditHistory;
 
-        return {
-            ...expense,
-            expenseEditHistory: null,
-        };
+        return expense;
     }
 
     const [historyRows] = await sequelize.query(

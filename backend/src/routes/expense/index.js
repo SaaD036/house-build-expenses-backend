@@ -26,15 +26,6 @@ const validatorHandler = require('../validatorHandler');
 router.get('/', getAllExpenses);
 router.post('/', adminMiddleware, createExpenseValidator, validatorHandler, createExpense);
 
-router.get('/:expenseID', getSingleExpense);
-router.patch(
-    '/:expenseID',
-    adminMiddleware,
-    createExpenseValidator,
-    validatorHandler,
-    updateExpense
-);
-router.delete('/:expenseID', adminMiddleware, deleteExpense);
 router.delete(
     '/delete-multiple',
     adminMiddleware,
@@ -51,5 +42,15 @@ router.post(
     validatorHandler,
     addSingleExpenseToDo
 );
+
+router.get('/:expenseID', getSingleExpense);
+router.patch(
+    '/:expenseID',
+    adminMiddleware,
+    createExpenseValidator,
+    validatorHandler,
+    updateExpense
+);
+router.delete('/:expenseID', adminMiddleware, deleteExpense);
 
 module.exports = router;
