@@ -74,6 +74,12 @@ a {
     font-family: 'Times New Roman', Times, serif;
 }
 
+.text-normal {
+    color: rgb(55 65 81);
+    font-size: 14px !important;
+    font-weight: 400;
+}
+
 .text-error {
     color: #e00b0b;
 }

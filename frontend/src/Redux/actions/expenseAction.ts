@@ -9,7 +9,7 @@ import expenseAPIs from '../apiServices/APIs/expenseAPIs.json';
 
 import { initiateToast } from '../../Components/Custom/CustomToast';
 
-import { GET_ALL_EXPENSES, GET_TOTAL_EXPENSE } from '../types/expenses';
+import { GET_ALL_EXPENSES, GET_SINGLE_EXPENSE, GET_TOTAL_EXPENSE } from '../types/expenses';
 
 import { HTTP_STATUS_CODE } from '../../Constants/HTTP';
 import ValidationError from '../../ErrorHandlers/ValidationError';
@@ -228,7 +228,7 @@ export const getTotalExpense =
             if (status === UNAUTHENTICATED) {
                 throw new ValidationError('User does not have access to expenses');
             } else if (status === INTERNAL_SERVER_ERROR) {
-                throw new ValidationError('Can not fetch expenses');
+                throw new ValidationError('Can not fetch total expense-cost');
             }
 
             dispatch({
@@ -248,3 +248,80 @@ export const getTotalExpense =
             }
         }
     };
+
+export const getSingleExpense = (id: number) => async (dispatch: Dispatch<DispatchType>) => {
+    try {
+        const { path, method } = expenseAPIs.GET_SINGLE_EXPENSE;
+        const { UNAUTHENTICATED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+
+        const { status, data } = await callAxiosAPI({
+            url: buildURL(path, { id }),
+            method: method as Method,
+        });
+
+        if (status === UNAUTHENTICATED) {
+            throw new ValidationError('User does not have access to expenses');
+        } else if (status === INTERNAL_SERVER_ERROR) {
+            throw new ValidationError('Can not fetch expense');
+        }
+
+        const expense = data.expense;
+        const expenseData: ExpenseType = {
+            id: expense.id,
+            title: expense.title,
+            description: expense.description,
+            amount: expense.amount,
+            expenseAt: new Date(expense.expenseAt),
+            lastUpdatedAt: new Date(expense.updatedAt),
+            attachmentURL: expense.attachmentURL,
+            createdAt: expense.createdAt ? new Date(expense.createdAt) : undefined,
+            creator: {
+                creatorID: expense.creator.id,
+                firstName: expense.creator.firstName,
+                lastName: expense.creator.lastName,
+            },
+            lastUpdater: expense.lastUpdater
+                ? {
+                      creatorID: expense.lastUpdater.id,
+                      firstName: expense.lastUpdater.firstName,
+                      lastName: expense.lastUpdater.lastName,
+                  }
+                : undefined,
+            do: expense.do
+                ? {
+                      id: expense.do.id,
+                      shopName: expense.do.shopName,
+                      amount: expense.do.amount,
+                      doDatedoDate: new Date(expense.do.doDate),
+                  }
+                : undefined,
+            expenseEditHistory: expense.expenseEditHistory?.history
+                ? expense.expenseEditHistory.history.map((item: any) => ({
+                      task_type: item.task_type,
+                      task_at: new Date(item.task_at),
+                      field: item.field,
+                      new_value: item.new_value,
+                      updater: {
+                          creatorID: item.updater.id,
+                          firstName: item.updater.firstName,
+                          lastName: item.updater.lastName,
+                      },
+                  }))
+                : undefined,
+        };
+
+        dispatch({
+            type: GET_SINGLE_EXPENSE,
+            payload: {
+                expenseDetails: expenseData,
+            },
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            initiateToast({
+                type: 'error',
+                message: error.message.toString(),
+            });
+        }
+    }
+};

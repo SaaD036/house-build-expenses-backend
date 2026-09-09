@@ -1,36 +1,30 @@
 import React from 'react';
 import { get } from 'lodash';
 
+import ExpenseModalDetails from './ExpenseModalDetails';
 import MultiTabModal from '../../Custom/CustomModal/MultiTabModal';
 
+import { getTabItems } from './utilities';
 import { getUserFromToken } from '../../../Utilities/Users/UserToken';
-import { hasUserAccessToThisResource } from '../../../Utilities/Users/UserAccess';
 
-import { ExpenseModalPropType } from './interfaces';
-import { MultiTabModalTabItemType } from '../../Custom/CustomModal/MultiTabModal/interfaces';
+import { ExpenseModalPropType, ExpenseModalTabKeyType } from './interfaces';
 
 import { EXPENSE_MODAL_TAB } from '../../../Constants/Expenses';
 
-const ExpenseModal = ({ expenseModalTabKey, onCloseModal }: ExpenseModalPropType) => {
+const ExpenseModal = ({ expenseId, expenseModalTabKey, onCloseModal }: ExpenseModalPropType) => {
     const user = getUserFromToken();
     const userRole = get(user, 'role', null);
 
-    const getTabItems = () => {
-        const tabItems: MultiTabModalTabItemType[] = [];
+    const getTabContent = (tabKey: ExpenseModalTabKeyType): React.ReactNode => {
+        if (tabKey === EXPENSE_MODAL_TAB.DETAILS.key) {
+            return <ExpenseModalDetails expenseId={expenseId} userRole={userRole} />;
+        }
 
-        Object.values(EXPENSE_MODAL_TAB).forEach((tabItem) => {
-            if (!userRole || !hasUserAccessToThisResource(tabItem.role, userRole)) {
-                return;
-            }
+        if (tabKey === EXPENSE_MODAL_TAB.EDIT_HISTORY.key) {
+            return <>Expense Edit History here</>;
+        }
 
-            tabItems.push({
-                key: tabItem.key,
-                label: tabItem.label,
-                content: '',
-            });
-        });
-
-        return tabItems;
+        return <div>Content not found</div>;
     };
 
     if (expenseModalTabKey === undefined) {
@@ -42,7 +36,7 @@ const ExpenseModal = ({ expenseModalTabKey, onCloseModal }: ExpenseModalPropType
             open
             title="Expense Details"
             onClose={onCloseModal}
-            tabs={getTabItems()}
+            tabs={getTabItems(userRole, getTabContent)}
             defaultTabId={expenseModalTabKey || ''}
         />
     );

@@ -7,6 +7,10 @@
         "path": "/expense",
         "method": "POST"
     },
+    "GET_SINGLE_EXPENSE": {
+        "path": "/expense/{id}",
+        "method": "GET"
+    },
     "DELETE_SINGLE_EXPENSE": {
         "path": "/expense/{id}",
         "method": "DELETE"
