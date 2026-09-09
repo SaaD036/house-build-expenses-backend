@@ -9,6 +9,7 @@ export type GeneralReducerStateType = {
 
 export type ExpenseReducerStateType = {
     expenses: ExpenseType[] | null;
+    expenseDetails: ExpenseType | null;
     expensesCount: number | null;
     totalExpenses: number | null;
     totalExpensesForThisYear: number | null;
