@@ -83,6 +83,7 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
             h.task_at,
             h.field,
             h.new_value,
+            h.old_value,
             json_build_object(
                 'id', u.id,
                 'firstName', u.first_name,
@@ -95,7 +96,8 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
                 task_by integer,
                 task_at text,
                 field text,
-                new_value text
+                new_value text,
+                old_value text
             )
             LEFT JOIN "users" u ON u.id = h.task_by
             WHERE e.id = :expenseId
