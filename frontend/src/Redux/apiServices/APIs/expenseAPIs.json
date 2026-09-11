@@ -19,6 +19,10 @@
         "path": "/expense/{id}",
         "method": "PATCH"
     },
+    "GET_EXPENSE_EDIT_HISTORY": {
+        "path": "/expense/{id}/edit-history",
+        "method": "GET"
+    },
     "GET_TOTAL_EXPENSE": {
         "path": "/expense/get-total-expense",
         "method": "GET"
