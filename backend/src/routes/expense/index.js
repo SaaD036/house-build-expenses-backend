@@ -11,6 +11,7 @@ const {
     getTotalExpense,
     addExpensesToDOs,
     addSingleExpenseToDo,
+    getExpenseDetails,
 } = require('../../controllers/expense');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
@@ -33,17 +34,18 @@ router.delete(
     validatorHandler,
     deleteMultipleExpenses
 );
-
 router.get('/get-total-expense', getTotalExpense);
 router.post('/add-to-do', addToDOvalidator, validatorHandler, addExpensesToDOs);
+
 router.post(
     '/:expenseId/add-to-do',
     addSingleExpenseToDoValidator,
     validatorHandler,
     addSingleExpenseToDo
 );
+router.get('/:expenseId/edit-history', adminMiddleware, getExpenseDetails);
 
-router.get('/:expenseID', getSingleExpense);
+router.get('/:expenseId', getSingleExpense);
 router.patch(
     '/:expenseID',
     adminMiddleware,

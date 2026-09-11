@@ -11,7 +11,9 @@ const {
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
+const { UserRole } = require('../../constants/roles');
 const { HTTP_STATUS } = require('../../constants/http');
+const { UnauthorizationError } = require('../../utilities/errors/ApiError');
 
 const getAllExpenses = async (req, res, next) => {
     try {
@@ -73,9 +75,9 @@ const createExpense = async (req, res, next) => {
 
 const getSingleExpense = async (req, res, next) => {
     try {
-        const { expenseID } = req.params;
+        const { expenseId } = req.params;
 
-        const expense = await getSingleExpenseService(expenseID, req.user);
+        const expense = await getSingleExpenseService(expenseId, req.user);
 
         return res.status(HTTP_STATUS.OK).json({ expense });
     } catch (error) {
@@ -279,7 +281,7 @@ const addExpensesToDOs = async (req, res, next) => {
 
         if (!Array.isArray(payload) || payload.length === 0) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'Invalid payload',
+                message: 'invalid payload',
             });
         }
 
@@ -330,6 +332,32 @@ const addSingleExpenseToDo = async (req, res, next) => {
     }
 };
 
+const getExpenseDetails = async (req, res, next) => {
+    try {
+        if (req.user.role === UserRole.USER) {
+            throw new UnauthorizationError('you can not access the expense edit history');
+        }
+
+        const { expenseId } = req.params;
+
+        const expense = await getSingleExpenseService(expenseId, req.user);
+        let expenseEditHistory = _.get(expense, 'expenseEditHistory', null);
+
+        delete expenseEditHistory.last_updated_by;
+
+        if (expenseEditHistory !== null && !!expense.lastUpdater) {
+            expenseEditHistory = {
+                ...expenseEditHistory,
+                lastUpdater: expense.lastUpdater,
+            };
+        }
+
+        return res.status(HTTP_STATUS.OK).json({ expenseEditHistory });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
@@ -340,4 +368,5 @@ module.exports = {
     getTotalExpense,
     addExpensesToDOs,
     addSingleExpenseToDo,
+    getExpenseDetails,
 };
