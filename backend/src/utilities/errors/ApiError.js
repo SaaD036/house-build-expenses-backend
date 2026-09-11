@@ -14,10 +14,16 @@ class BadRequestError extends ApiError {
     }
 }
 
+class UnauthorizationError extends ApiError {
+    constructor(message) {
+        super(message, HTTP_STATUS.UNAUTHORIZED);
+    }
+}
+
 class NotFoundError extends ApiError {
     constructor(message) {
         super(message, HTTP_STATUS.NOT_FOUND);
     }
 }
 
-module.exports = { BadRequestError, NotFoundError };
+module.exports = { BadRequestError, UnauthorizationError, NotFoundError };
