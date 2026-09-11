@@ -11,10 +11,11 @@ const {
     getTotalExpense,
     addExpensesToDOs,
     addSingleExpenseToDo,
-    getExpenseDetails,
+    getExpenseEditHistory,
 } = require('../../controllers/expense');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
+const VisitorAdminMiddleware = require('../../middlewares/auth/VisitorAdmin');
 
 const {
     createExpenseValidator,
@@ -43,7 +44,7 @@ router.post(
     validatorHandler,
     addSingleExpenseToDo
 );
-router.get('/:expenseId/edit-history', adminMiddleware, getExpenseDetails);
+router.get('/:expenseId/edit-history', VisitorAdminMiddleware, getExpenseEditHistory);
 
 router.get('/:expenseId', getSingleExpense);
 router.patch(
