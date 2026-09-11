@@ -1,6 +1,7 @@
 import React from 'react';
 import { get } from 'lodash';
 
+import ExpenseEditHistory from '../ExpenseEditHistory';
 import ExpenseModalDetails from './ExpenseModalDetails';
 import MultiTabModal from '../../Custom/CustomModal/MultiTabModal';
 
@@ -21,7 +22,7 @@ const ExpenseModal = ({ expenseId, expenseModalTabKey, onCloseModal }: ExpenseMo
         }
 
         if (tabKey === EXPENSE_MODAL_TAB.EDIT_HISTORY.key) {
-            return <>Expense Edit History here</>;
+            return <ExpenseEditHistory expenseId={expenseId} />;
         }
 
         return <div>Content not found</div>;

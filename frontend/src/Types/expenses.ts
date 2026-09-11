@@ -18,7 +18,8 @@ export type ExpenseEditHistoryType = {
     task_type: string;
     task_at: Date;
     field: string;
-    new_value: string;
+    new_value?: string;
+    old_value?: string;
     updater: ExpendeCreatorUpdaterType;
 };
 
@@ -35,6 +36,7 @@ export type ExpenseType = {
     do?: ExpenseDoType;
     lastUpdater?: ExpendeCreatorUpdaterType;
     expenseEditHistory?: ExpenseEditHistoryType[];
+    expenseEditHistoryCount?: number;
 };
 
 export type CreateExpenseFormDataType = {

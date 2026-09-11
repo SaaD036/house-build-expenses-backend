@@ -9,16 +9,28 @@ import expenseAPIs from '../apiServices/APIs/expenseAPIs.json';
 
 import { initiateToast } from '../../Components/Custom/CustomToast';
 
-import { GET_ALL_EXPENSES, GET_SINGLE_EXPENSE, GET_TOTAL_EXPENSE } from '../types/expenses';
+import {
+    GET_ALL_EXPENSES,
+    GET_EXPENSE_EDIT_HISTORY,
+    GET_SINGLE_EXPENSE,
+    GET_TOTAL_EXPENSE,
+} from '../types/expenses';
 
 import { HTTP_STATUS_CODE } from '../../Constants/HTTP';
 import ValidationError from '../../ErrorHandlers/ValidationError';
 
-import { ExpenseType, CreateExpenseFormDataType } from '../../Types/expenses';
+import {
+    ExpenseType,
+    ExpenseEditHistoryType,
+    CreateExpenseFormDataType,
+    ExpendeCreatorUpdaterType,
+} from '../../Types/expenses';
+import { ExpenseReducerStateType } from '../reducers/reducerDataType';
 import { CustomTableLoadDataTypes } from '../../Components/Custom/CustomTable/interfaces';
+// eslint-disable-next-line max-len
 import { TotalExpenseFormDataType } from '../../Components/Home/HomePageComponentItems/TotalExpense/interfaces';
 
-type DispatchType = { type: string; payload: any };
+type DispatchType = { type: string; payload: Partial<ExpenseReducerStateType> };
 
 export const getAllExpenses =
     (filters?: CustomTableLoadDataTypes) => async (dispatch: Dispatch<DispatchType>) => {
@@ -295,25 +307,73 @@ export const getSingleExpense = (id: number) => async (dispatch: Dispatch<Dispat
                       doDatedoDate: new Date(expense.do.doDate),
                   }
                 : undefined,
-            expenseEditHistory: expense.expenseEditHistory?.history
-                ? expense.expenseEditHistory.history.map((item: any) => ({
-                      task_type: item.task_type,
-                      task_at: new Date(item.task_at),
-                      field: item.field,
-                      new_value: item.new_value,
-                      updater: {
-                          creatorID: item.updater.id,
-                          firstName: item.updater.firstName,
-                          lastName: item.updater.lastName,
-                      },
-                  }))
-                : undefined,
+            expenseEditHistoryCount: get(expense, 'expenseEditHistory.history', []).length,
         };
 
         dispatch({
             type: GET_SINGLE_EXPENSE,
             payload: {
                 expenseDetails: expenseData,
+            },
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            initiateToast({
+                type: 'error',
+                message: error.message.toString(),
+            });
+        }
+    }
+};
+
+export const getExpenseEditHistory = (id: number) => async (dispatch: Dispatch<DispatchType>) => {
+    try {
+        const { path, method } = expenseAPIs.GET_EXPENSE_EDIT_HISTORY;
+        const { UNAUTHENTICATED, UNAUTHORIZED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+
+        const { status, data } = await callAxiosAPI({
+            url: buildURL(path, { id }),
+            method: method as Method,
+        });
+
+        if (status === UNAUTHENTICATED || status === UNAUTHORIZED) {
+            throw new ValidationError('User does not have access to expense edit history');
+        } else if (status === INTERNAL_SERVER_ERROR) {
+            throw new ValidationError('Can not fetch expense edit history');
+        }
+
+        const expenseEditHistory = data.expenseEditHistory;
+        const expenseEditHistoryData: {
+            history: ExpenseEditHistoryType[];
+            lastUpdater: ExpendeCreatorUpdaterType | null;
+        } = {
+            lastUpdater: expenseEditHistory?.lastUpdater
+                ? {
+                      creatorID: expenseEditHistory.lastUpdater.id,
+                      firstName: expenseEditHistory.lastUpdater.firstName,
+                      lastName: expenseEditHistory.lastUpdater.lastName,
+                  }
+                : null,
+            history: expenseEditHistory?.history
+                ? expenseEditHistory.history.map((item: any) => ({
+                      task_type: item.task_type,
+                      task_at: new Date(item.task_at),
+                      field: item.field,
+                      new_value: `${item.new_value ?? ''}`.trim(),
+                      old_value: `${item.old_value ?? ''}`.trim(),
+                      updater: {
+                          creatorID: item.updater.id,
+                          firstName: item.updater.firstName,
+                          lastName: item.updater.lastName,
+                      },
+                  }))
+                : [],
+        };
+
+        dispatch({
+            type: GET_EXPENSE_EDIT_HISTORY,
+            payload: {
+                expenseEditHistory: expenseEditHistoryData,
             },
         });
     } catch (error) {
