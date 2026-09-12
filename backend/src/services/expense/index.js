@@ -4,6 +4,7 @@ const { Op } = require('sequelize');
 
 const { sequelize, User, Expense, DO } = require('../../models');
 
+const { getQueryToPrepareEditHistoryData } = require('../../queryHelper/EditHistory');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
 const { UserRole } = require('../../constants/roles');
@@ -45,7 +46,7 @@ const addSingleExpenseInTheDoService = async (userId, expenseId, doId) => {
 
 const getSingleExpenseService = async (expenseId, loggedInUser) => {
     const expense = await Expense.findOne({
-        where: { id: expenseId, isDeleted: false },
+        where: { id: expenseId },
         include: [
             {
                 association: 'creator',
@@ -77,34 +78,10 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
         return expense;
     }
 
-    const [historyRows] = await sequelize.query(
-        `
-            SELECT 
-            h.task_type,
-            h.task_at,
-            h.field,
-            h.new_value,
-            h.old_value,
-            json_build_object(
-                'id', u.id,
-                'firstName', u.first_name,
-                'lastName', u.last_name
-            ) AS updater
-            FROM expenses e
-            CROSS JOIN LATERAL jsonb_array_elements((e.expense_edit_history->'history')::jsonb) AS h_elem
-            CROSS JOIN LATERAL jsonb_to_record(h_elem) AS h(
-                task_type text,
-                task_by integer,
-                task_at text,
-                field text,
-                new_value text,
-                old_value text
-            )
-            LEFT JOIN "users" u ON u.id = h.task_by
-            WHERE e.id = :expenseId
-            ORDER BY h.task_at DESC
-        `,
-        { replacements: { expenseId } }
+    const historyRows = await getQueryToPrepareEditHistoryData(
+        'expenses',
+        'expense_edit_history',
+        expenseId
     );
 
     const expenseData = expense.toJSON();
@@ -129,7 +106,7 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
 
     if (loggedInUser.role === UserRole.USER) {
         let doDetailsForUser = await DO.findOne({
-            where: { id: expense.doId, isDeleted: false },
+            where: { id: expense.doId },
             raw: true,
             attributes: [
                 'id',
@@ -181,7 +158,19 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
         ],
     });
 
-    return doDetails;
+    const historyRows = await getQueryToPrepareEditHistoryData(
+        'dos',
+        'do_edit_history',
+        expense.doId
+    );
+
+    const doDetailsData = doDetails.toJSON();
+
+    if (doDetailsData.doEditHistory) {
+        doDetailsData.doEditHistory.history = historyRows;
+    }
+
+    return doDetailsData;
 };
 
 module.exports = {
