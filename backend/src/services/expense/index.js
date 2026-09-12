@@ -1,8 +1,10 @@
 /* eslint-disable max-len */
 const { get } = require('lodash');
+const { Op } = require('sequelize');
 
 const { sequelize, User, Expense, DO } = require('../../models');
 
+const { getQueryToPrepareEditHistoryData } = require('../../queryHelper/EditHistory');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
 const { UserRole } = require('../../constants/roles');
@@ -44,7 +46,7 @@ const addSingleExpenseInTheDoService = async (userId, expenseId, doId) => {
 
 const getSingleExpenseService = async (expenseId, loggedInUser) => {
     const expense = await Expense.findOne({
-        where: { id: expenseId, isDeleted: false },
+        where: { id: expenseId },
         include: [
             {
                 association: 'creator',
@@ -76,34 +78,10 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
         return expense;
     }
 
-    const [historyRows] = await sequelize.query(
-        `
-            SELECT 
-            h.task_type,
-            h.task_at,
-            h.field,
-            h.new_value,
-            h.old_value,
-            json_build_object(
-                'id', u.id,
-                'firstName', u.first_name,
-                'lastName', u.last_name
-            ) AS updater
-            FROM expenses e
-            CROSS JOIN LATERAL jsonb_array_elements((e.expense_edit_history->'history')::jsonb) AS h_elem
-            CROSS JOIN LATERAL jsonb_to_record(h_elem) AS h(
-                task_type text,
-                task_by integer,
-                task_at text,
-                field text,
-                new_value text,
-                old_value text
-            )
-            LEFT JOIN "users" u ON u.id = h.task_by
-            WHERE e.id = :expenseId
-            ORDER BY h.task_at DESC
-        `,
-        { replacements: { expenseId } }
+    const historyRows = await getQueryToPrepareEditHistoryData(
+        'expenses',
+        'expense_edit_history',
+        expenseId
     );
 
     const expenseData = expense.toJSON();
@@ -115,7 +93,97 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
     return expenseData;
 };
 
+const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
+    const expense = await Expense.findOne({ where: { id: expenseId } });
+
+    if (!expense) {
+        throw new NotFoundError(`expense not found with id = ${expenseId}`);
+    }
+
+    if (!expense.doId) {
+        return null;
+    }
+
+    if (loggedInUser.role === UserRole.USER) {
+        let doDetailsForUser = await DO.findOne({
+            where: { id: expense.doId },
+            raw: true,
+            attributes: [
+                'id',
+                'shopName',
+                'shopAddress',
+                'amount',
+                'doItem',
+                'description',
+                'doEditHistory',
+                'imageURL',
+                'createdAt',
+                'updatedAt',
+                'doDate',
+                [
+                    sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM expenses AS e
+                        WHERE e.do_id = "DO"."id"
+                        AND e.id != ${Number(expenseId)}
+                        AND e.is_deleted = false
+                    )`),
+                    'otherExpenseCount',
+                ],
+            ],
+        });
+
+        doDetailsForUser = {
+            ...doDetailsForUser,
+            doEditHistoryCount: get(doDetailsForUser, 'doEditHistory.history', []).length,
+        };
+
+        delete doDetailsForUser.doEditHistory;
+
+        return doDetailsForUser;
+    }
+
+    const doDetails = await DO.findOne({
+        where: { id: expense.doId },
+        include: [
+            {
+                association: 'expenses',
+                attributes: ['id', 'amount', 'title', 'expenseAt'],
+                where: {
+                    id: { [Op.ne]: expenseId },
+                    isDeleted: false,
+                },
+                required: false,
+            },
+            {
+                model: User,
+                as: 'lastUpdater',
+                on: sequelize.literal(
+                    '"lastUpdater"."id" = CAST(NULLIF("DO"."do_edit_history"->>\'last_updated_by\', \'\') AS INTEGER)'
+                ),
+                required: false,
+                attributes: ['id', 'firstName', 'lastName'],
+            },
+        ],
+    });
+
+    const historyRows = await getQueryToPrepareEditHistoryData(
+        'dos',
+        'do_edit_history',
+        expense.doId
+    );
+
+    const doDetailsData = doDetails.toJSON();
+
+    if (doDetailsData.doEditHistory) {
+        doDetailsData.doEditHistory.history = historyRows;
+    }
+
+    return doDetailsData;
+};
+
 module.exports = {
     addSingleExpenseInTheDoService,
     getSingleExpenseService,
+    getDoDetailsForExpenseService,
 };

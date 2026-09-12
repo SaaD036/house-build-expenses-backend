@@ -12,6 +12,7 @@ const {
     addExpensesToDOs,
     addSingleExpenseToDo,
     getExpenseEditHistory,
+    getDoDetailsForExpense,
 } = require('../../controllers/expense');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
@@ -45,6 +46,7 @@ router.post(
     addSingleExpenseToDo
 );
 router.get('/:expenseId/edit-history', VisitorAdminMiddleware, getExpenseEditHistory);
+router.get('/:expenseId/do-details', getDoDetailsForExpense);
 
 router.get('/:expenseId', getSingleExpense);
 router.patch(
