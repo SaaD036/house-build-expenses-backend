@@ -155,6 +155,15 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
                 },
                 required: false,
             },
+            {
+                model: User,
+                as: 'lastUpdater',
+                on: sequelize.literal(
+                    '"lastUpdater"."id" = CAST(NULLIF("DO"."do_edit_history"->>\'last_updated_by\', \'\') AS INTEGER)'
+                ),
+                required: false,
+                attributes: ['id', 'firstName', 'lastName'],
+            },
         ],
     });
 

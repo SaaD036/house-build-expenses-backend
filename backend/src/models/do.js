@@ -12,6 +12,12 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'creator',
             });
 
+            this.belongsTo(User, {
+                foreignKey: 'createdBy',
+                as: 'lastUpdater',
+                targetKey: 'id',
+            });
+
             this.hasMany(Expense, {
                 foreignKey: 'doId',
                 as: 'expenses',
