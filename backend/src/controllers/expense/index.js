@@ -6,6 +6,7 @@ const { Expense } = require('../../models');
 const {
     addSingleExpenseInTheDoService,
     getSingleExpenseService,
+    getDoDetailsForExpenseService,
 } = require('../../services/expense');
 
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
@@ -360,6 +361,18 @@ const getExpenseEditHistory = async (req, res, next) => {
     }
 };
 
+const getDoDetailsForExpense = async (req, res, next) => {
+    try {
+        const { expenseId } = req.params;
+
+        const expendeDoDetails = await getDoDetailsForExpenseService(expenseId, req.user);
+
+        return res.status(HTTP_STATUS.OK).json({ expendeDoDetails });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
@@ -371,4 +384,5 @@ module.exports = {
     addExpensesToDOs,
     addSingleExpenseToDo,
     getExpenseEditHistory,
+    getDoDetailsForExpense,
 };

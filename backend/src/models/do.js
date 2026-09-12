@@ -1,15 +1,20 @@
 'use strict';
 const { Sequelize, Model } = require('sequelize');
 
-const PROTECTED_ATTRIBUTES = ['createdBy'];
+const PROTECTED_ATTRIBUTES = ['createdBy', 'isDeleted'];
 
 module.exports = (sequelize, DataTypes) => {
     class DO extends Model {
-        static associate({ User }) {
+        static associate({ User, Expense }) {
             this.belongsTo(User, {
                 foreignKey: 'createdBy',
                 onDelete: 'CASCADE',
                 as: 'creator',
+            });
+
+            this.hasMany(Expense, {
+                foreignKey: 'doId',
+                as: 'expenses',
             });
         }
 

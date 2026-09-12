@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 const { get } = require('lodash');
+const { Op } = require('sequelize');
 
 const { sequelize, User, Expense, DO } = require('../../models');
 
@@ -115,7 +116,76 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
     return expenseData;
 };
 
+const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
+    const expense = await Expense.findOne({ where: { id: expenseId } });
+
+    if (!expense) {
+        throw new NotFoundError(`expense not found with id = ${expenseId}`);
+    }
+
+    if (!expense.doId) {
+        return null;
+    }
+
+    if (loggedInUser.role === UserRole.USER) {
+        let doDetailsForUser = await DO.findOne({
+            where: { id: expense.doId, isDeleted: false },
+            raw: true,
+            attributes: [
+                'id',
+                'shopName',
+                'shopAddress',
+                'amount',
+                'doItem',
+                'description',
+                'doEditHistory',
+                'imageURL',
+                'createdAt',
+                'updatedAt',
+                'doDate',
+                [
+                    sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM expenses AS e
+                        WHERE e.do_id = "DO"."id"
+                        AND e.id != ${Number(expenseId)}
+                        AND e.is_deleted = false
+                    )`),
+                    'otherExpenseCount',
+                ],
+            ],
+        });
+
+        doDetailsForUser = {
+            ...doDetailsForUser,
+            doEditHistoryCount: get(doDetailsForUser, 'doEditHistory.history', []).length,
+        };
+
+        delete doDetailsForUser.doEditHistory;
+
+        return doDetailsForUser;
+    }
+
+    const doDetails = await DO.findOne({
+        where: { id: expense.doId },
+        include: [
+            {
+                association: 'expenses',
+                attributes: ['id', 'amount', 'title', 'expenseAt'],
+                where: {
+                    id: { [Op.ne]: expenseId },
+                    isDeleted: false,
+                },
+                required: false,
+            },
+        ],
+    });
+
+    return doDetails;
+};
+
 module.exports = {
     addSingleExpenseInTheDoService,
     getSingleExpenseService,
+    getDoDetailsForExpenseService,
 };
