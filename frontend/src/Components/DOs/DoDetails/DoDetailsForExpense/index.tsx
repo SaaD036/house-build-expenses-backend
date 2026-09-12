@@ -28,8 +28,15 @@ const DoDetailsForExpense = (props: DoDetailsForExpensePropTypes) => {
             return <></>;
         }
 
-        const { amount, shopName, shopAddress, doDate, doEditHistoryCount, otherExpenseCount } =
-            doDetailsData;
+        const {
+            amount,
+            shopName,
+            shopAddress,
+            doDate,
+            creator,
+            doEditHistoryCount,
+            otherExpenseCount,
+        } = doDetailsData;
 
         return (
             <Box className="key-value-layout">
@@ -44,6 +51,10 @@ const DoDetailsForExpense = (props: DoDetailsForExpensePropTypes) => {
                 <Typography variant="body2" className="key-value-row">
                     <span className={'text-normal key-value-label'}>DO amount:</span>
                     <span>{amount}</span>
+                </Typography>
+                <Typography variant="body2" className="key-value-row">
+                    <span className={'text-normal key-value-label'}>Creator:</span>
+                    <span>{`${creator?.firstName ?? ''} ${creator?.lastName ?? ''}`.trim()}</span>
                 </Typography>
                 <Typography variant="body2" className="key-value-row">
                     <span className={'text-normal key-value-label'}>DO at:</span>

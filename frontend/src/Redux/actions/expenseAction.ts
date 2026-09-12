@@ -418,6 +418,7 @@ export const getDoDetailsForExpense = (id: number) => async (dispatch: Dispatch<
                   imageURL: expendeDoDetails.imageURL,
                   createdAt: expendeDoDetails.createdAt,
                   updatedAt: expendeDoDetails.updatedAt,
+                  creator: expendeDoDetails.creator ?? undefined,
                   lastUpdater: expendeDoDetails.lastUpdater ?? null,
                   expenses: get(expendeDoDetails, 'expenses', []).map(
                       ({ id, amount, title, expenseAt }: any) => ({
@@ -427,7 +428,7 @@ export const getDoDetailsForExpense = (id: number) => async (dispatch: Dispatch<
                           expenseAt,
                       })
                   ),
-                  otherExpenseCount: expendeDoDetails.otherExpenseCount ?? undefined,
+                  otherExpenseCount: get(expendeDoDetails, 'otherExpenseCount', 0),
               }
             : null;
 
