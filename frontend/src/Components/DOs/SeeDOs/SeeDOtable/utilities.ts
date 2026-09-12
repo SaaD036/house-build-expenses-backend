@@ -26,7 +26,7 @@ export const getDOtableRows = (DOs: DO[]) => {
             value: formatDate(DO.doDate, 'D,M,Y'),
         },
         creator: {
-            value: `${DO.creator.firstName} ${DO.creator.lastName}`,
+            value: `${DO.creator?.firstName} ${DO.creator?.lastName}`.trim(),
         },
         action: {
             value: 'N/A',

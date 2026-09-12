@@ -1,0 +1,21 @@
+.dividerContainer {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 16px 0;
+    gap: 10px;
+}
+
+.line {
+    flex: 1;
+    height: 2px;
+    background-color: #158901;
+    border-radius: 1px;
+}
+
+.title {
+    color: #158901;
+    font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    white-space: nowrap;
+}
