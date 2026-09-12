@@ -108,6 +108,7 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
         let doDetailsForUser = await DO.findOne({
             where: { id: expense.doId },
             raw: true,
+            nest: true,
             attributes: [
                 'id',
                 'shopName',
@@ -131,6 +132,13 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
                     'otherExpenseCount',
                 ],
             ],
+            include: [
+                {
+                    association: 'creator',
+                    attributes: ['id', 'firstName', 'lastName'],
+                    required: false,
+                },
+            ],
         });
 
         doDetailsForUser = {
@@ -146,6 +154,11 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
     const doDetails = await DO.findOne({
         where: { id: expense.doId },
         include: [
+            {
+                association: 'creator',
+                attributes: ['id', 'firstName', 'lastName'],
+                required: false,
+            },
             {
                 association: 'expenses',
                 attributes: ['id', 'amount', 'title', 'expenseAt'],
@@ -167,17 +180,12 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
         ],
     });
 
-    const historyRows = await getQueryToPrepareEditHistoryData(
-        'dos',
-        'do_edit_history',
-        expense.doId
-    );
+    const doDetailsData = {
+        ...doDetails.toJSON(),
+        doEditHistoryCount: get(doDetails, 'doEditHistory.history', []).length,
+    };
 
-    const doDetailsData = doDetails.toJSON();
-
-    if (doDetailsData.doEditHistory) {
-        doDetailsData.doEditHistory.history = historyRows;
-    }
+    delete doDetailsData.doEditHistory;
 
     return doDetailsData;
 };
