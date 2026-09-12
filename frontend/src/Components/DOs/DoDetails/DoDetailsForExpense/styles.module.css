@@ -1,0 +1,13 @@
+.outerContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.mainTitle {
+    font-weight: 600 !important;
+    font-size: 1.5rem !important;
+}
+
+.mainDescription {
+    margin-left: 8px !important;
+}

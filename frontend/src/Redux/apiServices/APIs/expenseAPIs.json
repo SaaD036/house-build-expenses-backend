@@ -23,6 +23,10 @@
         "path": "/expense/{id}/edit-history",
         "method": "GET"
     },
+    "GET_EXPENSE_DO_DETAILS": {
+        "path": "/expense/{id}/do-details",
+        "method": "GET"
+    },
     "GET_TOTAL_EXPENSE": {
         "path": "/expense/get-total-expense",
         "method": "GET"

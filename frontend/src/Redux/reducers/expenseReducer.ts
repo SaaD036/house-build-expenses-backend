@@ -1,5 +1,6 @@
 import {
     GET_ALL_EXPENSES,
+    GET_DO_DETAILS_FOR_EXPENSE,
     GET_EXPENSE_EDIT_HISTORY,
     GET_SINGLE_EXPENSE,
     GET_TOTAL_EXPENSE,
@@ -11,6 +12,7 @@ const initialState: ExpenseReducerStateType = {
     expenses: null,
     expenseDetails: null,
     expenseEditHistory: null,
+    expenseDoDetails: null,
     expensesCount: null,
     totalExpenses: null,
     totalExpensesForThisYear: null,
@@ -52,6 +54,15 @@ const reducer = (
         return {
             ...state,
             expenseEditHistory: expenseEditHistory ?? null,
+        };
+    }
+
+    if (action.type === GET_DO_DETAILS_FOR_EXPENSE) {
+        const { expenseDoDetails } = action.payload;
+
+        return {
+            ...state,
+            expenseDoDetails: expenseDoDetails ?? null,
         };
     }
 

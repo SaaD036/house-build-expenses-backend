@@ -129,3 +129,36 @@ a {
     text-align: center;
     padding: 7px 0px;
 }
+
+.list-card-item {
+    padding: 15px 24px;
+    border-radius: 16px;
+    border: 1px solid #158901;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 
+    styles for the following format
+    title:              title here
+    description:        description here
+*/
+
+.key-value-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.key-value-row {
+    display: flex !important;
+    align-items: center;
+}
+
+.key-value-label {
+    font-weight: 600 !important;
+    width: 140px;
+    flex-shrink: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}

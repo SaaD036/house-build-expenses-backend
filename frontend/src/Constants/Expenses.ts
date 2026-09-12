@@ -13,4 +13,10 @@ export const EXPENSE_MODAL_TAB = {
         content: '',
         role: 'admin',
     },
+    DO_DETAILS: {
+        key: 'do_details',
+        label: 'DO Details',
+        content: '',
+        role: 'all',
+    },
 } as const satisfies ExpenseModalTabType;

@@ -5,7 +5,7 @@ import {
 } from '../../Types/expenses';
 import { CurrentViewType } from '../../Types';
 import { AccountUserType, UserType } from '../../Types/Users';
-import { DO } from '../../Types/DOs';
+import { DO, DoDetailsType } from '../../Types/DOs';
 
 export type GeneralReducerStateType = {
     currentView: CurrentViewType | null;
@@ -18,6 +18,7 @@ export type ExpenseReducerStateType = {
         history: ExpenseEditHistoryType[];
         lastUpdater: ExpendeCreatorUpdaterType | null;
     } | null;
+    expenseDoDetails: DoDetailsType | null;
     expensesCount: number | null;
     totalExpenses: number | null;
     totalExpensesForThisYear: number | null;
