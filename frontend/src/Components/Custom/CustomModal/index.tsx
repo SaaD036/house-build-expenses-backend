@@ -3,6 +3,8 @@ import React from 'react';
 import { Modal } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+import CustomErrorBoundary from '../CustomErrorBoundary';
+
 import { CustomModalPropTypes } from './interfaces';
 import styles from './styles.module.css';
 
@@ -29,7 +31,9 @@ const CustomModal = (props: CustomModalPropTypes) => {
                     <div className={styles.title}>{title}</div>
                     <CancelIcon className={styles.closeIcon} onClick={onClose} />
                 </div>
-                <div className={styles.childrenContainer}>{children}</div>
+                <CustomErrorBoundary key={String(open)}>
+                    <div className={styles.childrenContainer}>{children}</div>
+                </CustomErrorBoundary>
             </div>
         </Modal>
     );
