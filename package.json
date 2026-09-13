@@ -1,0 +1,25 @@
+{
+    "name": "house-build-expense",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "node start-dev.js",
+        "dev:con": "concurrently --kill-others --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"npm --prefix backend run dev\" \"npm --prefix frontend start\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SaaD036/house-build-expenses-backend.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/SaaD036/house-build-expenses-backend/issues"
+    },
+    "homepage": "https://github.com/SaaD036/house-build-expenses-backend#readme",
+    "description": "",
+    "devDependencies": {
+        "concurrently": "^10.0.5"
+    }
+}
