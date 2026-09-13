@@ -2,6 +2,7 @@ import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
+import pluginReactHooks from 'eslint-plugin-react-hooks';
 
 export default [
     {
@@ -60,6 +61,7 @@ export default [
         files: ['frontend/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
         plugins: {
             react: pluginReact,
+            'react-hooks': pluginReactHooks,
             '@typescript-eslint': tseslint.plugin,
         },
         languageOptions: {
@@ -78,6 +80,8 @@ export default [
         rules: {
             ...pluginJs.configs.recommended.rules,
             ...pluginReact.configs.flat.recommended.rules,
+            'react-hooks/rules-of-hooks': 'error',
+            'react-hooks/exhaustive-deps': 'warn',
             semi: 'error',
             indent: ['error', 4],
             quotes: [2, 'single'],
