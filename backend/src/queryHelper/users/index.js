@@ -27,7 +27,7 @@ const prepareQueryFilterForAllusers = (params) => {
     if (params.role) {
         where[Op.and].push({
             role: {
-                [Op.eq]: role,
+                [Op.eq]: params.role,
             },
         });
     }
@@ -35,7 +35,7 @@ const prepareQueryFilterForAllusers = (params) => {
     if (params.accountStatus) {
         where[Op.and].push({
             accountStatus: {
-                [Op.eq]: accountStatus,
+                [Op.eq]: params.accountStatus,
             },
         });
     }

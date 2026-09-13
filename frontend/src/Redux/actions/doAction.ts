@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { Dispatch } from 'react';
 import { Method } from 'axios';
 

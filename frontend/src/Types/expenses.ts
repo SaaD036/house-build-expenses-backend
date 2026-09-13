@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { UserAccessRoleType } from '.';
 import { MultiTabModalTabItemType } from '../Components/Custom/CustomModal/MultiTabModal/interfaces';
 

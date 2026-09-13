@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { Dispatch } from 'react';
 
 import { CURRENT_VIEW } from '../types/general';
