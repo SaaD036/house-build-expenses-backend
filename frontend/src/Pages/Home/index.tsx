@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import Header from '../../Components/Header';
 import HomePageComponent from '../../Components/Home/HomePageComponent';
+import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
 
 import styles from './styles.module.css';
 
@@ -15,7 +16,9 @@ const HomePage = () => {
     return (
         <div className={`pageComponent center ${styles.homePage}`}>
             <Header components={<div></div>} />
-            <HomePageComponent />
+            <CustomErrorBoundary>
+                <HomePageComponent />
+            </CustomErrorBoundary>
         </div>
     );
 };
