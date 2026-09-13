@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
 import DOpageComponent from '../../Components/DOs/DOpageComponent';
+import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 
@@ -33,7 +34,9 @@ const DOpage = () => {
                     />
                 }
             />
-            <DOpageComponent tabName={activeTab} />
+            <CustomErrorBoundary key={activeTab}>
+                <DOpageComponent tabName={activeTab} />
+            </CustomErrorBoundary>
         </div>
     );
 };

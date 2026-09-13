@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
-import UsersPageComponent from '../../Components/Users/UsersPageComponent';
+import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
+import AccountPageComponent from '../../Components/Account/AccountPageComponent';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 
-import { ACCOUNT_PAGE_TABS, ACCOUNT_PAGE_TABS_VALUES } from './constants';
-
 import styles from './styles.module.css';
-import AccountPageComponent from '../../Components/Account/AccountPageComponent';
+import { ACCOUNT_PAGE_TABS, ACCOUNT_PAGE_TABS_VALUES } from './constants';
 
 const USER_PAGE_TITLE = 'Account';
 
@@ -34,7 +33,9 @@ const AccountPage = () => {
                     />
                 }
             />
-            <AccountPageComponent tabName={activeTab} />
+            <CustomErrorBoundary key={activeTab}>
+                <AccountPageComponent tabName={activeTab} />
+            </CustomErrorBoundary>
         </div>
     );
 };
