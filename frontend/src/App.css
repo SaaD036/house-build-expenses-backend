@@ -74,6 +74,10 @@ a {
     font-family: 'Times New Roman', Times, serif;
 }
 
+.text-gray {
+    color: rgb(92 90 95);
+}
+
 .text-normal {
     color: rgb(55 65 81);
     font-size: 14px !important;

@@ -1,0 +1,14 @@
+.container {
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+}
+
+.icon {
+    color: #158901;
+}
+
+.title {
+    font-size: 26px;
+    font-weight: 700;
+}
