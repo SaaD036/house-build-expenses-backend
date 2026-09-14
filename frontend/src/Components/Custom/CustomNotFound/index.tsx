@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 import { IconTypes } from '../../../Types/IconsAndImages';
 
 type CustomNotFoundPropTypes = {
-    title?: string;
+    title?: string | React.ReactNode;
     Icon?: IconTypes;
     iconSize?: number;
     className?: string;

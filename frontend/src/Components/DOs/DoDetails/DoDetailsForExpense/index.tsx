@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { Typography, Box } from '@mui/material';
+import NoDoIcon from '@mui/icons-material/FolderOff';
 
 import DoExpensesList from '../DoExpensesList';
+import CustomNotFound from '../../../Custom/CustomNotFound';
 import ShimmerLoader, { ShimmerCardLoader } from '../../../Custom/CustomLoadingItems/ShimmerLoader';
 
 import { formatDate } from '../../../../Utilities/Date';
@@ -84,10 +86,17 @@ const DoDetailsForExpense = (props: DoDetailsForExpensePropTypes) => {
         };
 
         loadExpenseDoDetails();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (doDetailsData === null) {
-        return <div>No DO found</div>;
+        return (
+            <CustomNotFound
+                Icon={NoDoIcon}
+                iconSize={80}
+                title="This expense is not attached to any DO"
+            />
+        );
     }
 
     return (
