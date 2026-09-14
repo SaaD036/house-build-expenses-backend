@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import Box from '@mui/material/Box';
+import NoEditHistoryIcon from '@mui/icons-material/FileDownloadOff';
 
+import CustomNotFound from '../../Custom/CustomNotFound';
 import ExpenseEditHistoryCard from './ExpenseEditHistoryCard';
+import ShimmerLoader, { ShimmerCardLoader } from '../../Custom/CustomLoadingItems/ShimmerLoader';
 
 import { getExpenseEditHistory } from '../../../Redux/actions/expenseAction';
 
 import { ReducerStateType } from '../../../Redux/reducers';
 import { ExpenseEditHistoryPropTypes } from './interfaces';
+
 import styles from './styles.module.css';
-import ShimmerLoader, { ShimmerCardLoader } from '../../Custom/CustomLoadingItems/ShimmerLoader';
+
 const ExpenseEditHistory = (props: ExpenseEditHistoryPropTypes) => {
     const { expenseId, expenseEditHistory, getExpenseEditHistory } = props;
 
@@ -44,10 +48,17 @@ const ExpenseEditHistory = (props: ExpenseEditHistoryPropTypes) => {
         };
 
         loadExpenseEditHistory();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (expenseEditHistory === null || expenseEditHistory.history.length === 0) {
-        return <div>No history found</div>;
+        return (
+            <CustomNotFound
+                Icon={NoEditHistoryIcon}
+                iconSize={80}
+                title="This expense has no edit history"
+            />
+        );
     }
 
     return (

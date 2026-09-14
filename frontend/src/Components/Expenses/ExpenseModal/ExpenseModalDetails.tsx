@@ -3,12 +3,15 @@ import { connect } from 'react-redux';
 
 import { Typography, Box } from '@mui/material';
 
+import CustomNotFound from '../../Custom/CustomNotFound';
+import { ShimmerCardLoader } from '../../Custom/CustomLoadingItems/ShimmerLoader';
+
 import { getSingleExpense } from '../../../Redux/actions/expenseAction';
 
 import styles from './styles.module.css';
+
 import { ReducerStateType } from '../../../Redux/reducers';
 import { ExpenseModalDetailsPropType } from './interfaces';
-import { ShimmerCardLoader } from '../../Custom/CustomLoadingItems/ShimmerLoader';
 
 const ExpenseModalDetails = (props: ExpenseModalDetailsPropType) => {
     const { expenseId, expense, userRole, getSingleExpense } = props;
@@ -76,10 +79,11 @@ const ExpenseModalDetails = (props: ExpenseModalDetailsPropType) => {
 
     useEffect(() => {
         loadExpenseData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (expense === null) {
-        return <Typography>No expense found</Typography>;
+        return <CustomNotFound iconSize={80} title="No expense found" />;
     }
 
     return (
