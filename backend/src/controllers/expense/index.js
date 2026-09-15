@@ -9,6 +9,7 @@ const {
     getDoDetailsForExpenseService,
 } = require('../../services/expense');
 
+const { hasTwoDateSameDay } = require('../../utilities/dateUtilities');
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
@@ -142,7 +143,7 @@ const updateExpense = async (req, res, next) => {
             );
         }
 
-        if (new Date(expenseAt).getTime() != new Date(expense.expenseAt).getTime()) {
+        if (!hasTwoDateSameDay(expenseAt, expense.expenseAt)) {
             newEditHistory.push(
                 createExpenseEditHistoryItem(
                     'update',
