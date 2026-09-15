@@ -1,3 +1,5 @@
+import { formatDate } from '../../../../Utilities/Date';
+
 import { ExpenseType } from '../../../../Types/expenses';
 
 export const getExpenseTableRows = (
@@ -16,7 +18,7 @@ export const getExpenseTableRows = (
             value: expense.description,
         },
         expense_time: {
-            value: expense.expenseAt,
+            value: formatDate(expense.expenseAt, 'm-short-dy-numeric'),
         },
         creator: {
             value: getUserNameColumnItem(expense),
