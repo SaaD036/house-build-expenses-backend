@@ -102,6 +102,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             page: currentPage,
             itemsPerPage: expensesPerPage,
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, expensesPerPage]);
 
     return (
