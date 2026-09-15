@@ -5,9 +5,10 @@ export const createActionColumnMenuItem = (
     key: string,
     label: string,
     Icon: IconTypes,
-    onClick: () => void
+    onClick: () => void,
+    isDisabled?: boolean
 ) => {
-    return { key, label, Icon, onClick };
+    return { key, label, Icon, onClick, isDisabled };
 };
 
 export const getTableFilterFormInitialData = (filterItems: CustomTableFilterItemType[]) => {

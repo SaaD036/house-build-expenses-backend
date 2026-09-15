@@ -68,8 +68,12 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
                     EditHistoryIcon,
                     () => setExpenseModalTabKey(EXPENSE_MODAL_TAB.EDIT_HISTORY.key)
                 ),
-                createActionColumnMenuItem('delete', 'Delete', DeleteIcon, () =>
-                    setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl)
+                createActionColumnMenuItem(
+                    'delete',
+                    'Delete',
+                    DeleteIcon,
+                    () => setDdeleteExpensePopoverAnchorEl(actionColumMenuAnchorEl),
+                    userRole === UserRole.VISITOR
                 ),
                 createActionColumnMenuItem('add_do', 'Add to DO', DoIcon, () => {}),
                 ...actionColumnMenuItems,

@@ -59,6 +59,7 @@ const CustomMenu = (props: CustomMenuProps) => {
                     key={menuItem.key}
                     onClick={() => onMenuItemClick(menuItem)}
                     className={styles.menuItem}
+                    disabled={!!menuItem.isDisabled}
                 >
                     <CustomMenuItemLabel label={menuItem.label} Icon={menuItem.Icon} />
                 </MenuItem>
