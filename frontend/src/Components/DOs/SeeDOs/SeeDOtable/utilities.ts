@@ -1,7 +1,7 @@
 import { DO } from '../../../../Types/DOs';
 import { formatDate } from '../../../../Utilities/Date';
 
-export const getDOtableRows = (DOs: DO[]) => {
+export const getDoTableRows = (DOs: DO[]) => {
     const DOtableRows = DOs.map((DO) => ({
         shopName: {
             value: DO.shopName,
@@ -23,7 +23,7 @@ export const getDOtableRows = (DOs: DO[]) => {
             value: DO.description,
         },
         doDate: {
-            value: formatDate(DO.doDate, 'D,M,Y'),
+            value: formatDate(DO.doDate, 'm-short-dy-numeric'),
         },
         creator: {
             value: `${DO.creator?.firstName} ${DO.creator?.lastName}`.trim(),

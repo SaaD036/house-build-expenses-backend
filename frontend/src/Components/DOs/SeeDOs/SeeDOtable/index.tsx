@@ -2,7 +2,7 @@ import React from 'react';
 
 import CustomTable from '../../../Custom/CustomTable';
 
-import { getDOtableRows } from './utilities';
+import { getDoTableRows } from './utilities';
 
 import { DO_TABLE_COLUMNS } from './constants';
 
@@ -15,7 +15,7 @@ const SeeDOtable = (props: SeeDOtablePropsType) => {
         return <div>No DO found</div>;
     }
 
-    return <CustomTable columns={DO_TABLE_COLUMNS} rowData={getDOtableRows(DOs)} />;
+    return <CustomTable columns={DO_TABLE_COLUMNS} rowData={getDoTableRows(DOs)} />;
 };
 
 export default SeeDOtable;
