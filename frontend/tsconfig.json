@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "esnext",
         "ignoreDeprecations": "6.0",
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
@@ -10,8 +10,8 @@
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
-        "module": "nodenext",
-        "moduleResolution": "nodenext",
+        "module": "esnext",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
