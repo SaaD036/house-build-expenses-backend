@@ -55,6 +55,9 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
             createActionColumnMenuItem('see_details', 'See Details', SeeDetailsIcon, () =>
                 setExpenseModalTabKey(EXPENSE_MODAL_TAB.DETAILS.key)
             ),
+            createActionColumnMenuItem('see_do_details', 'See Do Details', SeeDetailsIcon, () =>
+                setExpenseModalTabKey(EXPENSE_MODAL_TAB.DO_DETAILS.key)
+            ),
         ];
 
         if (userRole !== UserRole.USER) {
