@@ -46,9 +46,11 @@ const getAllUser = async (req, res, next) => {
                     'accountEditHistory',
                     [
                         literal(`(
-                        SELECT COUNT("expenses"."id") FROM "expenses"
-                        WHERE "expenses"."created_by" = "User"."id"
-                    )`),
+                            SELECT COUNT("expenses"."id")
+                            FROM "expenses"
+                            WHERE "expenses"."created_by" = "User"."id"
+                            AND "expenses"."is_deleted" = false
+                        )`),
                         'totalExpenseCount',
                     ],
                 ],
