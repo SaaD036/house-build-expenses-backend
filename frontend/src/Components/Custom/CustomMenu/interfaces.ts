@@ -8,6 +8,7 @@ export type CutomMenuItemsType = {
     label: string | React.ReactNode;
     Icon?: OverridableComponent<SvgIconTypeMap<any, 'svg'>> & { muiName: string };
     onClick: () => void;
+    isDisabled?: boolean;
 };
 
 export type CustomMenuProps = {

@@ -1,8 +1,10 @@
+export type UserRoleType = 'admin' | 'user' | 'visitor';
+
 export type LoggedinUserType = {
     id: number;
     email: string;
     name: string;
-    role: 'admin' | 'user' | 'visitor';
+    role: UserRoleType;
 };
 
 export type UserExpenseType = {
@@ -17,7 +19,7 @@ export type UserType = {
     email: string;
     firstName: string;
     lastName: string;
-    role: 'admin' | 'user' | 'visitor';
+    role: UserRoleType;
     accountStatus: string;
     accountEditHistory?: UserAccountEditHistoryType;
     expenses?: UserExpenseType[];

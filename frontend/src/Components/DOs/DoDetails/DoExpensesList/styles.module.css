@@ -1,0 +1,14 @@
+.expensesList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.expenseTitle {
+    font-weight: 600 !important;
+    font-size: 1.2rem !important;
+}
+
+.expenseDescription {
+    margin-left: 8px !important;
+}

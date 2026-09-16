@@ -7,6 +7,10 @@
         "path": "/expense",
         "method": "POST"
     },
+    "GET_SINGLE_EXPENSE": {
+        "path": "/expense/{id}",
+        "method": "GET"
+    },
     "DELETE_SINGLE_EXPENSE": {
         "path": "/expense/{id}",
         "method": "DELETE"
@@ -14,6 +18,14 @@
     "EDIT_SINGLE_EXPENSE": {
         "path": "/expense/{id}",
         "method": "PATCH"
+    },
+    "GET_EXPENSE_EDIT_HISTORY": {
+        "path": "/expense/{id}/edit-history",
+        "method": "GET"
+    },
+    "GET_EXPENSE_DO_DETAILS": {
+        "path": "/expense/{id}/do-details",
+        "method": "GET"
     },
     "GET_TOTAL_EXPENSE": {
         "path": "/expense/get-total-expense",

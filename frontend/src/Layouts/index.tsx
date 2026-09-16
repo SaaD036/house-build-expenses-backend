@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { Drawer } from '@mui/material';
 import { Menu as SidebarOpenIcon } from '@mui/icons-material';
 
 import SideBar from './Sidebar';
+import CustomErrorBoundary from '../Components/Custom/CustomErrorBoundary';
 
 import { LayoutPropsTypes } from './interfaces';
 import styles from './styles.module.css';
 
 const Layout = (props: LayoutPropsTypes) => {
     const { children } = props;
+    const location = useLocation();
 
     const [openSidebarDrawer, setOpenSidebarDrawer] = useState(false);
 
@@ -50,7 +53,9 @@ const Layout = (props: LayoutPropsTypes) => {
                 </div>
                 {renderFooterSection()}
             </div>
-            <div className={styles.childrenSection}>{children}</div>
+            <CustomErrorBoundary key={location.pathname}>
+                <div className={styles.childrenSection}>{children}</div>
+            </CustomErrorBoundary>
         </div>
     );
 };

@@ -1,6 +1,6 @@
 const { get } = require('lodash');
 
-const { sequelize, Expenses, DOs } = require('../../models');
+const { sequelize, Expense, DO } = require('../../models');
 
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 const { NotFoundError } = require('../../utilities/errors/ApiError');
@@ -9,21 +9,21 @@ const addRemoveDoToExpenseService = async (userId, doId, expenseIdxArray, toAdd)
     const transaction = await sequelize.transaction();
 
     const [expenses, theDo] = await Promise.all([
-        Expenses.findAll({
+        Expense.findAll({
             where: { id: expenseIdxArray },
             transaction,
         }),
-        DOs.findOne({ where: { id: doId } }),
+        DO.findOne({ where: { id: doId } }),
     ]);
 
     if (!expenses.length) {
         await transaction.rollback();
-        throw new NotFoundError('not expense found with the idx');
+        throw new NotFoundError('no expense found with the idx');
     }
 
     if (!theDo) {
         await transaction.rollback();
-        throw new NotFoundError(`not do found with the id = ${doId}`);
+        throw new NotFoundError(`no do found with the id = ${doId}`);
     }
 
     const updatePromises = expenses
@@ -69,14 +69,14 @@ const removeDoFromExpensesService = async (userId, doId, expenseIdxArray) => {
 const removeDoFromAllExpensesService = async (userId, doId) => {
     const transaction = await sequelize.transaction();
 
-    const expenses = await Expenses.findAll({
+    const expenses = await Expense.findAll({
         where: { doId },
         transaction,
     });
 
     if (!expenses.length) {
         await transaction.rollback();
-        throw new NotFoundError(`not expense found with do = ${doId}`);
+        throw new NotFoundError(`no expense found with do = ${doId}`);
     }
 
     const updatePromises = expenses.map((expense) => {

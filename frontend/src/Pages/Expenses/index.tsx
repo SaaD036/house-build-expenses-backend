@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { get } from 'lodash';
 import { jwtDecode } from 'jwt-decode';
 
-import ExpensePageComponent from '../../Components/Expenses/ExpensePageComponent';
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
+import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
+import ExpensePageComponent from '../../Components/Expenses/ExpensePageComponent';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 import { getExpensePageTabs } from './utilities';
@@ -45,10 +46,14 @@ const ExpensesPage = () => {
                     />
                 }
             />
-            <ExpensePageComponent
-                isCreateExpenseFormDisabled={get(user, 'role', UserRole.USER) !== UserRole.ADMIN}
-                tabName={activeTab}
-            />
+            <CustomErrorBoundary key={activeTab}>
+                <ExpensePageComponent
+                    isCreateExpenseFormDisabled={
+                        get(user, 'role', UserRole.USER) !== UserRole.ADMIN
+                    }
+                    tabName={activeTab}
+                />
+            </CustomErrorBoundary>
         </div>
     );
 };

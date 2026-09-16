@@ -27,7 +27,7 @@ const prepareQueryFilterForAllusers = (params) => {
     if (params.role) {
         where[Op.and].push({
             role: {
-                [Op.eq]: role,
+                [Op.eq]: params.role,
             },
         });
     }
@@ -35,7 +35,7 @@ const prepareQueryFilterForAllusers = (params) => {
     if (params.accountStatus) {
         where[Op.and].push({
             accountStatus: {
-                [Op.eq]: accountStatus,
+                [Op.eq]: params.accountStatus,
             },
         });
     }
@@ -63,15 +63,19 @@ const prepareQueryToFetchSingleUser = (id) => {
             'accountEditHistory',
             [
                 literal(`(
-                            SELECT COUNT("expenses"."id") FROM "expenses"
+                            SELECT COUNT("expenses"."id")
+                            FROM "expenses"
                             WHERE "expenses"."created_by" = "User"."id"
+                            AND "expenses"."is_deleted" = false
                         )`),
                 'totalExpenseCount',
             ],
             [
                 literal(`(
-                            SELECT SUM("expenses"."amount") FROM "expenses"
+                            SELECT SUM("expenses"."amount")
+                            FROM "expenses"
                             WHERE "expenses"."created_by" = "User"."id"
+                            AND "expenses"."is_deleted" = false
                         )`),
                 'totalExpense',
             ],

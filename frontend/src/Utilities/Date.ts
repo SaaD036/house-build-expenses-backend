@@ -1,6 +1,6 @@
 import { FormatDateType } from '../Types/Date';
 
-const getDayMonthInTwoDigit = (data: number) => {
+const getDayMonthInTwoDigit = (data: number): string => {
     if (data > 9) {
         return `${data}`;
     }
@@ -8,8 +8,29 @@ const getDayMonthInTwoDigit = (data: number) => {
     return `0${data}`;
 };
 
-export const formatDate = (date: string | Date, format: FormatDateType) => {
+const getDateInMonthStringDayYearNumericFormat = (
+    date: Date,
+    monthType: 'long' | 'short'
+): string => {
+    const formattedDate = date.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: monthType,
+        year: 'numeric',
+    });
+
+    return formattedDate;
+};
+
+export const formatDate = (date: string | Date, format: FormatDateType): string => {
     const newDate = typeof date === 'string' ? new Date(date) : date;
+
+    if (format === 'm-short-dy-numeric') {
+        return getDateInMonthStringDayYearNumericFormat(newDate, 'short');
+    }
+
+    if (format === 'm-full-dy-numeric') {
+        return getDateInMonthStringDayYearNumericFormat(newDate, 'long');
+    }
 
     const day = newDate.getDay();
     const month = newDate.getMonth() + 1;

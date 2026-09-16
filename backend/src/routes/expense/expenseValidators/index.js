@@ -2,7 +2,7 @@ const { check } = require('express-validator');
 const { isDate, isArray } = require('lodash');
 const { Op } = require('sequelize');
 
-const { DOs, Expenses } = require('../../../models');
+const { DO, Expense } = require('../../../models');
 
 const createExpenseValidator = [
     check('amount')
@@ -83,7 +83,7 @@ const addToDOvalidator = [
 
             try {
                 const [expenses, dos] = await Promise.all([
-                    await Expenses.findAll({
+                    await Expense.findAll({
                         where: {
                             id: {
                                 [Op.in]: expenseIDX,
@@ -92,7 +92,7 @@ const addToDOvalidator = [
                         },
                         attributes: ['id'],
                     }),
-                    await DOs.findAll({
+                    await DO.findAll({
                         where: {
                             id: {
                                 [Op.in]: doIDX,

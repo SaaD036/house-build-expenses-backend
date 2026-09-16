@@ -8,7 +8,15 @@ import styles from './styles.module.css';
 const LinearLoadingItem = () => {
     return (
         <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open>
-            <LinearProgress className={styles.linearProgress} />
+            <LinearProgress
+                className={styles.linearProgress}
+                sx={{
+                    backgroundColor: '#e8f5e9',
+                    '& .MuiLinearProgress-bar': {
+                        backgroundColor: '#158901',
+                    },
+                }}
+            />
         </Backdrop>
     );
 };

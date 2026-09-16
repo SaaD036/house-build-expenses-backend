@@ -3,12 +3,19 @@ const { Op } = require('sequelize');
 
 const { Expense } = require('../../models');
 
-const { addSingleExpenseInTheDoService } = require('../../services/expense');
+const {
+    addSingleExpenseInTheDoService,
+    getSingleExpenseService,
+    getDoDetailsForExpenseService,
+} = require('../../services/expense');
 
+const { hasTwoDateSameDay } = require('../../utilities/dateUtilities');
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
+const { UserRole } = require('../../constants/roles');
 const { HTTP_STATUS } = require('../../constants/http');
+const { UnauthorizationError } = require('../../utilities/errors/ApiError');
 
 const getAllExpenses = async (req, res, next) => {
     try {
@@ -63,6 +70,18 @@ const createExpense = async (req, res, next) => {
         return res.status(HTTP_STATUS.OK).json({
             message: 'successfull',
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getSingleExpense = async (req, res, next) => {
+    try {
+        const { expenseId } = req.params;
+
+        const expense = await getSingleExpenseService(expenseId, req.user);
+
+        return res.status(HTTP_STATUS.OK).json({ expense });
     } catch (error) {
         next(error);
     }
@@ -124,7 +143,7 @@ const updateExpense = async (req, res, next) => {
             );
         }
 
-        if (new Date(expenseAt).getTime() != new Date(expense.expenseAt).getTime()) {
+        if (!hasTwoDateSameDay(expenseAt, expense.expenseAt)) {
             newEditHistory.push(
                 createExpenseEditHistoryItem(
                     'update',
@@ -264,7 +283,7 @@ const addExpensesToDOs = async (req, res, next) => {
 
         if (!Array.isArray(payload) || payload.length === 0) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'Invalid payload',
+                message: 'invalid payload',
             });
         }
 
@@ -315,13 +334,56 @@ const addSingleExpenseToDo = async (req, res, next) => {
     }
 };
 
+const getExpenseEditHistory = async (req, res, next) => {
+    try {
+        if (req.user.role === UserRole.USER) {
+            throw new UnauthorizationError('you can not access the expense edit history');
+        }
+
+        const { expenseId } = req.params;
+
+        const expense = await getSingleExpenseService(expenseId, req.user);
+        let expenseEditHistory = _.get(expense, 'expenseEditHistory', null);
+
+        if (expenseEditHistory !== null) {
+            delete expenseEditHistory.last_updated_by;
+
+            if (expense.lastUpdater) {
+                expenseEditHistory = {
+                    ...expenseEditHistory,
+                    lastUpdater: expense.lastUpdater,
+                };
+            }
+        }
+
+        return res.status(HTTP_STATUS.OK).json({ expenseEditHistory });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getDoDetailsForExpense = async (req, res, next) => {
+    try {
+        const { expenseId } = req.params;
+
+        const expendeDoDetails = await getDoDetailsForExpenseService(expenseId, req.user);
+
+        return res.status(HTTP_STATUS.OK).json({ expendeDoDetails });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllExpenses,
     createExpense,
+    getSingleExpense,
     updateExpense,
     deleteExpense,
     deleteMultipleExpenses,
     getTotalExpense,
     addExpensesToDOs,
     addSingleExpenseToDo,
+    getExpenseEditHistory,
+    getDoDetailsForExpense,
 };

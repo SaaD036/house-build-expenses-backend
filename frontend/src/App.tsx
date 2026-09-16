@@ -24,6 +24,7 @@ function App(props: any) {
 
         const loggedInUserTokenInCookie = getCookie(cookieName.USER_TOKEN);
         setLoggedinUserToken(loggedInUserTokenInCookie);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     useEffect(() => {
@@ -32,6 +33,7 @@ function App(props: any) {
         }
 
         setCurrentView('table');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

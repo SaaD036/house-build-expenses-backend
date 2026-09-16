@@ -5,7 +5,7 @@ const { HTTP_STATUS } = require('../../constants/http');
 
 const AdminMiddleware = (req, res, next) => {
     try {
-        if (get(req, 'user.role', UserRole.VISITOR) != UserRole.ADMIN) {
+        if (get(req, 'user.role', UserRole.USER) != UserRole.ADMIN) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({
                 message: 'you are unauthorized',
             });

@@ -3,12 +3,11 @@ import React, { useEffect, useState } from 'react';
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
 import UsersPageComponent from '../../Components/Users/UsersPageComponent';
+import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
 
 import { useQuery } from '../../Redux/apiServices/buildURL';
 
 import { USERS_PAGE_TABS, USERS_PAGE_TABS_VALUES } from './constants';
-
-import styles from './styles.module.css';
 
 const USER_PAGE_TITLE = 'Users';
 
@@ -33,7 +32,9 @@ const UsersPage = () => {
                     />
                 }
             />
-            <UsersPageComponent tabName={activeTab} />
+            <CustomErrorBoundary key={activeTab}>
+                <UsersPageComponent tabName={activeTab} />
+            </CustomErrorBoundary>
         </div>
     );
 };

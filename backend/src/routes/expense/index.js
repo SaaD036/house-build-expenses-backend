@@ -4,15 +4,19 @@ const router = express.Router();
 const {
     getAllExpenses,
     createExpense,
+    getSingleExpense,
     updateExpense,
     deleteExpense,
     deleteMultipleExpenses,
     getTotalExpense,
     addExpensesToDOs,
     addSingleExpenseToDo,
+    getExpenseEditHistory,
+    getDoDetailsForExpense,
 } = require('../../controllers/expense');
 
 const adminMiddleware = require('../../middlewares/auth/Admin');
+const VisitorAdminMiddleware = require('../../middlewares/auth/VisitorAdmin');
 
 const {
     createExpenseValidator,
@@ -25,6 +29,26 @@ const validatorHandler = require('../validatorHandler');
 router.get('/', getAllExpenses);
 router.post('/', adminMiddleware, createExpenseValidator, validatorHandler, createExpense);
 
+router.delete(
+    '/delete-multiple',
+    adminMiddleware,
+    deleteMultipleExpensesValidator,
+    validatorHandler,
+    deleteMultipleExpenses
+);
+router.get('/get-total-expense', getTotalExpense);
+router.post('/add-to-do', addToDOvalidator, validatorHandler, addExpensesToDOs);
+
+router.post(
+    '/:expenseId/add-to-do',
+    addSingleExpenseToDoValidator,
+    validatorHandler,
+    addSingleExpenseToDo
+);
+router.get('/:expenseId/edit-history', VisitorAdminMiddleware, getExpenseEditHistory);
+router.get('/:expenseId/do-details', getDoDetailsForExpense);
+
+router.get('/:expenseId', getSingleExpense);
 router.patch(
     '/:expenseID',
     adminMiddleware,
@@ -33,21 +57,5 @@ router.patch(
     updateExpense
 );
 router.delete('/:expenseID', adminMiddleware, deleteExpense);
-router.delete(
-    '/delete-multiple',
-    adminMiddleware,
-    deleteMultipleExpensesValidator,
-    validatorHandler,
-    deleteMultipleExpenses
-);
-
-router.get('/get-total-expense', getTotalExpense);
-router.post('/add-to-do', addToDOvalidator, validatorHandler, addExpensesToDOs);
-router.post(
-    '/:expenseId/add-to-do',
-    addSingleExpenseToDoValidator,
-    validatorHandler,
-    addSingleExpenseToDo
-);
 
 module.exports = router;

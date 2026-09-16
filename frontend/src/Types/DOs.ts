@@ -1,3 +1,5 @@
+import { ExpendeCreatorUpdaterType, ExpenseType } from './expenses';
+
 export type DOcreator = {
     id: number;
     firstName: string;
@@ -11,10 +13,15 @@ export type DOshopAddress = {
     district: string;
 };
 
+export type DoExpenseType = Pick<
+    ExpenseType,
+    'id' | 'amount' | 'title' | 'description' | 'expenseAt'
+>;
+
 export type DO = {
     amount: number;
     createdAt?: Date;
-    creator: DOcreator;
+    creator?: DOcreator;
     description: string;
     doDate: Date;
     doEditHistory?: any | null;
@@ -23,4 +30,12 @@ export type DO = {
     imageURL?: string | null;
     shopAddress: DOshopAddress;
     shopName: string;
+};
+
+export type DoDetailsType = DO & {
+    doEditHistoryCount?: number;
+    updatedAt: string;
+    expenses: DoExpenseType[];
+    otherExpenseCount?: number;
+    lastUpdater: ExpendeCreatorUpdaterType | null;
 };

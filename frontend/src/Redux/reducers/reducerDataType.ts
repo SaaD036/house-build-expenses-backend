@@ -1,7 +1,11 @@
-import { ExpenseType } from '../../Types/expenses';
+import {
+    ExpendeCreatorUpdaterType,
+    ExpenseEditHistoryType,
+    ExpenseType,
+} from '../../Types/expenses';
 import { CurrentViewType } from '../../Types';
 import { AccountUserType, UserType } from '../../Types/Users';
-import { DO } from '../../Types/DOs';
+import { DO, DoDetailsType } from '../../Types/DOs';
 
 export type GeneralReducerStateType = {
     currentView: CurrentViewType | null;
@@ -9,6 +13,12 @@ export type GeneralReducerStateType = {
 
 export type ExpenseReducerStateType = {
     expenses: ExpenseType[] | null;
+    expenseDetails: ExpenseType | null;
+    expenseEditHistory: {
+        history: ExpenseEditHistoryType[];
+        lastUpdater: ExpendeCreatorUpdaterType | null;
+    } | null;
+    expenseDoDetails: DoDetailsType | null;
     expensesCount: number | null;
     totalExpenses: number | null;
     totalExpensesForThisYear: number | null;
