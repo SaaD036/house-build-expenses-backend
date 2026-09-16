@@ -7,15 +7,17 @@ export type CustomPopoverProps = {
     className?: string;
     headerClassName?: string;
     bodyClassname?: string;
+    placement?: 'top' | 'bottom' | 'left' | 'right';
 };
 
 export type ConfirmationPopoverProps = {
     id: string;
-    title?: string | React.ReactNode;
-    confirmationMessage?: string | React.ReactNode;
     isDeletion?: boolean;
-    anchorEl: null | HTMLElement;
     onClose: () => void;
     onCancel?: () => void;
     onYes: () => void;
+    anchorEl: null | HTMLElement;
+    title?: string | React.ReactNode;
+    placement?: 'top' | 'bottom' | 'left' | 'right';
+    confirmationMessage?: string | React.ReactNode;
 };

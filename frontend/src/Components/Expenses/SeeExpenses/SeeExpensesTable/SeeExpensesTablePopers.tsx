@@ -114,6 +114,7 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
             <ConfirmationPopover
                 id={`see-expense-table-delete-confirm-${selectedExpense.id}`}
                 isDeletion
+                placement="left"
                 confirmationMessage="Are you sure to delete this expense?"
                 anchorEl={deleteExpensePopoverAnchorEl}
                 onClose={onDeletePopoverClose}
