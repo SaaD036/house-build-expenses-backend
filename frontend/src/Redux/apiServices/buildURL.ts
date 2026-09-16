@@ -2,9 +2,9 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 export const BASE_URL =
-    process.env.NODE_ENV === 'development'
-        ? process.env.REACT_APP_DEV_URL
-        : process.env.REACT_APP_PROD_URL;
+    import.meta.env.MODE === 'development'
+        ? import.meta.env.VITE_DEV_URL
+        : import.meta.env.VITE_PROD_URL;
 
 export const buildURL = (path: string, variables: any = {}, params: any = {}): string => {
     let url = `${BASE_URL}/api${path}`;
