@@ -40,6 +40,9 @@ db.Sequelize = Sequelize;
  * @property {import('./do')} DO
  * @property {import('./expense')} Expense
  * @property {import('./user')} User
+ * @property {import('./House')} House
+ * @property {import('./HouseAccess')} HouseAccess
+ * @property {import('./HouseEditHistory')} HouseEditHistory
  */
 
 /** @type {Database & Record<string, any>} */
