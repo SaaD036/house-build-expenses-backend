@@ -1,20 +1,22 @@
 const isValidAddressStructure = (value) => {
-    if (!value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
         throw new Error('Address must be a valid JSON object');
     }
 
-    if (typeof value === 'object' && !Array.isArray(value)) {
-        const allowedKeys = ['address_line', 'area', 'upazilla', 'district'];
-        const keys = Object.keys(value);
+    const allowedKeys = ['address_line', 'area', 'upazilla', 'district'];
+    const keys = Object.keys(value);
 
-        const isValid = keys.every((key) => allowedKeys.includes(key));
-        if (!isValid) {
-            throw new Error(
-                'Address JSON can only contain: address_line, area, upazilla, district'
-            );
-        }
-    } else {
+    if (allowedKeys.length !== keys.length) {
         throw new Error('Address must be a valid JSON object');
+    }
+
+    const isKeyValid = allowedKeys.every((key) => key.includes(key));
+    const isKeyValueValid = allowedKeys.every(
+        (key) => typeof value[key] === 'string' && value[key].trim().length >= 1
+    );
+
+    if (!isKeyValid || !isKeyValueValid) {
+        throw new Error('Address JSON can only contain: address_line, area, upazilla, district');
     }
 };
 
