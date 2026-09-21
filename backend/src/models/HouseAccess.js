@@ -3,7 +3,6 @@ const { DataTypes } = require('sequelize');
 const BaseModel = require('./baseModels/BaseModel');
 
 const { HOUSE_ACCESS_TYPE } = require('../constants/houses/houseAccess');
-
 const ACCESS_TYPES = [HOUSE_ACCESS_TYPE.CONTRIBUTOR, HOUSE_ACCESS_TYPE.VIEWER];
 
 module.exports = (sequelize) => {
@@ -56,6 +55,18 @@ module.exports = (sequelize) => {
                         args: [ACCESS_TYPES],
                         msg: `Access type must be one of: ${ACCESS_TYPES.join(', ')}`,
                     },
+                },
+            },
+            accessBy: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                field: 'access_by',
+                references: {
+                    model: 'users',
+                    key: 'id',
+                },
+                validate: {
+                    notNull: { msg: 'User ID is required.' },
                 },
             },
         },
