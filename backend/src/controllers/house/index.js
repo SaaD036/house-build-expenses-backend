@@ -1,4 +1,8 @@
-const { fetchHouseListService, createHouseService } = require('../../services/houses');
+const {
+    fetchHouseListService,
+    createHouseService,
+    fetchHouseDetailsBySlugService,
+} = require('../../services/houses');
 
 const { HTTP_STATUS } = require('../../constants/http');
 
@@ -50,7 +54,27 @@ const createHouse = async (req, res, next) => {
     }
 };
 
+/**
+ * @desciption    Get a house details
+ * @route         POST /api/house/:houseSlug
+ * @access        Admin, Creator and Accessed
+ */
+const getSingleHouseBySlug = async (req, res, next) => {
+    try {
+        const { houseSlug } = req.params;
+
+        const house = await fetchHouseDetailsBySlugService(houseSlug, req.user);
+
+        return res.status(HTTP_STATUS.OK).json({
+            house,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllHouses,
     createHouse,
+    getSingleHouseBySlug,
 };

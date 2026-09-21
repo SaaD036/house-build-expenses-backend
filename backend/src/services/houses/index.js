@@ -1,3 +1,5 @@
+const { Sequelize } = require('sequelize');
+
 const { House } = require('../../models');
 
 const {
@@ -5,7 +7,7 @@ const {
     prepareWhereFilterForHouseAccess,
 } = require('../../queryHelper/houses');
 
-const { BadRequestError } = require('../../utilities/errors/ApiError');
+const { BadRequestError, NotFoundError } = require('../../utilities/errors/ApiError');
 
 const { UserRole } = require('../../constants/roles');
 
@@ -46,4 +48,51 @@ const createHouseService = async (name, address, floorCount, loggedInUser) => {
     });
 };
 
-module.exports = { fetchHouseListService, createHouseService };
+const fetchHouseDetailsBySlugService = async (slug, loggedInUser) => {
+    const houseDetails = await House.findOne({
+        where: prepareWhereFilterForHouseAccess(loggedInUser, {
+            slug,
+        }),
+        include: [
+            {
+                association: 'owner',
+                attributes: ['id', 'firstName', 'lastName'],
+            },
+        ],
+        attributes: {
+            include: [
+                [
+                    Sequelize.literal(`(
+                        SELECT COUNT(*)::integer 
+                        FROM house_access AS ha 
+                        WHERE ha.house_id = "House"."id"
+                    )`),
+                    'accessCount',
+                ],
+                [
+                    Sequelize.literal(`(
+                        SELECT COUNT(*)::integer 
+                        FROM house_edit_history AS heh 
+                        WHERE heh.house_id = "House"."id"
+                    )`),
+                    'editCount',
+                ],
+            ],
+        },
+    });
+
+    if (!houseDetails) {
+        throw new NotFoundError('house not found');
+    }
+
+    const houseData = houseDetails.toJSON();
+
+    if (houseData.ownerId !== loggedInUser.id && loggedInUser.role === UserRole.USER) {
+        delete houseData.accessCount;
+        delete houseData.editCount;
+    }
+
+    return houseData;
+};
+
+module.exports = { fetchHouseListService, createHouseService, fetchHouseDetailsBySlugService };
