@@ -4,13 +4,30 @@ const BaseSoftDeleteModel = require('./baseModels/BaseSoftDeleteModel');
 
 const { isValidAddressStructure } = require('../utilities/database/addressColumn');
 
+const PROTECTED_ATTRIBUTES = ['ownerId', 'isDeleted', 'deletedAt'];
+
 module.exports = (sequelize, DataTypes) => {
     class House extends BaseSoftDeleteModel {
-        static associate({ User }) {
+        static associate({ User, HouseAccess }) {
             House.belongsTo(User, {
                 foreignKey: 'owner_id',
                 as: 'owner',
             });
+
+            House.hasMany(HouseAccess, {
+                foreignKey: 'houseId',
+                as: 'houseAcces',
+            });
+        }
+
+        toJSON() {
+            let attributes = Object.assign({}, this.get());
+
+            for (let a of PROTECTED_ATTRIBUTES) {
+                delete attributes[a];
+            }
+
+            return attributes;
         }
     }
 

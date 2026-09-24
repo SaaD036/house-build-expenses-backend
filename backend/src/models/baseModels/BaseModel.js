@@ -2,6 +2,8 @@ const { Model, DataTypes } = require('sequelize');
 
 class BaseModel extends Model {
     static init(attributes, options = {}) {
+        const hasUpdatedAt = options.updatedAt !== false;
+
         const baseAttributes = {
             id: {
                 type: DataTypes.INTEGER,
@@ -15,13 +17,16 @@ class BaseModel extends Model {
                 defaultValue: DataTypes.NOW,
                 field: 'created_at',
             },
-            updatedAt: {
+        };
+
+        if (hasUpdatedAt) {
+            baseAttributes.updatedAt = {
                 type: DataTypes.DATE,
                 allowNull: false,
                 defaultValue: DataTypes.NOW,
                 field: 'updated_at',
-            },
-        };
+            };
+        }
 
         const baseOptions = {
             timestamps: true,
@@ -41,8 +46,8 @@ class BaseModel extends Model {
         };
 
         const mergedAttributes = {
-            ...attributes,
             ...baseAttributes,
+            ...attributes,
         };
 
         return super.init(mergedAttributes, mergedOptions);

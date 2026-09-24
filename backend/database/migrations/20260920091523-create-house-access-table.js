@@ -36,6 +36,16 @@ module.exports = {
                 type: DataTypes.ENUM(HOUSE_ACCESS_TYPE.VIEWER, HOUSE_ACCESS_TYPE.CONTRIBUTOR),
                 allowNull: false,
             },
+            access_by: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'RESTRICT',
+            },
             created_at: {
                 type: DataTypes.DATE,
                 allowNull: false,

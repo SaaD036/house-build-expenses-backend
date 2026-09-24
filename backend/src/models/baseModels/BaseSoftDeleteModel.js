@@ -20,6 +20,12 @@ class BaseSoftDeleteModel extends BaseModel {
         };
 
         const softDeleteOptions = {
+            paranoid: true,
+            defaultScope: {
+                where: {
+                    isDeleted: false,
+                },
+            },
             hooks: {
                 beforeDestroy: (instance) => {
                     instance.isDeleted = true;
@@ -27,6 +33,17 @@ class BaseSoftDeleteModel extends BaseModel {
                 beforeRestore: (instance) => {
                     instance.isDeleted = false;
                 },
+            },
+        };
+
+        const childDefaultScope = options.defaultScope || {};
+        const childWhere = childDefaultScope.where || {};
+
+        const mergedDefaultScope = {
+            ...childDefaultScope,
+            where: {
+                ...softDeleteOptions.defaultScope.where,
+                ...childWhere,
             },
         };
 
@@ -38,6 +55,7 @@ class BaseSoftDeleteModel extends BaseModel {
         const mergedOptions = {
             ...softDeleteOptions,
             ...options,
+            defaultScope: mergedDefaultScope,
             hooks: mergedHooks,
         };
 
