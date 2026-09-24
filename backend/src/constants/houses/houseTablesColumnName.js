@@ -13,6 +13,10 @@ const HOUSE_TABLE_COLUMN_NAMES = {
         modelKey: 'floorCount',
         dbKey: House.rawAttributes.floorCount.field,
     },
+    isDeleted: {
+        modelKey: 'isDeleted',
+        dbKey: House.rawAttributes.isDeleted.field,
+    },
 };
 
 module.exports = { HOUSE_TABLE_COLUMN_NAMES };

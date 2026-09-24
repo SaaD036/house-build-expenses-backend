@@ -3,6 +3,7 @@ const {
     createHouseService,
     updateHouseService,
     fetchHouseDetailsBySlugService,
+    deleteHouseService,
 } = require('../../services/houses');
 
 const { HTTP_STATUS } = require('../../constants/http');
@@ -93,9 +94,30 @@ const updateHouse = async (req, res, next) => {
     }
 };
 
+/**
+ * @desciption    Delete a house
+ * @route         DELETE /api/house/:id
+ * @access        Admin, Creator
+ */
+const deleteHouse = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+        const loggedInUser = req.user;
+
+        await deleteHouseService(houseId, loggedInUser);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'house deleted',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllHouses,
     createHouse,
     getSingleHouseBySlug,
     updateHouse,
+    deleteHouse,
 };

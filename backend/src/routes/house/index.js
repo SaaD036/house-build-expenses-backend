@@ -4,6 +4,7 @@ const {
     getAllHouses,
     createHouse,
     updateHouse,
+    deleteHouse,
     getSingleHouseBySlug,
 } = require('../../controllers/house');
 
@@ -19,5 +20,6 @@ router.post('/', createHouseValidator, createHouse);
 
 router.get('/:houseSlug', getSingleHouseBySlug);
 router.put('/:houseId', houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR), updateHouse);
+router.delete('/:houseId', houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR), deleteHouse);
 
 module.exports = router;

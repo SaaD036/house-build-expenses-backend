@@ -168,9 +168,28 @@ const updateHouseService = async (id, bodyData = {}, loggedInUser) => {
     });
 };
 
+const deleteHouseService = async (houseId, loggedInUser) => {
+    await sequelize.transaction(async (t) => {
+        await Promise.all([
+            House.destroy({ where: { id: houseId } }, { transaction: t }),
+            HouseEditHistory.create(
+                prepareDataForHouseEditTableRow(
+                    houseId,
+                    loggedInUser.id,
+                    HOUSE_TABLES.HOUSE,
+                    HOUSE_TABLE_COLUMN_NAMES.isDeleted.dbKey,
+                    prepareValueColumnDataForHouseEdit(true, false)
+                ),
+                { transaction: t }
+            ),
+        ]);
+    });
+};
+
 module.exports = {
     fetchHouseListService,
     createHouseService,
     updateHouseService,
     fetchHouseDetailsBySlugService,
+    deleteHouseService,
 };
