@@ -8,10 +8,15 @@ const PROTECTED_ATTRIBUTES = ['ownerId', 'isDeleted', 'deletedAt'];
 
 module.exports = (sequelize, DataTypes) => {
     class House extends BaseSoftDeleteModel {
-        static associate({ User }) {
+        static associate({ User, HouseAccess }) {
             House.belongsTo(User, {
                 foreignKey: 'owner_id',
                 as: 'owner',
+            });
+
+            House.hasMany(HouseAccess, {
+                foreignKey: 'houseId',
+                as: 'houseAcces',
             });
         }
 

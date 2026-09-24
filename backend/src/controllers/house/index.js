@@ -1,6 +1,7 @@
 const {
     fetchHouseListService,
     createHouseService,
+    updateHouseService,
     fetchHouseDetailsBySlugService,
 } = require('../../services/houses');
 
@@ -73,8 +74,28 @@ const getSingleHouseBySlug = async (req, res, next) => {
     }
 };
 
+/**
+ * @desciption    Update a house
+ * @route         PUT /api/house/:id
+ * @access        Admin, Creator
+ */
+const updateHouse = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+
+        await updateHouseService(houseId, req.body, req.user);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'house updated',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllHouses,
     createHouse,
     getSingleHouseBySlug,
+    updateHouse,
 };
