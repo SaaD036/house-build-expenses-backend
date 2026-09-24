@@ -34,15 +34,20 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 /**
+ * @template T
+ * @typedef {import('sequelize').ModelStatic<import('sequelize').Model<T>>} ModelStatic
+ */
+
+/**
  * @typedef {Object} Database
  * @property {Sequelize.Sequelize} sequelize
  * @property {typeof Sequelize} Sequelize
- * @property {import('./do')} DO
- * @property {import('./expense')} Expense
- * @property {import('./user')} User
- * @property {import('./House')} House
- * @property {import('./HouseAccess')} HouseAccess
- * @property {import('./HouseEditHistory')} HouseEditHistory
+ * @property {ModelStatic<any>} DO
+ * @property {ModelStatic<any>} Expense
+ * @property {ModelStatic<any>} User
+ * @property {ModelStatic<any>} House
+ * @property {ModelStatic<any>} HouseAccess
+ * @property {ModelStatic<any>} HouseEditHistory
  */
 
 /** @type {Database & Record<string, any>} */
