@@ -27,11 +27,16 @@ class BaseSoftDeleteModel extends BaseModel {
                 },
             },
             hooks: {
-                beforeDestroy: (instance) => {
+                beforeDestroy: async (instance, options) => {
                     instance.isDeleted = true;
+                    await instance.save({ transaction: options.transaction, hooks: false });
                 },
-                beforeRestore: (instance) => {
+                beforeRestore: async (instance, options) => {
                     instance.isDeleted = false;
+                    await instance.save({ transaction: options.transaction, hooks: false });
+                },
+                beforeBulkDestroy: (options) => {
+                    options.individualHooks = true;
                 },
             },
         };
