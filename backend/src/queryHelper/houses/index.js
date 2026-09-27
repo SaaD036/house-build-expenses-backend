@@ -73,7 +73,39 @@ const prepareWhereFilterForHouseAccess = (loggedInUser, existingWhere = {}) => {
     };
 };
 
+/**
+ * @param {Object} params
+ * @param {number|string} params.houseId
+ * @param {number|string} [params.editor]
+ * @param {number} [params.offset=0]
+ * @param {number} [params.limit=10]
+ *
+ * @return {{ offset, limit, where }}
+ */
+const prepareWhereFilterForHouseEditHistory = (params) => {
+    let where = {};
+    const { editor, houseId } = params;
+    const filter = { ...preparePaginationQuery(params) };
+
+    if (houseId) {
+        where = { ...where, houseId };
+    }
+
+    if (editor.length >= 1) {
+        where = {
+            ...where,
+            [Op.or]: [prepareSearchByUserNameQuery('editor', editor)],
+        };
+    }
+
+    return {
+        ...filter,
+        where,
+    };
+};
+
 module.exports = {
     prepareFiltersForHousesList,
     prepareWhereFilterForHouseAccess,
+    prepareWhereFilterForHouseEditHistory,
 };

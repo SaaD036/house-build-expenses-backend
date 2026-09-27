@@ -7,14 +7,19 @@ const { HTTP_STATUS } = require('../constants/http');
 const { HOUSE_ACCESS_TYPE } = require('../constants/houses/houseAccess');
 
 /**
- * @type          middleware
+ * @param {string} accessType
+ * @param {Object} options
+ * @param {boolean|undefined} options.approved
+ * @param {boolean|undefined} [options.addHouseToRequest]
+ * @param {boolean|undefined} [params.allowedForVisitorAdmin]
+ *
  * @desciption    Validate users' access to specific house
  */
 const houseAccessMiddleware = (
     accessType,
-    userRole = { allowedForVisitorAdmin: false, approved: false }
+    options = { approved: false, addHouseToRequest: false, allowedForVisitorAdmin: false }
 ) => {
-    const { allowedForVisitorAdmin } = userRole;
+    const { addHouseToRequest, allowedForVisitorAdmin } = options;
 
     return async (req, res, next) => {
         let house = null;
@@ -25,17 +30,24 @@ const houseAccessMiddleware = (
         try {
             const isAdmin = role === UserRole.ADMIN;
             const isVisitorAdmin = allowedForVisitorAdmin && role === UserRole.VISITOR;
+            const attributes = addHouseToRequest
+                ? ['id', 'slug', 'name', 'address']
+                : ['id', 'name'];
 
             if (isAdmin || isVisitorAdmin) {
                 house = await House.findOne({
                     where: { id: houseId },
-                    attributes: ['id', 'name'],
+                    attributes,
                 });
 
                 if (!house) {
                     return res.status(HTTP_STATUS.NOT_FOUND).json({
                         message: 'house not found',
                     });
+                }
+
+                if (addHouseToRequest) {
+                    req.house = house;
                 }
 
                 next();
@@ -45,7 +57,7 @@ const houseAccessMiddleware = (
             if (accessType === HOUSE_ACCESS_TYPE.CREATOR) {
                 house = await House.findOne({
                     where: { id: houseId, ownerId: id },
-                    attributes: ['id', 'name'],
+                    attributes,
                 });
             } else {
                 let accessTypeCondition = '';
@@ -55,6 +67,7 @@ const houseAccessMiddleware = (
                 }
 
                 house = await House.findOne({
+                    attributes,
                     where: {
                         id: houseId,
                         [Op.or]: [
@@ -71,7 +84,6 @@ const houseAccessMiddleware = (
                             },
                         ],
                     },
-                    attributes: ['id', 'name'],
                 });
             }
 
@@ -79,6 +91,10 @@ const houseAccessMiddleware = (
                 return res.status(HTTP_STATUS.NOT_FOUND).json({
                     message: 'house not found',
                 });
+            }
+
+            if (addHouseToRequest) {
+                req.house = house;
             }
 
             next();

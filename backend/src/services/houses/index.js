@@ -5,6 +5,7 @@ const { House, HouseEditHistory, sequelize } = require('../../models');
 const {
     prepareFiltersForHousesList,
     prepareWhereFilterForHouseAccess,
+    prepareWhereFilterForHouseEditHistory,
 } = require('../../queryHelper/houses');
 
 const {
@@ -27,13 +28,23 @@ const fetchHouseListService = async (params, loggedInUser) => {
                 {
                     association: 'owner',
                     attributes: ['id', 'firstName', 'lastName'],
+                    required: true,
                 },
             ],
             offset,
             limit,
             where: prepareWhereFilterForHouseAccess(loggedInUser, where),
         }),
-        House.count({ where: prepareWhereFilterForHouseAccess(loggedInUser, where) }),
+        House.count({
+            where: prepareWhereFilterForHouseAccess(loggedInUser, where),
+            include: [
+                {
+                    association: 'owner',
+                    attributes: ['id', 'firstName', 'lastName'],
+                    required: true,
+                },
+            ],
+        }),
     ]);
 
     return { housesList, houseCount };
@@ -186,10 +197,35 @@ const deleteHouseService = async (houseId, loggedInUser) => {
     });
 };
 
+const fetchHouseEditHistoryService = async (houseId, params) => {
+    const { offset, limit, where } = prepareWhereFilterForHouseEditHistory({ houseId, ...params });
+    const include = [
+        {
+            association: 'editor',
+            attributes: ['id', 'firstName', 'lastName'],
+            required: true,
+        },
+    ];
+
+    const [editHistory, editHistoryCount] = await Promise.all([
+        HouseEditHistory.findAll({
+            where,
+            limit,
+            offset,
+            include,
+            attributes: ['id', 'editedTable', 'editedColumn', 'value', 'createdAt'],
+        }),
+        HouseEditHistory.count({ where, include }),
+    ]);
+
+    return { houseEditHistory: editHistory, houseEditHistoryCount: editHistoryCount };
+};
+
 module.exports = {
     fetchHouseListService,
     createHouseService,
     updateHouseService,
     fetchHouseDetailsBySlugService,
     deleteHouseService,
+    fetchHouseEditHistoryService,
 };

@@ -6,6 +6,7 @@ const {
     updateHouse,
     deleteHouse,
     getSingleHouseBySlug,
+    getHouseEditHistory,
 } = require('../../controllers/house');
 
 const houseAccessMiddleware = require('../../middlewares/HouseAccessMiddleware');
@@ -17,6 +18,15 @@ const router = express.Router();
 
 router.get('/', getAllHouses);
 router.post('/', createHouseValidator, createHouse);
+
+router.get(
+    '/:houseId/edit-history',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR, {
+        addHouseToRequest: true,
+        allowedForVisitorAdmin: true,
+    }),
+    getHouseEditHistory
+);
 
 router.get('/:houseSlug', getSingleHouseBySlug);
 router.put('/:houseId', houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR), updateHouse);

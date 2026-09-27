@@ -21,10 +21,10 @@ const prepareSearchByUserNameQuery = (relatedTableName, searchterm) => {
 
     return Sequelize.where(
         Sequelize.fn(
-            'concat',
-            Sequelize.col(`${relatedTableName}.first_name`),
+            'CONCAT',
+            Sequelize.literal(`"${relatedTableName}"."first_name"`),
             ' ',
-            Sequelize.col(`${relatedTableName}.last_name`)
+            Sequelize.literal(`"${relatedTableName}"."last_name"`)
         ),
         { [Op.iLike]: `%${searchterm.trim()}%` }
     );
