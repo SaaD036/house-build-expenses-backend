@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     class House extends BaseSoftDeleteModel {
         static associate({ User, HouseAccess }) {
             House.belongsTo(User, {
-                foreignKey: 'owner_id',
+                foreignKey: 'ownerId',
                 as: 'owner',
             });
 
