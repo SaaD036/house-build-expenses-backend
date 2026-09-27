@@ -4,6 +4,7 @@ const {
     updateHouseService,
     fetchHouseDetailsBySlugService,
     deleteHouseService,
+    fetchHouseEditHistoryService,
 } = require('../../services/houses');
 
 const { HTTP_STATUS } = require('../../constants/http');
@@ -48,7 +49,7 @@ const createHouse = async (req, res, next) => {
 
         await createHouseService(name, address, floorCount, req.user);
 
-        return res.status(HTTP_STATUS.OK).json({
+        return res.status(HTTP_STATUS.CREATED).json({
             message: 'house created',
         });
     } catch (error) {
@@ -114,10 +115,36 @@ const deleteHouse = async (req, res, next) => {
     }
 };
 
+/**
+ * @desciption    Fetch house-edit history
+ * @route         GET /:houseId/edit-history
+ * @access        Admin, Creator
+ */
+const getHouseEditHistory = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+        const { page = 1, limit = 10, editorName } = req.query;
+
+        const editHistory = await fetchHouseEditHistoryService(houseId, {
+            page,
+            limit,
+            editor: (editorName || '').trim(),
+        });
+
+        return res.status(HTTP_STATUS.OK).json({
+            house: req.house,
+            ...editHistory,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllHouses,
     createHouse,
     getSingleHouseBySlug,
     updateHouse,
     deleteHouse,
+    getHouseEditHistory,
 };
