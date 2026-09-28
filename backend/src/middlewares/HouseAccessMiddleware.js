@@ -31,7 +31,7 @@ const houseAccessMiddleware = (
             const isAdmin = role === UserRole.ADMIN;
             const isVisitorAdmin = allowedForVisitorAdmin && role === UserRole.VISITOR;
             const attributes = addHouseToRequest
-                ? ['id', 'slug', 'name', 'address']
+                ? ['id', 'slug', 'name', 'address', 'ownerId']
                 : ['id', 'name'];
 
             if (isAdmin || isVisitorAdmin) {

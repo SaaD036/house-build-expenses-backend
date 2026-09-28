@@ -97,7 +97,7 @@ const updateHouse = async (req, res, next) => {
 
 /**
  * @desciption    Delete a house
- * @route         DELETE /api/house/:id
+ * @route         DELETE /api/house/:houseId
  * @access        Admin, Creator
  */
 const deleteHouse = async (req, res, next) => {
@@ -117,7 +117,7 @@ const deleteHouse = async (req, res, next) => {
 
 /**
  * @desciption    Fetch house-edit history
- * @route         GET /:houseId/edit-history
+ * @route         GET /api/house/:houseId/edit-history
  * @access        Admin, Creator
  */
 const getHouseEditHistory = async (req, res, next) => {

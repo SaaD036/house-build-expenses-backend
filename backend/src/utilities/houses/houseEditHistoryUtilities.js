@@ -1,5 +1,5 @@
-const prepareValueColumnDataForHouseEdit = (newValue, oldValue, rowId) => {
-    let value = {};
+const prepareValueColumnDataForHouseEdit = (newValue, oldValue, otherValue = {}) => {
+    let value = { ...otherValue };
 
     if (newValue) {
         value = { ...value, newValue };
@@ -7,10 +7,6 @@ const prepareValueColumnDataForHouseEdit = (newValue, oldValue, rowId) => {
 
     if (oldValue) {
         value = { ...value, oldValue };
-    }
-
-    if (rowId) {
-        value = { ...value, row: rowId };
     }
 
     return value;
