@@ -1,4 +1,4 @@
-const { House } = require('../../models');
+const { House, HouseAccess } = require('../../models');
 
 const HOUSE_TABLE_COLUMN_NAMES = {
     name: {
@@ -19,4 +19,27 @@ const HOUSE_TABLE_COLUMN_NAMES = {
     },
 };
 
-module.exports = { HOUSE_TABLE_COLUMN_NAMES };
+const HOUSE_ACCESS_TABLE_COLUMN_NAMES = {
+    newRow: {
+        modelKey: 'newRow',
+        dbKey: 'newRow',
+    },
+    userId: {
+        modelKey: 'userId',
+        dbKey: HouseAccess.rawAttributes.userId.field,
+    },
+    houseId: {
+        modelKey: 'houseId',
+        dbKey: HouseAccess.rawAttributes.houseId.field,
+    },
+    accessType: {
+        modelKey: 'accessType',
+        dbKey: HouseAccess.rawAttributes.accessType.field,
+    },
+    accessBy: {
+        modelKey: 'accessBy',
+        dbKey: HouseAccess.rawAttributes.accessBy.field,
+    },
+};
+
+module.exports = { HOUSE_TABLE_COLUMN_NAMES, HOUSE_ACCESS_TABLE_COLUMN_NAMES };
