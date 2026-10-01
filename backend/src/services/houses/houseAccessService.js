@@ -6,6 +6,7 @@ const {
     prepareDataForHouseEditTableRow,
     prepareValueColumnDataForHouseEdit,
 } = require('../../utilities/houses/houseEditHistoryUtilities');
+const { prepareWhereFilterForAvailableUsersForHouse } = require('../../queryHelper/houses');
 
 const { BadRequestError } = require('../../utilities/errors/ApiError');
 
@@ -104,6 +105,56 @@ const addAccessToHouseService = async (userAccessPayload, house, loggedInUser) =
     });
 };
 
+const fetchAvailableUserListForHouseAccess = async (house, params) => {
+    const { id: houseId, ownerId } = house;
+    const { where, limit, offset } = prepareWhereFilterForAvailableUsersForHouse({
+        ...params,
+        houseOwnerId: ownerId,
+    });
+
+    const [users, totalUserCount] = await Promise.all([
+        User.findAll({
+            attributes: ['id', 'firstName', 'lastName'],
+            include: [
+                {
+                    association: 'houseAccess',
+                    where: { houseId },
+                    required: false,
+                    attributes: [],
+                },
+            ],
+            where: {
+                ...where,
+                '$houseAccess.id$': null,
+            },
+            limit,
+            offset,
+            order: [['firstName', 'ASC']],
+            subQuery: false,
+            distinct: true,
+        }),
+        User.count({
+            include: [
+                {
+                    association: 'houseAccess',
+                    where: { houseId },
+                    required: false,
+                    attributes: [],
+                },
+            ],
+            where: {
+                ...where,
+                '$houseAccess.id$': null,
+            },
+            subQuery: false,
+            distinct: true,
+        }),
+    ]);
+
+    return { users, totalUserCount };
+};
+
 module.exports = {
     addAccessToHouseService,
+    fetchAvailableUserListForHouseAccess,
 };

@@ -104,8 +104,56 @@ const prepareWhereFilterForHouseEditHistory = (params) => {
     };
 };
 
+/**
+ * @param {Object} params
+ * @param {string|undefined} params.searchTerm
+ * @param {number} params.houseOwnerId
+ * @param {number} [params.offset=0]
+ * @param {number} [params.limit=10]
+ *
+ * @return {{ offset, limit, where }}
+ */
+const prepareWhereFilterForAvailableUsersForHouse = (params) => {
+    let where = {};
+    const { searchTerm = '', houseOwnerId } = params;
+    const filter = { ...preparePaginationQuery(params) };
+
+    where = {
+        ...where,
+        id: {
+            [Op.ne]: houseOwnerId,
+        },
+        accountStatus: 'active',
+        role: UserRole.USER,
+    };
+
+    if (searchTerm.length > 0) {
+        where = {
+            ...where,
+            [Op.or]: [
+                Sequelize.where(
+                    Sequelize.fn(
+                        'CONCAT',
+                        Sequelize.literal('"User"."first_name"'),
+                        ' ',
+                        Sequelize.literal('"User"."last_name"')
+                    ),
+                    { [Op.iLike]: `%${searchTerm}%` }
+                ),
+                { email: { [Op.iLike]: `%${searchTerm}%` } },
+            ],
+        };
+    }
+
+    return {
+        ...filter,
+        where,
+    };
+};
+
 module.exports = {
     prepareFiltersForHousesList,
     prepareWhereFilterForHouseAccess,
     prepareWhereFilterForHouseEditHistory,
+    prepareWhereFilterForAvailableUsersForHouse,
 };

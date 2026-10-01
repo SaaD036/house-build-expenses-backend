@@ -1,4 +1,7 @@
-const { addAccessToHouseService } = require('../../services/houses/houseAccessService');
+const {
+    addAccessToHouseService,
+    fetchAvailableUserListForHouseAccess,
+} = require('../../services/houses/houseAccessService');
 
 const { HTTP_STATUS } = require('../../constants/http');
 
@@ -21,6 +24,11 @@ const addAccessToHouseForSingleUser = async (req, res, next) => {
     }
 };
 
+/**
+ * @desciption    Add access for multiple users to house
+ * @route         POST /api/house/:houseId/add-multiple-access
+ * @access        Admin, Creator
+ */
 const addAccessToHouseForMultipleUser = async (req, res, next) => {
     try {
         const { houseSlug } = req.params;
@@ -35,4 +43,31 @@ const addAccessToHouseForMultipleUser = async (req, res, next) => {
     }
 };
 
-module.exports = { addAccessToHouseForSingleUser, addAccessToHouseForMultipleUser };
+/**
+ * @desciption    Fetch available users for a house to access
+ * @route         GET /api/house/:houseId/users-for-access
+ * @access        Admin, Creator
+ */
+const getAvailableUsersForHouseAccess = async (req, res, next) => {
+    try {
+        const { page = 1, limit = 10, searchTerm = '' } = req.query;
+        const { users, totalUserCount } = await fetchAvailableUserListForHouseAccess(req.house, {
+            page,
+            limit,
+            searchTerm,
+        });
+
+        return res.status(HTTP_STATUS.OK).json({
+            users,
+            totalUserCount,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = {
+    addAccessToHouseForSingleUser,
+    addAccessToHouseForMultipleUser,
+    getAvailableUsersForHouseAccess,
+};

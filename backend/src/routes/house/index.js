@@ -8,7 +8,10 @@ const {
     getSingleHouseBySlug,
     getHouseEditHistory,
 } = require('../../controllers/house');
-const { addAccessToHouseForSingleUser } = require('../../controllers/house/houseAccess');
+const {
+    addAccessToHouseForSingleUser,
+    getAvailableUsersForHouseAccess,
+} = require('../../controllers/house/houseAccess');
 
 const houseAccessMiddleware = require('../../middlewares/HouseAccessMiddleware');
 
@@ -37,6 +40,13 @@ router.post(
     }),
     addAccessForSingleUserValidator,
     addAccessToHouseForSingleUser
+);
+router.get(
+    '/:houseId/users-for-access',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR, {
+        addHouseToRequest: true,
+    }),
+    getAvailableUsersForHouseAccess
 );
 
 router.get('/:houseSlug', getSingleHouseBySlug);
