@@ -1,12 +1,46 @@
 const {
     addAccessToHouseService,
+    fetchAccessListForHouseService,
     removeUserAccessesFromHouseService,
     fetchAvailableUserListForHouseAccess,
 } = require('../../services/houses/houseAccessService');
 
-const { sendApiSuccessResponse } = require('../../utilities/apiUtils/apiResponseHandler');
+const {
+    sendApiSuccessResponse,
+    preparePaginationResponse,
+} = require('../../utilities/apiUtils/apiResponseHandler');
 
 const { HTTP_STATUS } = require('../../constants/http');
+
+/**
+ * @desciption    Fetch user-access list for a house
+ * @route         POST /api/house/:houseId/house-access
+ * @access        Admin, Creator
+ */
+const getHouseAccess = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+        const { name, accessType, page = 1, limit = 10 } = req.query;
+
+        const { houseAccess, houseAccessCount } = await fetchAccessListForHouseService(houseId, {
+            searchTerm: name,
+            accessType,
+            page,
+            limit,
+        });
+
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'House access list fetched',
+            data: { house: req.house, houseAccess },
+            meta: {
+                pagination: preparePaginationResponse(houseAccessCount, page, limit),
+            },
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 /**
  * @desciption    Add access for a single user to house
@@ -114,6 +148,7 @@ const getAvailableUsersForHouseAccess = async (req, res, next) => {
 };
 
 module.exports = {
+    getHouseAccess,
     addAccessToHouseForSingleUser,
     addAccessToHouseForMultipleUser,
     getAvailableUsersForHouseAccess,

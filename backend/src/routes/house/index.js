@@ -9,6 +9,7 @@ const {
     getHouseEditHistory,
 } = require('../../controllers/house');
 const {
+    getHouseAccess,
     addAccessToHouseForSingleUser,
     getAvailableUsersForHouseAccess,
     removeSingleUserAccessFromHouse,
@@ -30,6 +31,14 @@ const router = express.Router();
 router.get('/', getAllHouses);
 router.post('/', createHouseValidator, createHouse);
 
+router.get(
+    '/:houseId/house-access',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR, {
+        addHouseToRequest: true,
+        allowedForVisitorAdmin: true,
+    }),
+    getHouseAccess
+);
 router.get(
     '/:houseId/edit-history',
     houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR, {

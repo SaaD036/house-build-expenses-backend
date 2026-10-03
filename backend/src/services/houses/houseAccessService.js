@@ -6,12 +6,52 @@ const {
     prepareDataForHouseEditTableRow,
     prepareValueColumnDataForHouseEdit,
 } = require('../../utilities/houses/houseEditHistoryUtilities');
-const { prepareWhereFilterForAvailableUsersForHouse } = require('../../queryHelper/houses');
+const {
+    prepareFilterForHouseAccessUsers,
+    prepareWhereFilterForAvailableUsersForHouse,
+} = require('../../queryHelper/houses');
 
 const { BadRequestError } = require('../../utilities/errors/ApiError');
 
 const { HOUSE_TABLES } = require('../../constants/houses');
 const { HOUSE_ACCESS_TABLE_COLUMN_NAMES } = require('../../constants/houses/houseTablesColumnName');
+
+const fetchAccessListForHouseService = async (houseId, params) => {
+    const { where, offset, limit } = prepareFilterForHouseAccessUsers({ houseId, ...params });
+
+    const [houseAccess, houseAccessCount] = await Promise.all([
+        HouseAccess.findAll({
+            where,
+            limit,
+            offset,
+            include: [
+                {
+                    association: 'user',
+                    required: true,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+                {
+                    association: 'accessorProvider',
+                    required: true,
+                    attributes: ['id', 'firstName', 'lastName', 'email'],
+                },
+            ],
+            attributes: ['id', 'accessType', 'createdAt', 'updatedAt'],
+        }),
+        HouseAccess.count({
+            where,
+            include: [
+                {
+                    association: 'user',
+                    required: true,
+                    attributes: [],
+                },
+            ],
+        }),
+    ]);
+
+    return { houseAccess, houseAccessCount };
+};
 
 const addAccessToHouseService = async (userAccessPayload, house, loggedInUser) => {
     const userIds = [];
@@ -222,6 +262,7 @@ const fetchAvailableUserListForHouseAccess = async (house, params) => {
 
 module.exports = {
     addAccessToHouseService,
+    fetchAccessListForHouseService,
     removeUserAccessesFromHouseService,
     fetchAvailableUserListForHouseAccess,
 };

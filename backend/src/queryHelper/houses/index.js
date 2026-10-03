@@ -1,6 +1,10 @@
 const { Sequelize, Op } = require('sequelize');
 
-const { preparePaginationQuery, prepareSearchByUserNameQuery } = require('..');
+const {
+    preparePaginationQuery,
+    prepareSearchByUserNameQuery,
+    prepareSearchByNameOrEmailQuery,
+} = require('..');
 
 const { sequelize } = require('../../models');
 const { UserRole } = require('../../constants/roles');
@@ -77,7 +81,7 @@ const prepareWhereFilterForHouseAccess = (loggedInUser, existingWhere = {}) => {
  * @param {Object} params
  * @param {number|string} params.houseId
  * @param {number|string} [params.editor]
- * @param {number} [params.offset=0]
+ * @param {number} [params.page=1]
  * @param {number} [params.limit=10]
  *
  * @return {{ offset, limit, where }}
@@ -108,7 +112,7 @@ const prepareWhereFilterForHouseEditHistory = (params) => {
  * @param {Object} params
  * @param {string|undefined} params.searchTerm
  * @param {number} params.houseOwnerId
- * @param {number} [params.offset=0]
+ * @param {number} [params.page=1]
  * @param {number} [params.limit=10]
  *
  * @return {{ offset, limit, where }}
@@ -151,8 +155,45 @@ const prepareWhereFilterForAvailableUsersForHouse = (params) => {
     };
 };
 
+/**
+ * @param {Object} params
+ * @param {number} params.houseId
+ * @param {string|undefined} params.searchTerm
+ * @param {number} params.accessType
+ * @param {number} [params.page=1]
+ * @param {number} [params.limit=10]
+ *
+ * @return {{ offset, limit, where }}
+ */
+const prepareFilterForHouseAccessUsers = (params) => {
+    const { houseId, searchTerm = '', accessType = '' } = params;
+
+    let where = { houseId };
+    const filter = { ...preparePaginationQuery(params) };
+
+    if (searchTerm.trim().length > 0) {
+        where = {
+            ...where,
+            [Op.or]: prepareSearchByNameOrEmailQuery('user', searchTerm),
+        };
+    }
+
+    if (accessType.trim().length >= 1) {
+        where = {
+            ...where,
+            accessType,
+        };
+    }
+
+    return {
+        ...filter,
+        where,
+    };
+};
+
 module.exports = {
     prepareFiltersForHousesList,
+    prepareFilterForHouseAccessUsers,
     prepareWhereFilterForHouseAccess,
     prepareWhereFilterForHouseEditHistory,
     prepareWhereFilterForAvailableUsersForHouse,
