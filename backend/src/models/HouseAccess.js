@@ -17,6 +17,11 @@ module.exports = (sequelize) => {
                 foreignKey: 'houseId',
                 as: 'house',
             });
+
+            HouseAccess.belongsTo(User, {
+                foreignKey: 'accessBy',
+                as: 'accessorProvider',
+            });
         }
     }
 

@@ -61,7 +61,23 @@ const sendApiErrorResponse = (res, params) => {
     return res.status(statusCode).json(response);
 };
 
+/**
+ * @description API Pagination Data Helper
+ * @param {number} totalItems
+ * @param {number} itemsPerPage
+ * @param {number} currentPage
+ */
+const preparePaginationResponse = (totalItems, currentPage, itemsPerPage) => {
+    return {
+        totalItems,
+        itemsPerPage: Number(itemsPerPage),
+        totalPages: Math.ceil(totalItems / itemsPerPage),
+        currentPage: Number(currentPage),
+    };
+};
+
 module.exports = {
     sendApiErrorResponse,
     sendApiSuccessResponse,
+    preparePaginationResponse,
 };
