@@ -11,11 +11,16 @@ const {
 const {
     addAccessToHouseForSingleUser,
     getAvailableUsersForHouseAccess,
+    removeSingleUserAccessFromHouse,
+    removeMultipleUserAccessesFromHouse,
 } = require('../../controllers/house/houseAccess');
 
 const houseAccessMiddleware = require('../../middlewares/HouseAccessMiddleware');
 
-const { addAccessForSingleUserValidator } = require('./houseValidators/houseAccessValidators');
+const {
+    addAccessForSingleUserValidator,
+    removeMultipleAccessesFromHouseValidator,
+} = require('./houseValidators/houseAccessValidators');
 
 const { createHouseValidator } = require('./houseValidators');
 const { HOUSE_ACCESS_TYPE } = require('../../constants/houses/houseAccess');
@@ -40,6 +45,17 @@ router.post(
     }),
     addAccessForSingleUserValidator,
     addAccessToHouseForSingleUser
+);
+router.post(
+    '/:houseId/revoke-access',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR),
+    removeMultipleAccessesFromHouseValidator,
+    removeMultipleUserAccessesFromHouse
+);
+router.delete(
+    '/:houseId/revoke-access/:userId',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR),
+    removeSingleUserAccessFromHouse
 );
 router.get(
     '/:houseId/users-for-access',

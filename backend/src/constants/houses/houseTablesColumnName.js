@@ -24,6 +24,10 @@ const HOUSE_ACCESS_TABLE_COLUMN_NAMES = {
         modelKey: 'newRow',
         dbKey: 'newRow',
     },
+    removeRow: {
+        modelKey: 'removeRow',
+        dbKey: 'removeRow',
+    },
     userId: {
         modelKey: 'userId',
         dbKey: HouseAccess.rawAttributes.userId.field,

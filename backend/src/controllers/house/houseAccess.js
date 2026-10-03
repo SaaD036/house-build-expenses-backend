@@ -1,7 +1,10 @@
 const {
     addAccessToHouseService,
+    removeUserAccessesFromHouseService,
     fetchAvailableUserListForHouseAccess,
 } = require('../../services/houses/houseAccessService');
+
+const { sendApiSuccessResponse } = require('../../utilities/apiUtils/apiResponseHandler');
 
 const { HTTP_STATUS } = require('../../constants/http');
 
@@ -44,6 +47,50 @@ const addAccessToHouseForMultipleUser = async (req, res, next) => {
 };
 
 /**
+ * @desciption    Remove access for single user from house
+ * @route         DELETE /api/house/:houseId/revoke-access/:userId
+ * @access        Admin, Creator
+ */
+const removeSingleUserAccessFromHouse = async (req, res, next) => {
+    try {
+        const { houseId, userId } = req.params;
+
+        const data = await removeUserAccessesFromHouseService(houseId, [userId], req.user);
+
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Access revoked',
+            data,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @desciption    Remove access for multi-users from house
+ * @route         POST /api/house/:houseId/revoke-access
+ * @access        Admin, Creator
+ */
+const removeMultipleUserAccessesFromHouse = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+        const { userIdxPayload } = req.body;
+        const userIdx = [...new Set(userIdxPayload.map((idx) => idx.id))];
+
+        const data = await removeUserAccessesFromHouseService(houseId, userIdx, req.user);
+
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Access revoked',
+            data,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * @desciption    Fetch available users for a house to access
  * @route         GET /api/house/:houseId/users-for-access
  * @access        Admin, Creator
@@ -70,4 +117,6 @@ module.exports = {
     addAccessToHouseForSingleUser,
     addAccessToHouseForMultipleUser,
     getAvailableUsersForHouseAccess,
+    removeSingleUserAccessFromHouse,
+    removeMultipleUserAccessesFromHouse,
 };
