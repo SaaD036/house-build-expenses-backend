@@ -105,6 +105,72 @@ const addAccessToHouseService = async (userAccessPayload, house, loggedInUser) =
     });
 };
 
+const removeUserAccessesFromHouseService = async (houseId, usersIdx, loggedInUser) => {
+    const users = await User.findAll({
+        attributes: ['id'],
+        include: [
+            {
+                association: 'houseAccess',
+                attributes: ['accessType', 'accessBy', 'createdAt'],
+                where: {
+                    houseId,
+                },
+                required: true,
+            },
+        ],
+        raw: true,
+        nest: true,
+    });
+
+    const userIdxWithAccessMap = new Map();
+
+    for (const u of users) {
+        userIdxWithAccessMap.set(u.id, u.houseAccess);
+    }
+
+    const payLoadUserIdxWithNoAccess = usersIdx.filter((u) => !userIdxWithAccessMap.has(u));
+    const payLoadUserIdxWithAccess = usersIdx.filter((u) => userIdxWithAccessMap.has(u));
+
+    if (payLoadUserIdxWithAccess.length === 0) {
+        return {
+            requestedUserIds: usersIdx,
+            removedCount: 0,
+            ignoredUserIds: usersIdx,
+        };
+    }
+
+    await sequelize.transaction(async (t) => {
+        const historyLog = payLoadUserIdxWithAccess.map((u) =>
+            prepareDataForHouseEditTableRow(
+                houseId,
+                loggedInUser.id,
+                HOUSE_TABLES.HOUSE_ACCESS,
+                HOUSE_ACCESS_TABLE_COLUMN_NAMES.removeRow.dbKey,
+                prepareValueColumnDataForHouseEdit(null, u, userIdxWithAccessMap.get(u))
+            )
+        );
+
+        await Promise.all([
+            HouseAccess.destroy({
+                where: {
+                    houseId,
+                    userId: {
+                        [Op.in]: payLoadUserIdxWithAccess,
+                    },
+                },
+                transaction: t,
+            }),
+            HouseEditHistory.bulkCreate(historyLog, { transaction: t }),
+        ]);
+    });
+
+    return {
+        requestedUserIds: usersIdx,
+        removedCount: payLoadUserIdxWithAccess.length,
+        ignoredUserIds: payLoadUserIdxWithNoAccess,
+    };
+};
+
 const fetchAvailableUserListForHouseAccess = async (house, params) => {
     const { id: houseId, ownerId } = house;
     const { where, limit, offset } = prepareWhereFilterForAvailableUsersForHouse({
@@ -156,5 +222,6 @@ const fetchAvailableUserListForHouseAccess = async (house, params) => {
 
 module.exports = {
     addAccessToHouseService,
+    removeUserAccessesFromHouseService,
     fetchAvailableUserListForHouseAccess,
 };
