@@ -1,11 +1,13 @@
 'use strict';
-const { Sequelize, Model } = require('sequelize');
+const { Sequelize } = require('sequelize');
+
+const BaseSoftDeleteModel = require('./baseModels/BaseSoftDeleteModel');
 
 const PROTECTED_ATTRIBUTES = ['createdBy', 'doId', 'isDeleted'];
 
 module.exports = (sequelize, DataTypes) => {
-    class Expense extends Model {
-        static associate({ User, DO }) {
+    class Expense extends BaseSoftDeleteModel {
+        static associate({ User, House, DO }) {
             this.belongsTo(User, {
                 foreignKey: 'createdBy',
                 onDelete: 'CASCADE',
@@ -22,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'doId',
                 onDelete: 'CASCADE',
                 as: 'do',
+            });
+
+            this.belongsTo(House, {
+                foreignKey: 'houseId',
+                onDelete: 'CASCADE',
+                as: 'house',
             });
         }
 
@@ -61,6 +69,16 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
                 field: 'expense_edit_history',
             },
+            houseId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'House',
+                    key: 'id',
+                },
+                field: 'house_id',
+                onDelete: 'CASCADE',
+            },
             createdBy: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
@@ -94,23 +112,6 @@ module.exports = (sequelize, DataTypes) => {
                     isUrl: true,
                 },
                 field: 'attachment_url',
-            },
-            isDeleted: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-                field: 'is_deleted',
-            },
-            createdAt: {
-                allowNull: false,
-                type: DataTypes.DATE,
-                defaultValue: Sequelize.fn('NOW'),
-                field: 'created_at',
-            },
-            updatedAt: {
-                allowNull: false,
-                type: DataTypes.DATE,
-                defaultValue: Sequelize.fn('NOW'),
-                field: 'updated_at',
             },
         },
         {
