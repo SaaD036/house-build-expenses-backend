@@ -1,11 +1,13 @@
 'use strict';
-const { Sequelize, Model } = require('sequelize');
+const { Sequelize } = require('sequelize');
+
+const BaseSoftDeleteModel = require('./baseModels/BaseSoftDeleteModel');
 
 const PROTECTED_ATTRIBUTES = ['createdBy', 'isDeleted'];
 
 module.exports = (sequelize, DataTypes) => {
-    class DO extends Model {
-        static associate({ User, Expense }) {
+    class DO extends BaseSoftDeleteModel {
+        static associate({ User, House, Expense }) {
             this.belongsTo(User, {
                 foreignKey: 'createdBy',
                 onDelete: 'CASCADE',
@@ -16,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'createdBy',
                 as: 'lastUpdater',
                 targetKey: 'id',
+            });
+
+            this.belongsTo(House, {
+                foreignKey: 'houseId',
+                onDelete: 'CASCADE',
+                as: 'house',
             });
 
             this.hasMany(Expense, {
@@ -76,6 +84,16 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
                 field: 'do_edit_history',
             },
+            houseId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'House',
+                    key: 'id',
+                },
+                field: 'house_id',
+                onDelete: 'CASCADE',
+            },
             createdBy: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
@@ -94,28 +112,18 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 field: 'image_url',
             },
-            isDeleted: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-                field: 'is_deleted',
-            },
-            createdAt: {
-                allowNull: false,
-                type: DataTypes.DATE,
-                defaultValue: Sequelize.fn('NOW'),
-                field: 'created_at',
-            },
-            updatedAt: {
-                allowNull: false,
-                type: DataTypes.DATE,
-                defaultValue: Sequelize.fn('NOW'),
-                field: 'updated_at',
-            },
         },
         {
             sequelize,
             modelName: 'DO',
             tableName: 'dos',
+            scopes: {
+                houseScope(houseId) {
+                    return {
+                        where: { houseId },
+                    };
+                },
+            },
         }
     );
 
