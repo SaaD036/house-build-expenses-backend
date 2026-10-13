@@ -6,7 +6,12 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node app.js",
-        "dev": "nodemon app.js"
+        "dev": "nodemon app.js",
+        "db:migrate": "npx sequelize-cli db:migrate",
+        "seed:demo": "npx sequelize-cli db:seed:all --seeders-path database/seeders/seeds-demo",
+        "seed:essential": "npx sequelize-cli db:seed:all --seeders-path database/seeders/seeds-essential",
+        "db:setup:dev": "npm run db:migrate && npm run seed:essential && npm run seed:demo",
+        "db:setup:prod": "npm run db:migrate && npm run seed:essential"
     },
     "author": "",
     "license": "ISC",

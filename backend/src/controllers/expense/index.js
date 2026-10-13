@@ -1,25 +1,30 @@
 const _ = require('lodash');
-const { Op } = require('sequelize');
 
 const { Expense } = require('../../models');
 
 const {
-    addSingleExpenseInTheDoService,
+    deleteExpenseService,
+    removeExpensesService,
     getSingleExpenseService,
+    addSingleExpenseInTheDoService,
     getDoDetailsForExpenseService,
 } = require('../../services/expense');
 
+const {
+    sendApiSuccessResponse,
+    sendApiErrorResponse,
+    preparePaginationResponse,
+} = require('../../utilities/apiUtils/apiResponseHandler');
 const { hasTwoDateSameDay } = require('../../utilities/dateUtilities');
 const { prepareFiltersForAllExpenses } = require('../../queryHelper/expenses');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
-const { UserRole } = require('../../constants/roles');
 const { HTTP_STATUS } = require('../../constants/http');
-const { UnauthorizationError } = require('../../utilities/errors/ApiError');
 
 const getAllExpenses = async (req, res, next) => {
     try {
-        const { page, limit, title, description, fromDate, toDate } = req.query;
+        const { houseId } = req.params;
+        const { page = 1, limit = 10, title, description, fromDate, toDate } = req.query;
         const filter = prepareFiltersForAllExpenses({
             page,
             limit,
@@ -30,7 +35,7 @@ const getAllExpenses = async (req, res, next) => {
         });
 
         const [expenses, expensesCount] = await Promise.all([
-            Expense.findAll({
+            Expense.scope({ method: ['houseScope', houseId] }).findAll({
                 include: [
                     {
                         association: 'creator',
@@ -46,10 +51,15 @@ const getAllExpenses = async (req, res, next) => {
                 offset: filter.offset,
                 order: ['expenseAt'],
             }),
-            Expense.count({ where: filter.where }),
+            Expense.scope({ method: ['houseScope', houseId] }).count({ where: filter.where }),
         ]);
 
-        return res.status(HTTP_STATUS.OK).json({ expenses, expensesCount });
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Expenses list fetched',
+            data: { house: req.house, expenses },
+            meta: preparePaginationResponse(expensesCount, Number(page), Number(limit)),
+        });
     } catch (error) {
         next(error);
     }
@@ -57,18 +67,22 @@ const getAllExpenses = async (req, res, next) => {
 
 const createExpense = async (req, res, next) => {
     try {
+        const { houseId } = req.params;
         const { amount, title, description, expenseAt } = req.body;
 
-        await Expense.create({
+        const expense = await Expense.create({
             amount: Number(amount),
             title,
+            houseId,
             description,
             createdBy: req.user.id,
             expenseAt: new Date(expenseAt),
         });
 
-        return res.status(HTTP_STATUS.OK).json({
-            message: 'successfull',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.CREATED,
+            message: 'Expense created',
+            data: { expense },
         });
     } catch (error) {
         next(error);
@@ -79,9 +93,13 @@ const getSingleExpense = async (req, res, next) => {
     try {
         const { expenseId } = req.params;
 
-        const expense = await getSingleExpenseService(expenseId, req.user);
+        const expense = await getSingleExpenseService(req.house, expenseId);
 
-        return res.status(HTTP_STATUS.OK).json({ expense });
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Expense fetched',
+            data: { expense },
+        });
     } catch (error) {
         next(error);
     }
@@ -89,37 +107,27 @@ const getSingleExpense = async (req, res, next) => {
 
 const updateExpense = async (req, res, next) => {
     try {
-        const { expenseID } = req.params;
+        const { houseId, expenseID } = req.params;
         const { amount, title, description, expenseAt } = req.body;
         const { id: userId } = req.user;
         const newEditHistory = [];
 
-        if (isNaN(Number(expenseID))) {
-            return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'invalid expense ID',
-            });
-        }
-
-        const expense = await Expense.findOne({
+        const expense = await Expense.scope({ method: ['houseScope', houseId] }).findOne({
             where: {
-                isDeleted: false,
                 id: expenseID,
+                createdBy: userId,
             },
         });
 
         if (!expense) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'expense not found',
+            return sendApiErrorResponse(res, {
+                statusCode: HTTP_STATUS.NOT_FOUND,
+                message: 'Expense not found',
+                errorTrace: `Expense with id = ${expenseID} not found`,
             });
         }
 
-        if (expense.createdBy !== userId) {
-            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-                message: 'you can not delete this expense',
-            });
-        }
-
-        if (amount !== expense.amount) {
+        if (Number(amount) !== Number(expense.amount)) {
             newEditHistory.push(
                 createExpenseEditHistoryItem('update', 'amount', userId, amount, expense.amount)
             );
@@ -143,7 +151,7 @@ const updateExpense = async (req, res, next) => {
             );
         }
 
-        if (!hasTwoDateSameDay(expenseAt, expense.expenseAt)) {
+        if (!!expenseAt && !hasTwoDateSameDay(expenseAt, expense.expenseAt)) {
             newEditHistory.push(
                 createExpenseEditHistoryItem(
                     'update',
@@ -166,8 +174,9 @@ const updateExpense = async (req, res, next) => {
 
         await expense.save();
 
-        return res.status(HTTP_STATUS.OK).json({
-            message: 'successfull',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Expense updated successfully',
         });
     } catch (error) {
         next(error);
@@ -176,44 +185,13 @@ const updateExpense = async (req, res, next) => {
 
 const deleteExpense = async (req, res, next) => {
     try {
-        const { expenseID } = req.params;
+        const { houseId, expenseID } = req.params;
 
-        if (isNaN(Number(expenseID))) {
-            return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'invalid expense ID.',
-            });
-        }
+        await deleteExpenseService(houseId, expenseID, req.user.id);
 
-        const expense = await Expense.findOne({
-            where: {
-                isDeleted: false,
-                id: expenseID,
-            },
-        });
-
-        if (!expense) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'expense not found',
-            });
-        }
-
-        expense.isDeleted = true;
-        expense.expenseEditHistory = {
-            last_updated_by: req.user.id,
-            history: [
-                ..._.get(expense, 'expenseEditHistory.history', []),
-                {
-                    task_type: 'delete',
-                    task_by: req.user.id,
-                    task_at: new Date(),
-                },
-            ],
-        };
-
-        await expense.save();
-
-        return res.status(HTTP_STATUS.OK).json({
-            message: 'expense deleted',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Expense deleted',
         });
     } catch (error) {
         next(error);
@@ -222,37 +200,16 @@ const deleteExpense = async (req, res, next) => {
 
 const deleteMultipleExpenses = async (req, res, next) => {
     try {
-        const { expenseIDX } = req.body;
-        const expenseIDXasTableID = (expenseIDX || []).map((item) => parseInt(item.id));
+        const { houseId } = req.params;
+        const { expenseIdx } = req.body;
+        const expenseIDXasTableID = (expenseIdx || []).map((item) => parseInt(item.id));
 
-        const expenses = await Expense.findAll({
-            where: {
-                id: {
-                    [Op.in]: expenseIDXasTableID,
-                },
-                isDeleted: false,
-            },
-        });
+        const deletedItems = await removeExpensesService(expenseIDXasTableID, houseId);
 
-        (expenses || []).forEach((expense) => {
-            expense.isDeleted = true;
-            expense.expenseEditHistory = {
-                last_updated_by: req.user.id,
-                history: [
-                    ..._.get(expense, 'expenseEditHistory.history', []),
-                    {
-                        task_type: 'delete',
-                        task_by: req.user.id,
-                        task_at: new Date(),
-                    },
-                ],
-            };
-        });
-
-        await Promise.all((expenses || []).map(async (expense) => await expense.save()));
-
-        return res.status(HTTP_STATUS.OK).json({
-            message: 'expense deleted',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Expenses deleted',
+            data: deletedItems,
         });
     } catch (error) {
         next(error);
@@ -261,6 +218,7 @@ const deleteMultipleExpenses = async (req, res, next) => {
 
 const getTotalExpense = async (req, res, next) => {
     try {
+        const { houseId } = req.params;
         const { title, created_by, fromDate, toDate } = req.query;
         const filter = prepareFiltersForAllExpenses({
             title,
@@ -269,50 +227,17 @@ const getTotalExpense = async (req, res, next) => {
             toDate,
         });
 
-        const totalExpense = await Expense.sum('amount', { where: filter.where });
-
-        return res.status(HTTP_STATUS.OK).json({ totalExpense });
-    } catch (error) {
-        next(error);
-    }
-};
-
-const addExpensesToDOs = async (req, res, next) => {
-    try {
-        const payload = Array.isArray(req.body) ? req.body : _.get(req, 'body.idx', []);
-
-        if (!Array.isArray(payload) || payload.length === 0) {
-            return res.status(HTTP_STATUS.BAD_REQUEST).json({
-                message: 'invalid payload',
-            });
-        }
-
-        const expenseIDX = payload.map((item) => Number(item.expenseId));
-        const expenseToDOMap = payload.reduce((acc, item) => {
-            acc[Number(item.expenseId)] = Number(item.doId);
-
-            return acc;
-        }, {});
-
-        const expenses = await Expense.findAll({
-            where: {
-                id: {
-                    [Op.in]: expenseIDX,
-                },
-                isDeleted: false,
-            },
-        });
-
-        (expenses || []).forEach((expense) => {
-            if (expenseToDOMap[expense.id]) {
-                expense.doId = expenseToDOMap[expense.id];
+        const totalExpense = await Expense.scope({ method: ['houseScope', houseId] }).sum(
+            'amount',
+            {
+                where: filter.where,
             }
-        });
+        );
 
-        await Promise.all((expenses || []).map(async (expense) => await expense.save()));
-
-        return res.status(HTTP_STATUS.OK).json({
-            message: 'successfull',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Total expense count fetched',
+            data: { totalExpense },
         });
     } catch (error) {
         next(error);
@@ -321,13 +246,14 @@ const addExpensesToDOs = async (req, res, next) => {
 
 const addSingleExpenseToDo = async (req, res, next) => {
     try {
-        const { expenseId } = req.params;
+        const { expenseId, houseId } = req.params;
         const { doId } = req.body;
 
-        await addSingleExpenseInTheDoService(req.user.id, expenseId, doId);
+        await addSingleExpenseInTheDoService(req.user.id, houseId, expenseId, doId);
 
-        return res.status(HTTP_STATUS.OK).json({
-            mesaage: 'expense added to DO',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Expense has been enlisted under DO',
         });
     } catch (error) {
         next(error);
@@ -336,13 +262,9 @@ const addSingleExpenseToDo = async (req, res, next) => {
 
 const getExpenseEditHistory = async (req, res, next) => {
     try {
-        if (req.user.role === UserRole.USER) {
-            throw new UnauthorizationError('you can not access the expense edit history');
-        }
-
         const { expenseId } = req.params;
 
-        const expense = await getSingleExpenseService(expenseId, req.user);
+        const expense = await getSingleExpenseService(req.house, expenseId);
         let expenseEditHistory = _.get(expense, 'expenseEditHistory', null);
 
         if (expenseEditHistory !== null) {
@@ -356,7 +278,11 @@ const getExpenseEditHistory = async (req, res, next) => {
             }
         }
 
-        return res.status(HTTP_STATUS.OK).json({ expenseEditHistory });
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'Expense edit history fetched',
+            data: { expenseEditHistory },
+        });
     } catch (error) {
         next(error);
     }
@@ -366,9 +292,13 @@ const getDoDetailsForExpense = async (req, res, next) => {
     try {
         const { expenseId } = req.params;
 
-        const expendeDoDetails = await getDoDetailsForExpenseService(expenseId, req.user);
+        const expendeDoDetails = await getDoDetailsForExpenseService(req.house, expenseId);
 
-        return res.status(HTTP_STATUS.OK).json({ expendeDoDetails });
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'DO details fetched',
+            data: { expendeDoDetails },
+        });
     } catch (error) {
         next(error);
     }
@@ -382,7 +312,6 @@ module.exports = {
     deleteExpense,
     deleteMultipleExpenses,
     getTotalExpense,
-    addExpensesToDOs,
     addSingleExpenseToDo,
     getExpenseEditHistory,
     getDoDetailsForExpense,

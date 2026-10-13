@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const {
     getAllExpenses,
@@ -9,53 +9,86 @@ const {
     deleteExpense,
     deleteMultipleExpenses,
     getTotalExpense,
-    addExpensesToDOs,
     addSingleExpenseToDo,
     getExpenseEditHistory,
     getDoDetailsForExpense,
 } = require('../../controllers/expense');
 
-const adminMiddleware = require('../../middlewares/auth/Admin');
-const VisitorAdminMiddleware = require('../../middlewares/auth/VisitorAdmin');
+const houseAccessMiddleware = require('../../middlewares/HouseAccessMiddleware');
 
 const {
     createExpenseValidator,
     deleteMultipleExpensesValidator,
-    addToDOvalidator,
     addSingleExpenseToDoValidator,
 } = require('./expenseValidators');
-const validatorHandler = require('../validatorHandler');
 
-router.get('/', getAllExpenses);
-router.post('/', adminMiddleware, createExpenseValidator, validatorHandler, createExpense);
+const { HOUSE_ACCESS_TYPE } = require('../../constants/houses/houseAccess');
 
+/**
+ * @description API: /api/house/:houseId/expense
+ */
+router.get(
+    '/',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.VIEWER, {
+        addHouseToRequest: true,
+    }),
+    getAllExpenses
+);
+router.post(
+    '/',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR),
+    createExpenseValidator,
+    createExpense
+);
+
+/**
+ * @description API: /api/house/:houseId/expense/{other-route-part}
+ */
 router.delete(
     '/delete-multiple',
-    adminMiddleware,
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR),
     deleteMultipleExpensesValidator,
-    validatorHandler,
     deleteMultipleExpenses
 );
-router.get('/get-total-expense', getTotalExpense);
-router.post('/add-to-do', addToDOvalidator, validatorHandler, addExpensesToDOs);
+router.get('/get-total-expense', houseAccessMiddleware(HOUSE_ACCESS_TYPE.VIEWER), getTotalExpense);
 
+/**
+ * @description API: /api/house/:houseId/expense/:{expenseId}/{other-route-part}
+ */
 router.post(
     '/:expenseId/add-to-do',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR),
     addSingleExpenseToDoValidator,
-    validatorHandler,
     addSingleExpenseToDo
 );
-router.get('/:expenseId/edit-history', VisitorAdminMiddleware, getExpenseEditHistory);
-router.get('/:expenseId/do-details', getDoDetailsForExpense);
+router.get(
+    '/:expenseId/edit-history',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR, {
+        allowedForVisitorAdmin: true,
+        addHouseToRequest: true,
+    }),
+    getExpenseEditHistory
+);
+router.get(
+    '/:expenseId/do-details',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.VIEWER, { addHouseToRequest: true }),
+    getDoDetailsForExpense
+);
 
-router.get('/:expenseId', getSingleExpense);
+/**
+ * @description API: /api/house/:houseId/expense/:{expenseId}
+ */
+router.get(
+    '/:expenseId',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.VIEWER, { addHouseToRequest: true }),
+    getSingleExpense
+);
 router.patch(
     '/:expenseID',
-    adminMiddleware,
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR),
     createExpenseValidator,
-    validatorHandler,
     updateExpense
 );
-router.delete('/:expenseID', adminMiddleware, deleteExpense);
+router.delete('/:expenseID', houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR), deleteExpense);
 
 module.exports = router;

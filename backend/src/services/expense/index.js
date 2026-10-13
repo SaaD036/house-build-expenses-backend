@@ -7,13 +7,44 @@ const { sequelize, User, Expense, DO } = require('../../models');
 const { getQueryToPrepareEditHistoryData } = require('../../queryHelper/EditHistory');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 
-const { UserRole } = require('../../constants/roles');
+const { HOUSE_ACCESS_TYPE } = require('../../constants/houses/houseAccess');
 const { NotFoundError } = require('../../utilities/errors/ApiError');
 
-const addSingleExpenseInTheDoService = async (userId, expenseId, doId) => {
+const removeExpensesService = async (expenseIds, houseId, userId) => {
+    const validExpenses = await Expense.scope({ method: ['houseScope', houseId] }).findAll({
+        where: {
+            id: {
+                [Op.in]: expenseIds,
+            },
+        },
+        attributes: ['id'],
+    });
+
+    let deletedCount = 0;
+    const validExpenseIds = validExpenses.map((expense) => expense.id);
+    const ignoredExpenseIds = expenseIds.filter((id) => !validExpenseIds.includes(id));
+
+    if (validExpenseIds.length > 0) {
+        deletedCount = await Expense.destroy({
+            where: {
+                id: {
+                    [Op.in]: validExpenseIds,
+                },
+            },
+        });
+    }
+
+    return {
+        deletedCount,
+        deletedIds: validExpenseIds,
+        ignoredIds: ignoredExpenseIds,
+    };
+};
+
+const addSingleExpenseInTheDoService = async (userId, houseId, expenseId, doId) => {
     const [expense, theDo] = await Promise.all([
-        Expense.findOne({ where: { id: expenseId } }),
-        DO.findOne({ where: { id: doId } }),
+        Expense.scope({ method: ['houseScope', houseId] }).findOne({ where: { id: expenseId } }),
+        DO.findOne({ where: { id: doId, houseId } }),
     ]);
 
     if (!expense) {
@@ -24,9 +55,7 @@ const addSingleExpenseInTheDoService = async (userId, expenseId, doId) => {
         throw new NotFoundError(`do with id=${doId} not found`);
     }
 
-    const existingCombination = await Expense.findOne({ where: { id: expenseId, doId } });
-
-    if (existingCombination) {
+    if (Number(expense.doId) === Number(doId)) {
         return;
     }
 
@@ -44,8 +73,12 @@ const addSingleExpenseInTheDoService = async (userId, expenseId, doId) => {
     await expense.save();
 };
 
-const getSingleExpenseService = async (expenseId, loggedInUser) => {
-    const expense = await Expense.findOne({
+const getSingleExpenseService = async (house, expenseId) => {
+    const { id: houseId } = house;
+
+    console.log('SaaD 1 : ', houseId);
+
+    const expense = await Expense.scope({ method: ['houseScope', houseId] }).findOne({
         where: { id: expenseId },
         include: [
             {
@@ -68,11 +101,13 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
         ],
     });
 
+    console.log('SaaD 2 : ', houseId);
+
     if (!expense) {
         throw new NotFoundError(`expense not found with id = ${expenseId}`);
     }
 
-    if (loggedInUser.role === UserRole.USER) {
+    if (house.access === HOUSE_ACCESS_TYPE.VIEWER) {
         delete expense.expenseEditHistory;
 
         return expense;
@@ -93,8 +128,12 @@ const getSingleExpenseService = async (expenseId, loggedInUser) => {
     return expenseData;
 };
 
-const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
-    const expense = await Expense.findOne({ where: { id: expenseId } });
+const getDoDetailsForExpenseService = async (house, expenseId) => {
+    const { id: houseId } = house;
+
+    const expense = await Expense.scope({ method: ['houseScope', houseId] }).findOne({
+        where: { id: expenseId },
+    });
 
     if (!expense) {
         throw new NotFoundError(`expense not found with id = ${expenseId}`);
@@ -104,9 +143,9 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
         return null;
     }
 
-    if (loggedInUser.role === UserRole.USER) {
+    if (house.access === HOUSE_ACCESS_TYPE.VIEWER) {
         let doDetailsForUser = await DO.findOne({
-            where: { id: expense.doId },
+            where: { id: expense.doId, houseId },
             raw: true,
             nest: true,
             attributes: [
@@ -190,8 +229,38 @@ const getDoDetailsForExpenseService = async (expenseId, loggedInUser) => {
     return doDetailsData;
 };
 
+const deleteExpenseService = async (houseId, expenseID, loggedInUserId) => {
+    const expense = await Expense.scope({ method: ['houseScope', houseId] }).findOne({
+        where: {
+            id: expenseID,
+        },
+    });
+
+    if (!expense) {
+        return;
+    }
+
+    expense.isDeleted = true;
+    expense.deletedAt = new Date();
+    expense.expenseEditHistory = {
+        last_updated_by: loggedInUserId,
+        history: [
+            ...get(expense, 'expenseEditHistory.history', []),
+            {
+                task_type: 'delete',
+                task_by: loggedInUserId,
+                task_at: new Date(),
+            },
+        ],
+    };
+
+    await expense.save();
+};
+
 module.exports = {
-    addSingleExpenseInTheDoService,
+    deleteExpenseService,
+    removeExpensesService,
     getSingleExpenseService,
+    addSingleExpenseInTheDoService,
     getDoDetailsForExpenseService,
 };

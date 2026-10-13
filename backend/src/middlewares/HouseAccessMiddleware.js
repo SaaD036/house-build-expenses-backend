@@ -2,6 +2,8 @@ const { Sequelize, Op } = require('sequelize');
 
 const { House, sequelize } = require('../models');
 
+const { sendApiErrorResponse } = require('../utilities/apiUtils/apiResponseHandler');
+
 const { UserRole } = require('../constants/roles');
 const { HTTP_STATUS } = require('../constants/http');
 const { HOUSE_ACCESS_TYPE } = require('../constants/houses/houseAccess');
@@ -11,7 +13,7 @@ const { HOUSE_ACCESS_TYPE } = require('../constants/houses/houseAccess');
  * @param {Object} options
  * @param {boolean|undefined} options.approved
  * @param {boolean|undefined} [options.addHouseToRequest]
- * @param {boolean|undefined} [params.allowedForVisitorAdmin]
+ * @param {boolean|undefined} [options.allowedForVisitorAdmin]
  *
  * @desciption    Validate users' access to specific house
  */
@@ -29,7 +31,10 @@ const houseAccessMiddleware = (
 
         try {
             const isAdmin = role === UserRole.ADMIN;
-            const isVisitorAdmin = allowedForVisitorAdmin && role === UserRole.VISITOR;
+            const isVisitorAdmin =
+                role === UserRole.VISITOR &&
+                (allowedForVisitorAdmin || accessType === HOUSE_ACCESS_TYPE.VIEWER);
+
             const attributes = addHouseToRequest
                 ? ['id', 'slug', 'name', 'address', 'ownerId']
                 : ['id', 'name'];
@@ -41,8 +46,12 @@ const houseAccessMiddleware = (
                 });
 
                 if (!house) {
-                    return res.status(HTTP_STATUS.NOT_FOUND).json({
-                        message: 'house not found',
+                    return sendApiErrorResponse(res, {
+                        statusCode: HTTP_STATUS.NOT_FOUND,
+                        message: 'House not found',
+                        errorTrace: `House with id = ${
+                            houseId
+                        } not found or user has no access to this house`,
                     });
                 }
 
@@ -84,23 +93,33 @@ const houseAccessMiddleware = (
                             },
                         ],
                     },
+                    raw: true,
+                    nest: true,
                 });
             }
 
             if (!house) {
-                return res.status(HTTP_STATUS.NOT_FOUND).json({
-                    message: 'house not found',
+                return sendApiErrorResponse(res, {
+                    statusCode: HTTP_STATUS.NOT_FOUND,
+                    message: 'House not found',
+                    errorTrace: `House with id = ${
+                        houseId
+                    } not found or user has no access to this house`,
                 });
             }
 
             if (addHouseToRequest) {
-                req.house = house;
+                req.house = { ...house, access: accessType };
             }
 
             next();
         } catch (error) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: 'house not found',
+            return sendApiErrorResponse(res, {
+                statusCode: HTTP_STATUS.NOT_FOUND,
+                message: 'House not found',
+                errorTrace: `House with id = ${
+                    houseId
+                } not found or user has no access to this house`,
             });
         }
     };

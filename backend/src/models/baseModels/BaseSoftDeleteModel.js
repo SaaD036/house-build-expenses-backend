@@ -21,19 +21,21 @@ class BaseSoftDeleteModel extends BaseModel {
 
         const softDeleteOptions = {
             paranoid: true,
+            deletedAt: 'deleted_at',
             defaultScope: {
                 where: {
                     isDeleted: false,
                 },
             },
             hooks: {
-                beforeDestroy: async (instance, options) => {
+                afterDestroy: async (instance, options) => {
                     instance.isDeleted = true;
-                    await instance.save({ transaction: options.transaction, hooks: false });
-                },
-                beforeRestore: async (instance, options) => {
-                    instance.isDeleted = false;
-                    await instance.save({ transaction: options.transaction, hooks: false });
+
+                    await instance.save({
+                        transaction: options.transaction,
+                        paranoid: false,
+                        hooks: false,
+                    });
                 },
                 beforeBulkDestroy: (options) => {
                     options.individualHooks = true;
