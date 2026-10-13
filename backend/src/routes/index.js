@@ -16,7 +16,7 @@ router.use(authMiddleware);
 
 router.use('/house', houseRouter);
 router.use('/user', userRouter);
-router.use('/expense', expenseRouter);
+router.use('/house/:houseId/expense', expenseRouter);
 router.use('/do', doRouter);
 
 module.exports = router;

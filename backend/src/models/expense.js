@@ -118,6 +118,13 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: 'Expense',
             tableName: 'expenses',
+            scopes: {
+                houseScope(houseId) {
+                    return {
+                        where: { houseId },
+                    };
+                },
+            },
         }
     );
 
