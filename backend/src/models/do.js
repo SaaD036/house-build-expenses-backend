@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 
 const BaseSoftDeleteModel = require('./baseModels/BaseSoftDeleteModel');
 
-const PROTECTED_ATTRIBUTES = ['createdBy', 'isDeleted'];
+const PROTECTED_ATTRIBUTES = ['createdBy', 'isDeleted', 'deletedAt'];
 
 module.exports = (sequelize, DataTypes) => {
     class DO extends BaseSoftDeleteModel {
