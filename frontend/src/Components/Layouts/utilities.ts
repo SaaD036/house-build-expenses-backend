@@ -1,7 +1,7 @@
-import { UserRole } from '../Constants/Users';
+import { UserRole } from '../../Constants/Users';
 import { SIDEBAR_ITEMS } from './Sidebar/constants';
 
-import { LoggedinUserType } from '../Types/Users';
+import { LoggedinUserType } from '../../Types/Users';
 
 export const getSidebarItemsToRender = (loggedInUser: LoggedinUserType | null) => {
     const isLoggedInUserAdmin = [UserRole.ADMIN, UserRole.VISITOR].includes(

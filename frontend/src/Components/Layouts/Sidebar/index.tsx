@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { Divider } from '@mui/material';
 
 import { getSidebarItemsToRender } from '../utilities';
-import { getUserFromToken } from '../../Utilities/Users/UserToken';
+import { getUserFromToken } from '../../../Utilities/Users/UserToken';
 
 import { SidebarPropsTypes, SidebarItemsTypes } from '../interfaces';
 import styles from '../styles.module.css';

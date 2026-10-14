@@ -3,7 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import ProtectedRoutes from './RoutesProtection';
 
-import Layout from './Layouts';
+import Layout from './Components/Layouts';
 
 import LoginPage from './Pages/Auth/Login';
 import ForgetPasswordPage from './Pages/Auth/ForgetPassword';

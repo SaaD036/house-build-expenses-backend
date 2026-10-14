@@ -5,7 +5,7 @@ import { Drawer } from '@mui/material';
 import { Menu as SidebarOpenIcon } from '@mui/icons-material';
 
 import SideBar from './Sidebar';
-import CustomErrorBoundary from '../Components/Custom/CustomErrorBoundary';
+import CustomErrorBoundary from '../Custom/CustomErrorBoundary';
 
 import { LayoutPropsTypes } from './interfaces';
 import styles from './styles.module.css';
