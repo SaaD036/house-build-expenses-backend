@@ -6,7 +6,7 @@ const { EXPENSE_START_DATE } = require('../../constants/expense');
 
 const prepareFiltersForAllDos = (params) => {
     const filter = { ...preparePaginationQuery(params) };
-    let where = { isDeleted: false };
+    let where = {};
 
     if (params.shopName) {
         where = {

@@ -5,30 +5,38 @@ const { sequelize, Expense, DO } = require('../../models');
 const { createExpenseEditHistoryItem } = require('../../utilities/expenses/expenseEditHistory');
 const { NotFoundError } = require('../../utilities/errors/ApiError');
 
-const addRemoveDoToExpenseService = async (userId, doId, expenseIdxArray, toAdd) => {
+const addOrRemoveDoToExpenseService = async (userId, houseId, doId, expenseIdxArray, toAdd) => {
     const transaction = await sequelize.transaction();
 
     const [expenses, theDo] = await Promise.all([
-        Expense.findAll({
+        Expense.scope({ method: ['houseScope', houseId] }).findAll({
             where: { id: expenseIdxArray },
+            attributes: ['id', 'doId', 'expenseEditHistory'],
             transaction,
         }),
-        DO.findOne({ where: { id: doId } }),
+        DO.scope({ method: ['houseScope', houseId] }).findOne({
+            where: { id: doId },
+            attributes: ['id'],
+        }),
     ]);
-
-    if (!expenses.length) {
-        await transaction.rollback();
-        throw new NotFoundError('no expense found with the idx');
-    }
 
     if (!theDo) {
         await transaction.rollback();
-        throw new NotFoundError(`no do found with the id = ${doId}`);
+        throw new NotFoundError(`No do found with the id = ${doId}`);
     }
 
-    const updatePromises = expenses
+    const committedExpenseSet = new Set();
+    const payloadExpenseSet = new Set(expenseIdxArray);
+
+    const updatePromises = (expenses || [])
         .filter((expense) => {
-            return toAdd ? expense.doId != doId : expense.doId == doId;
+            const expenseToCommit = toAdd ? expense.doId != doId : expense.doId == doId;
+
+            if (expenseToCommit) {
+                committedExpenseSet.add(expense.id);
+            }
+
+            return expenseToCommit;
         })
         .map((expense) => {
             const updatedEditHistory = {
@@ -56,30 +64,55 @@ const addRemoveDoToExpenseService = async (userId, doId, expenseIdxArray, toAdd)
 
     await Promise.all(updatePromises);
     await transaction.commit();
+
+    return {
+        committedExpenses: [...committedExpenseSet],
+        ignoredExpenses: [...payloadExpenseSet.difference(committedExpenseSet)],
+    };
 };
 
-const addDoToExpensesService = async (userId, doId, expenseIdxArray) => {
-    await addRemoveDoToExpenseService(userId, doId, expenseIdxArray, true);
+const addDoToExpensesService = async (userId, houseId, doId, expenseIdxArray) => {
+    const { committedExpenses = [], ignoredExpenses = [] } = await addOrRemoveDoToExpenseService(
+        userId,
+        houseId,
+        doId,
+        expenseIdxArray,
+        true
+    );
+
+    return {
+        addedExpenses: committedExpenses,
+        ignoredExpenses,
+    };
 };
 
-const removeDoFromExpensesService = async (userId, doId, expenseIdxArray) => {
-    await addRemoveDoToExpenseService(userId, doId, expenseIdxArray, false);
+const removeDoFromExpensesService = async (userId, houseId, doId, expenseIdxArray) => {
+    const { committedExpenses = [], ignoredExpenses = [] } = await addOrRemoveDoToExpenseService(
+        userId,
+        houseId,
+        doId,
+        expenseIdxArray,
+        false
+    );
+
+    return {
+        removedExpenses: committedExpenses,
+        ignoredExpenses,
+        ignoredExpensesCount: ignoredExpenses.length,
+    };
 };
 
 const removeDoFromAllExpensesService = async (userId, doId) => {
     const transaction = await sequelize.transaction();
 
+    const removedExpenses = [];
     const expenses = await Expense.findAll({
         where: { doId },
+        attributes: ['id', 'doId', 'expenseEditHistory'],
         transaction,
     });
 
-    if (!expenses.length) {
-        await transaction.rollback();
-        throw new NotFoundError(`no expense found with do = ${doId}`);
-    }
-
-    const updatePromises = expenses.map((expense) => {
+    const updatePromises = (expenses || []).map((expense) => {
         const updatedEditHistory = {
             last_updated_by: userId,
             history: [
@@ -87,6 +120,8 @@ const removeDoFromAllExpensesService = async (userId, doId) => {
                 createExpenseEditHistoryItem('remove_do', 'do_id', userId, null, expense.doId),
             ],
         };
+
+        removedExpenses.push(expense.id);
 
         return expense.update(
             {
@@ -99,6 +134,8 @@ const removeDoFromAllExpensesService = async (userId, doId) => {
 
     await Promise.all(updatePromises);
     await transaction.commit();
+
+    return removedExpenses;
 };
 
 module.exports = {
