@@ -10,7 +10,7 @@ import { SidebarPropsTypes, SidebarItemsTypes } from '../interfaces';
 import styles from '../styles.module.css';
 
 const SideBar = (props: SidebarPropsTypes) => {
-    const { onCloseSidebarDrawer } = props;
+    const { sidebarItemsLayer, onCloseSidebarDrawer } = props;
     const loggedInUser = getUserFromToken();
 
     const getSidebarItemStyle = ({
@@ -31,7 +31,8 @@ const SideBar = (props: SidebarPropsTypes) => {
 
     const renderSidebarItem = (sidebarItem: SidebarItemsTypes, index: number): JSX.Element => {
         const { key, label, Icon } = sidebarItem;
-        const shouldShowDivider = index !== getSidebarItemsToRender(loggedInUser).length - 1;
+        const shouldShowDivider =
+            index !== getSidebarItemsToRender(sidebarItemsLayer, loggedInUser).length - 1;
 
         return (
             <>
@@ -59,7 +60,7 @@ const SideBar = (props: SidebarPropsTypes) => {
 
     return (
         <div className={`center ${styles.sidebar}`}>
-            {getSidebarItemsToRender(loggedInUser).map((sidebarItem, index) => {
+            {getSidebarItemsToRender(sidebarItemsLayer, loggedInUser).map((sidebarItem, index) => {
                 return renderSidebarItem(sidebarItem, index);
             })}
         </div>

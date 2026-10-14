@@ -11,7 +11,7 @@ import { LayoutPropsTypes } from './interfaces';
 import styles from './styles.module.css';
 
 const Layout = (props: LayoutPropsTypes) => {
-    const { children } = props;
+    const { children, sidebarItemsLayer } = props;
     const location = useLocation();
 
     const [openSidebarDrawer, setOpenSidebarDrawer] = useState(false);
@@ -25,7 +25,10 @@ const Layout = (props: LayoutPropsTypes) => {
                     </span>
                 </div>
                 <Drawer open={openSidebarDrawer} onClose={() => setOpenSidebarDrawer(false)}>
-                    <SideBar onCloseSidebarDrawer={() => setOpenSidebarDrawer(false)} />
+                    <SideBar
+                        sidebarItemsLayer={sidebarItemsLayer}
+                        onCloseSidebarDrawer={() => setOpenSidebarDrawer(false)}
+                    />
                 </Drawer>
             </>
         );
@@ -49,7 +52,7 @@ const Layout = (props: LayoutPropsTypes) => {
             <div className={`${styles.layout}`}>
                 {renderSidebarOpenIconSection()}
                 <div className={styles.sidebarContainer}>
-                    <SideBar />
+                    <SideBar sidebarItemsLayer={sidebarItemsLayer} />
                 </div>
                 {renderFooterSection()}
             </div>
