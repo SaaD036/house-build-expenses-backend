@@ -10,6 +10,7 @@ import { ReducerStateType } from '../../../Redux/reducers';
 
 import { Views } from '../../../Constants/General';
 import { TABLE_ROW_COUNT_OPTIONS } from '../../Custom/CustomTable/constants';
+import HouseTable from '../HouseTable';
 
 const SeeHouses = (props: SeeHousePropsType) => {
     const { currentView, houseTypes } = props;
@@ -35,7 +36,7 @@ const SeeHouses = (props: SeeHousePropsType) => {
         <div style={{ display: 'grid', gap: '20px' }}>
             <CardContainer title={cardContainerTitle} />
             <SwitchViewButtonSectionContainer title="Change View" />
-            {currentView === Views.CARD ? 'Card view houses' : 'Table view houses'}
+            {currentView === Views.CARD ? 'Card view houses' : <HouseTable />}
             <CustomPagination
                 page={currentPage}
                 setPage={setCurrentPage}
