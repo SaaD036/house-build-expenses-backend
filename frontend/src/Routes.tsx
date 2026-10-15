@@ -3,11 +3,13 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import ProtectedRoutes from './RoutesProtection';
 
-import Layout from './Layouts';
+import HomeLayout from './Components/Layouts/HomeLayout';
+import HouseLayout from './Components/Layouts/HouseLayout';
 
 import LoginPage from './Pages/Auth/Login';
 import ForgetPasswordPage from './Pages/Auth/ForgetPassword';
 
+import HousePage from './Pages/Houses';
 import DOpage from './Pages/DOs';
 import ExpensesPage from './Pages/Expenses';
 import HomePage from './Pages/Home';
@@ -19,14 +21,26 @@ import { UserRole } from './Constants/Users';
 const router = createBrowserRouter([
     {
         path: '/',
-        element: (
-            <ProtectedRoutes auth>
-                <Layout>
-                    <HomePage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
+        element: <HomeLayout />,
+        children: [
+            {
+                index: true,
+                element: <HousePage />,
+            },
+            {
+                path: 'users',
+                element: <UsersPage />,
+                handle: { role: [UserRole.ADMIN, UserRole.VISITOR] },
+            },
+            {
+                path: 'account',
+                element: <AccountPage />,
+            },
+        ],
     },
+    /**
+     * @description AUTH ROUTES
+     */
     {
         path: '/auth',
         children: [
@@ -48,53 +62,30 @@ const router = createBrowserRouter([
             },
         ],
     },
+    /**
+     * @description HOUSE ROUTES
+     */
     {
-        path: '/transaction',
-        element: (
-            <ProtectedRoutes auth>
-                <Layout>
-                    <ExpensesPage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
-    },
-    {
-        path: '/do',
-        element: (
-            <ProtectedRoutes auth>
-                <Layout>
-                    <DOpage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
-    },
-    {
-        path: '/users',
-        element: (
-            <ProtectedRoutes auth role={[UserRole.ADMIN, UserRole.VISITOR]}>
-                <Layout>
-                    <UsersPage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
-    },
-    {
-        path: '/account',
-        element: (
-            <ProtectedRoutes auth>
-                <Layout>
-                    <AccountPage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
-    },
-    {
-        path: '/albums',
-        element: (
-            <ProtectedRoutes auth>
-                <Layout>Album page</Layout>
-            </ProtectedRoutes>
-        ),
+        path: 'house/:houseSlug',
+        element: <HouseLayout />,
+        children: [
+            {
+                index: true,
+                element: <HomePage />,
+            },
+            {
+                path: 'transaction',
+                element: <ExpensesPage />,
+            },
+            {
+                path: 'do',
+                element: <DOpage />,
+            },
+            {
+                path: 'albums',
+                element: <div>Album Page</div>,
+            },
+        ],
     },
 ]);
 

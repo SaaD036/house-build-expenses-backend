@@ -1,14 +1,20 @@
 import React from 'react';
 
-import { OverridableComponent } from '@mui/material/OverridableComponent';
 import { SvgIconTypeMap } from '@mui/material';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+
+import { SIDEBAR_ITEMS_LAYER } from './Sidebar/constants';
 
 export type LayoutPropsTypes = {
+    houseSlug?: string;
     children: React.ReactNode;
+    sidebarItemsLayer: keyof typeof SIDEBAR_ITEMS_LAYER;
 };
 
 export type SidebarPropsTypes = {
+    houseSlug?: string | null;
     onCloseSidebarDrawer?: () => void;
+    sidebarItemsLayer: keyof typeof SIDEBAR_ITEMS_LAYER;
 };
 
 export type SidebarItemsTypes = {

@@ -5,13 +5,13 @@ import { Drawer } from '@mui/material';
 import { Menu as SidebarOpenIcon } from '@mui/icons-material';
 
 import SideBar from './Sidebar';
-import CustomErrorBoundary from '../Components/Custom/CustomErrorBoundary';
+import CustomErrorBoundary from '../Custom/CustomErrorBoundary';
 
 import { LayoutPropsTypes } from './interfaces';
 import styles from './styles.module.css';
 
 const Layout = (props: LayoutPropsTypes) => {
-    const { children } = props;
+    const { children, houseSlug, sidebarItemsLayer } = props;
     const location = useLocation();
 
     const [openSidebarDrawer, setOpenSidebarDrawer] = useState(false);
@@ -25,7 +25,11 @@ const Layout = (props: LayoutPropsTypes) => {
                     </span>
                 </div>
                 <Drawer open={openSidebarDrawer} onClose={() => setOpenSidebarDrawer(false)}>
-                    <SideBar onCloseSidebarDrawer={() => setOpenSidebarDrawer(false)} />
+                    <SideBar
+                        houseSlug={houseSlug}
+                        sidebarItemsLayer={sidebarItemsLayer}
+                        onCloseSidebarDrawer={() => setOpenSidebarDrawer(false)}
+                    />
                 </Drawer>
             </>
         );
@@ -49,7 +53,7 @@ const Layout = (props: LayoutPropsTypes) => {
             <div className={`${styles.layout}`}>
                 {renderSidebarOpenIconSection()}
                 <div className={styles.sidebarContainer}>
-                    <SideBar />
+                    <SideBar houseSlug={houseSlug} sidebarItemsLayer={sidebarItemsLayer} />
                 </div>
                 {renderFooterSection()}
             </div>
