@@ -6,9 +6,15 @@ import {
 import { CurrentViewType } from '../../Types';
 import { AccountUserType, UserType } from '../../Types/Users';
 import { DO, DoDetailsType } from '../../Types/DOs';
+import { HouseType } from '../../Types/Houses';
 
 export type GeneralReducerStateType = {
     currentView: CurrentViewType | null;
+};
+
+export type HouseReducerStateType = {
+    houseList: HouseType[] | null;
+    houseCount: number | null;
 };
 
 export type ExpenseReducerStateType = {

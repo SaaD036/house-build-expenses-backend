@@ -1,0 +1,6 @@
+{
+    "FETCH_HOUSE_LIST": {
+        "path": "/house",
+        "method": "GET"
+    }
+}

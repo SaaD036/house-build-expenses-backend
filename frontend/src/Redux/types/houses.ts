@@ -1,0 +1,1 @@
+export const FETCH_HOUSE_LIST = 'FETCH_HOUSE_LIST';
