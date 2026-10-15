@@ -54,18 +54,20 @@ const SeeHouses = (props: SeeHousePropsType) => {
             {currentView === Views.CARD ? (
                 'Card view houses'
             ) : (
-                <HouseTable houses={houseList ?? []} />
+                <HouseTable houses={houseList ?? []} houseTypes={houseTypes} />
             )}
-            <CustomPagination
-                page={currentPage}
-                setPage={setCurrentPage}
-                pageCount={Math.ceil((houseCount ?? 0) / housesPerPage)}
-                itemsPerPage={{
-                    itemsPerPageCount: TABLE_ROW_COUNT_OPTIONS,
-                    selectedItemsPerPage: housesPerPage,
-                    setItemsPerPageCount: (sizePerPage) => setHousesPerPage(sizePerPage),
-                }}
-            />
+            {houseCount && (
+                <CustomPagination
+                    page={currentPage}
+                    setPage={setCurrentPage}
+                    pageCount={Math.ceil((houseCount ?? 0) / housesPerPage)}
+                    itemsPerPage={{
+                        itemsPerPageCount: TABLE_ROW_COUNT_OPTIONS,
+                        selectedItemsPerPage: housesPerPage,
+                        setItemsPerPageCount: (sizePerPage) => setHousesPerPage(sizePerPage),
+                    }}
+                />
+            )}
         </div>
     );
 };
