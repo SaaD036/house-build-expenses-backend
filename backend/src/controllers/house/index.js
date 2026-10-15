@@ -7,6 +7,11 @@ const {
     fetchHouseEditHistoryService,
 } = require('../../services/houses');
 
+const {
+    sendApiSuccessResponse,
+    preparePaginationResponse,
+} = require('../../utilities/apiUtils/apiResponseHandler');
+
 const { HTTP_STATUS } = require('../../constants/http');
 
 /**
@@ -29,9 +34,11 @@ const getAllHouses = async (req, res, next) => {
             req.user
         );
 
-        return res.status(HTTP_STATUS.OK).json({
-            houses: housesList,
-            houseCount,
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'House list fetched',
+            data: { houses: housesList, houseCount },
+            meta: preparePaginationResponse(houseCount, Number(page), Number(limit)),
         });
     } catch (error) {
         next(error);
