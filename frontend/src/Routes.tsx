@@ -3,7 +3,8 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import ProtectedRoutes from './RoutesProtection';
 
-import Layout from './Components/Layouts';
+import HomeLayout from './Components/Layouts/HomeLayout';
+import HouseLayout from './Components/Layouts/HouseLayout';
 
 import LoginPage from './Pages/Auth/Login';
 import ForgetPasswordPage from './Pages/Auth/ForgetPassword';
@@ -16,18 +17,26 @@ import UsersPage from './Pages/Users';
 import AccountPage from './Pages/Account';
 
 import { UserRole } from './Constants/Users';
-import { SIDEBAR_ITEMS_LAYER } from './Components/Layouts/Sidebar/constants';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: (
-            <ProtectedRoutes auth>
-                <Layout sidebarItemsLayer={SIDEBAR_ITEMS_LAYER.HOME}>
-                    <HousePage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
+        element: <HomeLayout />,
+        children: [
+            {
+                index: true,
+                element: <HousePage />,
+            },
+            {
+                path: 'users',
+                element: <UsersPage />,
+                handle: { role: [UserRole.ADMIN, UserRole.VISITOR] },
+            },
+            {
+                path: 'account',
+                element: <AccountPage />,
+            },
+        ],
     },
     /**
      * @description AUTH ROUTES
@@ -57,67 +66,26 @@ const router = createBrowserRouter([
      * @description HOUSE ROUTES
      */
     {
-        path: 'house/:houseOd',
+        path: 'house/:houseSlug',
+        element: <HouseLayout />,
         children: [
             {
                 index: true,
-                element: (
-                    <ProtectedRoutes auth>
-                        <Layout sidebarItemsLayer={SIDEBAR_ITEMS_LAYER.HOUSE}>
-                            <HomePage />
-                        </Layout>
-                    </ProtectedRoutes>
-                ),
+                element: <HomePage />,
             },
             {
                 path: 'transaction',
-                element: (
-                    <ProtectedRoutes auth>
-                        <Layout sidebarItemsLayer={SIDEBAR_ITEMS_LAYER.HOUSE}>
-                            <ExpensesPage />
-                        </Layout>
-                    </ProtectedRoutes>
-                ),
+                element: <ExpensesPage />,
             },
             {
                 path: 'do',
-                element: (
-                    <ProtectedRoutes auth>
-                        <Layout sidebarItemsLayer={SIDEBAR_ITEMS_LAYER.HOUSE}>
-                            <DOpage />
-                        </Layout>
-                    </ProtectedRoutes>
-                ),
+                element: <DOpage />,
             },
             {
                 path: 'albums',
-                element: (
-                    <ProtectedRoutes auth>
-                        <Layout sidebarItemsLayer={SIDEBAR_ITEMS_LAYER.HOUSE}>Album page</Layout>
-                    </ProtectedRoutes>
-                ),
+                element: <div>Album Page</div>,
             },
         ],
-    },
-    {
-        path: '/users',
-        element: (
-            <ProtectedRoutes auth role={[UserRole.ADMIN, UserRole.VISITOR]}>
-                <Layout sidebarItemsLayer={SIDEBAR_ITEMS_LAYER.HOME}>
-                    <UsersPage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
-    },
-    {
-        path: '/account',
-        element: (
-            <ProtectedRoutes auth>
-                <Layout sidebarItemsLayer={SIDEBAR_ITEMS_LAYER.HOME}>
-                    <AccountPage />
-                </Layout>
-            </ProtectedRoutes>
-        ),
     },
 ]);
 

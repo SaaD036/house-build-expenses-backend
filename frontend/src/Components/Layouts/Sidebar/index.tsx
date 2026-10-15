@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { NavLink, NavLinkRenderProps } from 'react-router-dom';
 
 import { Divider } from '@mui/material';
 
@@ -10,16 +10,18 @@ import { SidebarPropsTypes, SidebarItemsTypes } from '../interfaces';
 import styles from '../styles.module.css';
 
 const SideBar = (props: SidebarPropsTypes) => {
-    const { sidebarItemsLayer, onCloseSidebarDrawer } = props;
+    const { houseSlug, sidebarItemsLayer, onCloseSidebarDrawer } = props;
     const loggedInUser = getUserFromToken();
 
-    const getSidebarItemStyle = ({
-        isActive,
-        isPending,
-    }: {
-        isActive: boolean;
-        isPending: boolean;
-    }) => {
+    const sideBarItems = useMemo(
+        () =>
+            getSidebarItemsToRender(sidebarItemsLayer, loggedInUser?.role ?? null, {
+                houseSlug: houseSlug ?? '',
+            }),
+        [sidebarItemsLayer, loggedInUser?.role, houseSlug]
+    );
+
+    const getSidebarItemStyle = ({ isActive }: NavLinkRenderProps) => {
         let className = `${styles.sidebarItems}`;
 
         if (isActive) {
@@ -31,8 +33,7 @@ const SideBar = (props: SidebarPropsTypes) => {
 
     const renderSidebarItem = (sidebarItem: SidebarItemsTypes, index: number): JSX.Element => {
         const { key, label, Icon } = sidebarItem;
-        const shouldShowDivider =
-            index !== getSidebarItemsToRender(sidebarItemsLayer, loggedInUser).length - 1;
+        const shouldShowDivider = index !== sideBarItems.length - 1;
 
         return (
             <>
@@ -60,7 +61,7 @@ const SideBar = (props: SidebarPropsTypes) => {
 
     return (
         <div className={`center ${styles.sidebar}`}>
-            {getSidebarItemsToRender(sidebarItemsLayer, loggedInUser).map((sidebarItem, index) => {
+            {sideBarItems.map((sidebarItem, index) => {
                 return renderSidebarItem(sidebarItem, index);
             })}
         </div>

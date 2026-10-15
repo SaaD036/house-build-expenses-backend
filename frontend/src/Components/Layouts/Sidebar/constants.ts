@@ -32,25 +32,25 @@ export const HOME_ITEMS: SidebarItemsTypes[] = [
 
 export const HOUSE_SIDEBAR_ITEMS: SidebarItemsTypes[] = [
     {
-        key: 'house/{houseId}',
-        label: 'Home',
+        key: 'house/{houseSlug}',
+        label: 'House',
         access: 'all',
         Icon: HomeIcon,
     },
     {
-        key: 'house/{houseId}/transaction',
+        key: 'house/{houseSlug}/transaction',
         label: 'Transaction',
         access: 'all',
         Icon: TransactionIcon,
     },
     {
-        key: 'house/{houseId}/do',
+        key: 'house/{houseSlug}/do',
         label: 'DO',
         access: 'all',
         Icon: DOicon,
     },
     {
-        key: 'house/{houseId}/albums',
+        key: 'house/{houseSlug}/albums',
         label: 'Albums',
         access: 'all',
         Icon: AlbumIcon,

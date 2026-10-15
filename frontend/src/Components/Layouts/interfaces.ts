@@ -6,13 +6,15 @@ import { OverridableComponent } from '@mui/material/OverridableComponent';
 import { SIDEBAR_ITEMS_LAYER } from './Sidebar/constants';
 
 export type LayoutPropsTypes = {
+    houseSlug?: string;
     children: React.ReactNode;
     sidebarItemsLayer: keyof typeof SIDEBAR_ITEMS_LAYER;
 };
 
 export type SidebarPropsTypes = {
-    sidebarItemsLayer: keyof typeof SIDEBAR_ITEMS_LAYER;
+    houseSlug?: string | null;
     onCloseSidebarDrawer?: () => void;
+    sidebarItemsLayer: keyof typeof SIDEBAR_ITEMS_LAYER;
 };
 
 export type SidebarItemsTypes = {
