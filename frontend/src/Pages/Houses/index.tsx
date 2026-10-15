@@ -7,6 +7,7 @@ import CustomNavTabs from '../../Components/Custom/CustomTab';
 
 import { HOUSES_PAGE_TABS_VALUES, HOUSE_PAGE_TABS } from './constants';
 import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
+import HousePageComponent from '../../Components/Houses/HousePageComponent';
 const HOME_PAGE_TITLE = 'HBE';
 
 const HousePage = () => {
@@ -31,7 +32,7 @@ const HousePage = () => {
                 }
             />
             <CustomErrorBoundary key={activeTab}>
-                <div>Here is the content for home page</div>
+                <HousePageComponent tabName={activeTab} />
             </CustomErrorBoundary>
         </div>
     );
