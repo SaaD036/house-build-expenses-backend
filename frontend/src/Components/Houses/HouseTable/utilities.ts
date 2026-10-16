@@ -1,7 +1,10 @@
 import { HouseType } from '../../../Types/Houses';
 import { formatDate } from '../../../Utilities/Date';
 
-export const getHouseTableRowData = (houses: HouseType[]) => {
+export const getHouseTableRowData = (
+    houses: HouseType[],
+    renderOpenColumnItems: (slug: string) => React.ReactNode
+) => {
     return houses.map((house: HouseType) => ({
         name: {
             value: house.name,
@@ -20,6 +23,9 @@ export const getHouseTableRowData = (houses: HouseType[]) => {
         },
         total_expenses: {
             value: 'N/A',
+        },
+        open: {
+            value: renderOpenColumnItems(house.slug),
         },
     }));
 };

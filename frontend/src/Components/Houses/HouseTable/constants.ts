@@ -23,6 +23,10 @@ export const HOUSE_TABLE_COLUMNS = [
     },
     {
         key: 'total_expenses',
-        label: 'Total expenses',
+        label: 'Total Expenses',
+    },
+    {
+        key: 'open',
+        label: 'Open House',
     },
 ];

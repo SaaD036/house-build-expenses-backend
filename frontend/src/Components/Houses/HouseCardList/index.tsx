@@ -11,8 +11,8 @@ const HouseCardList = (props: HouseTablePropsType) => {
     const { houses } = props;
 
     return (
-        <Box className={styles.projectListContainer}>
-            <Grid container spacing={3} className={styles.projectsGrid}>
+        <Box className={styles.houseListContainer}>
+            <Grid container spacing={3}>
                 {houses.map((h) => (
                     <Grid item xs={12} sm={6} md={4} key={h.slug}>
                         <HouseCard house={h} />

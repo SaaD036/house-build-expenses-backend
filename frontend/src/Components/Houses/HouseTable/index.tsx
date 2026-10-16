@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import OpenLinkInNewTabIcon from '@mui/icons-material/OpenInNew';
 
 import CustomTable from '../../Custom/CustomTable';
 
@@ -14,11 +17,19 @@ const HouseTable = (props: HouseTablePropsType) => {
 
     const [houseSortData, setHouseSortData] = useState<CustomTableColumnSortDataType>();
 
+    const renderOpenColumnItems = (slug: string) => {
+        return (
+            <Link to={`/house/${slug}`} target="_blank" rel="noopener noreferrer">
+                <OpenLinkInNewTabIcon className="icon" fontSize="small" />
+            </Link>
+        );
+    };
+
     return (
         <div>
             <CustomTable
                 columns={HOUSE_TABLE_COLUMNS}
-                rowData={getHouseTableRowData(houses)}
+                rowData={getHouseTableRowData(houses, renderOpenColumnItems)}
                 loadTableData={async () => {}}
                 showRefreshButton
                 sort={{

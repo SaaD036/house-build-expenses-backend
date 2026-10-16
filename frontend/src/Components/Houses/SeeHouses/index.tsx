@@ -47,7 +47,7 @@ const SeeHouses = (props: SeeHousePropsType) => {
     }
 
     return (
-        <div style={{ display: 'grid', gap: '20px' }}>
+        <div>
             {loading && <TabComponentLoader />}
             <SwitchViewButtonSectionContainer title={cardContainerTitle} />
             {currentView === Views.CARD ? (

@@ -1,27 +1,7 @@
-.projectListContainer {
+.houseListContainer {
     padding: 24px;
     min-height: 100vh;
     box-sizing: border-box;
-}
-
-.projectListHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
-
-.pageMainTitle {
-    font-weight: 700 !important;
-    color: #222;
-}
-
-.newProjectBtn {
-    background-color: #1976d2 !important;
-    text-transform: none !important;
-    font-weight: 600 !important;
-    border-radius: 6px !important;
-    padding: 6px 16px !important;
 }
 
 /* House Card classes */
@@ -61,7 +41,7 @@
 .cardBodyItemSectionTitle {
     width: 100% !important;
     font-size: 15px;
-    border-bottom: 1.5px solid #158901;
+    border-bottom: 0.75px solid #158901;
 }
 
 .cardFooterActions {
@@ -71,14 +51,6 @@
     border-top: 1px solid #eaeaea;
     margin-top: 12px;
     padding-top: 8px;
-}
-
-.actionIcon {
-    color: #666;
-}
-
-.editIcon {
-    color: #1976d2;
 }
 
 .deleteIcon {
