@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 
 import HouseTable from '../HouseTable';
-import CardContainer from '../../CardContainer';
 import CustomPagination from '../../Custom/CustomPagination';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
 import SwitchViewButtonSectionContainer from '../../CardContainer/SwitchViewButtonSectionContainer';
@@ -14,6 +13,7 @@ import { ReducerStateType } from '../../../Redux/reducers';
 
 import { Views } from '../../../Constants/General';
 import { TABLE_ROW_COUNT_OPTIONS } from '../../Custom/CustomTable/constants';
+import HouseCardList from '../HouseCardList';
 
 const SeeHouses = (props: SeeHousePropsType) => {
     const { currentView, houseList, houseCount, houseTypes, fetchHouseList } = props;
@@ -36,23 +36,25 @@ const SeeHouses = (props: SeeHousePropsType) => {
         }
     }, [houseTypes]);
 
-    const loadHouseData = async (filters: any) => {
-        setLoading(true);
-        await fetchHouseList({ ...filters, page: currentPage, limit: housesPerPage });
-        setLoading(false);
-    };
+    const loadHouseData = useCallback(
+        async (filters: any) => {
+            setLoading(true);
+            await fetchHouseList({ ...filters });
+            setLoading(false);
+        },
+        [setLoading, fetchHouseList]
+    );
 
     useEffect(() => {
         loadHouseData({ page: currentPage, limit: housesPerPage });
-    }, [housesPerPage, currentPage]);
+    }, [housesPerPage, currentPage, loadHouseData]);
 
     return (
         <div style={{ display: 'grid', gap: '20px' }}>
             {loading && <TabComponentLoader />}
-            <CardContainer title={cardContainerTitle} />
-            <SwitchViewButtonSectionContainer title="Change View" />
+            <SwitchViewButtonSectionContainer title={cardContainerTitle} />
             {currentView === Views.CARD ? (
-                'Card view houses'
+                <HouseCardList houses={houseList ?? []} houseTypes={houseTypes} />
             ) : (
                 <HouseTable houses={houseList ?? []} houseTypes={houseTypes} />
             )}

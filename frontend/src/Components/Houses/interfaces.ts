@@ -16,3 +16,7 @@ export type HouseTablePropsType = {
     houses: HouseType[];
     houseTypes: 'your_created' | 'shared' | 'requested';
 };
+
+export type HouseCardPropsType = {
+    house: HouseType;
+};
