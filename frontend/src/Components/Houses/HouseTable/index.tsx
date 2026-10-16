@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import CustomTable from '../../Custom/CustomTable';
 
@@ -8,30 +8,11 @@ import { HouseTablePropsType } from '../interfaces';
 import { CustomTableColumnSortDataType } from '../../Custom/CustomTable/interfaces';
 
 import { HOUSE_TABLE_COLUMNS } from './constants';
-import HouseNotFound from '../HouseNotFound';
 
 const HouseTable = (props: HouseTablePropsType) => {
-    const { houses, houseTypes } = props;
+    const { houses } = props;
 
     const [houseSortData, setHouseSortData] = useState<CustomTableColumnSortDataType>();
-
-    const noHouseMessage = useMemo(() => {
-        if (houseTypes === 'your_created') {
-            return 'Your have not created any house';
-        }
-
-        if (houseTypes === 'shared') {
-            return 'No hause is shared with you';
-        }
-
-        if (houseTypes === 'requested') {
-            return 'You have no unapproved Houses';
-        }
-    }, [houseTypes]);
-
-    if (houses.length === 0) {
-        return <HouseNotFound title={noHouseMessage} />;
-    }
 
     return (
         <div>

@@ -1,33 +1,14 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { Box, Grid } from '@mui/material';
 
 import HouseCard from './HouseCard';
-import HouseNotFound from '../HouseNotFound';
 
 import styles from './styles.module.css';
 import { HouseTablePropsType } from '../interfaces';
 
 const HouseCardList = (props: HouseTablePropsType) => {
-    const { houses, houseTypes } = props;
-
-    const noHouseMessage = useMemo(() => {
-        if (houseTypes === 'your_created') {
-            return 'Your have not created any house';
-        }
-
-        if (houseTypes === 'shared') {
-            return 'No hause is shared with you';
-        }
-
-        if (houseTypes === 'requested') {
-            return 'You have no unapproved Houses';
-        }
-    }, [houseTypes]);
-
-    if (houses.length === 0) {
-        return <HouseNotFound title={noHouseMessage} />;
-    }
+    const { houses } = props;
 
     return (
         <Box className={styles.projectListContainer}>
