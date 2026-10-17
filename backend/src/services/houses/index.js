@@ -1,3 +1,4 @@
+const { get } = require('lodash');
 const { Sequelize } = require('sequelize');
 
 const { House, HouseEditHistory, sequelize } = require('../../models');
@@ -17,6 +18,7 @@ const { BadRequestError, NotFoundError } = require('../../utilities/errors/ApiEr
 
 const { UserRole } = require('../../constants/roles');
 const { HOUSE_TABLES } = require('../../constants/houses');
+const { HOUSE_ACCESS_TYPE } = require('../../constants/houses/houseAccess');
 const { HOUSE_TABLE_COLUMN_NAMES } = require('../../constants/houses/houseTablesColumnName');
 
 const fetchHouseListService = async (params, loggedInUser) => {
@@ -95,6 +97,16 @@ const fetchHouseDetailsBySlugService = async (slug, loggedInUser) => {
                     )`),
                     'editCount',
                 ],
+                [
+                    Sequelize.literal(`(
+                        SELECT ha.access_type 
+                        FROM house_access AS ha 
+                        WHERE ha.house_id = "House"."id" 
+                          AND ha.user_id = ${sequelize.escape(loggedInUser.id)}
+                        LIMIT 1
+                    )`),
+                    'accessType',
+                ],
             ],
         },
     });
@@ -104,13 +116,20 @@ const fetchHouseDetailsBySlugService = async (slug, loggedInUser) => {
     }
 
     const houseData = houseDetails.toJSON();
+    let userAccessToThisHouse =
+        Number(houseData.ownerId) === Number(loggedInUser.id)
+            ? HOUSE_ACCESS_TYPE.CREATOR
+            : loggedInUser.role;
 
-    if (houseData.ownerId !== loggedInUser.id && loggedInUser.role === UserRole.USER) {
+    if ((get(houseData, 'accessType') ?? '').length !== 0) {
         delete houseData.accessCount;
         delete houseData.editCount;
     }
 
-    return houseData;
+    return {
+        ...houseData,
+        accessType: get(houseData, 'accessType') ?? userAccessToThisHouse,
+    };
 };
 
 const updateHouseService = async (id, bodyData = {}, loggedInUser) => {
