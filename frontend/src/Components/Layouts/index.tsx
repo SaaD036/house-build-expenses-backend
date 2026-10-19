@@ -9,9 +9,10 @@ import CustomErrorBoundary from '../Custom/CustomErrorBoundary';
 
 import { LayoutPropsTypes } from './interfaces';
 import styles from './styles.module.css';
+import TabComponentLoader from '../Custom/CustomLoadingItems/TabComponentLoader';
 
 const Layout = (props: LayoutPropsTypes) => {
-    const { children, houseSlug, sidebarItemsLayer } = props;
+    const { children, houseSlug, isLoadingChildren, sidebarItemsLayer } = props;
     const location = useLocation();
 
     const [openSidebarDrawer, setOpenSidebarDrawer] = useState(false);
@@ -53,12 +54,17 @@ const Layout = (props: LayoutPropsTypes) => {
             <div className={`${styles.layout}`}>
                 {renderSidebarOpenIconSection()}
                 <div className={styles.sidebarContainer}>
+                    <h1>HBE</h1>
                     <SideBar houseSlug={houseSlug} sidebarItemsLayer={sidebarItemsLayer} />
                 </div>
                 {renderFooterSection()}
             </div>
             <CustomErrorBoundary key={location.pathname}>
-                <div className={styles.childrenSection}>{children}</div>
+                {isLoadingChildren ? (
+                    <TabComponentLoader />
+                ) : (
+                    <div className={styles.childrenSection}>{children}</div>
+                )}
             </CustomErrorBoundary>
         </div>
     );

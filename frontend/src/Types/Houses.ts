@@ -1,4 +1,9 @@
-import { UserType } from './Users';
+import { UserRoleType, UserType } from './Users';
+import { HOUSE_ACCESS_TYPE } from '../Constants/Houses';
+
+export type HouseAccessForLoggedInUserType =
+    | Extract<UserRoleType, 'admin' | 'visitor'>
+    | (typeof HOUSE_ACCESS_TYPE)[keyof typeof HOUSE_ACCESS_TYPE];
 
 export type HouseAddressType = {
     area: string;
@@ -19,4 +24,5 @@ export type HouseType = {
     floorCount: number;
     isApproved: boolean;
     owner: HouseUserType;
+    accessForLoggedInUser?: HouseAccessForLoggedInUserType;
 };

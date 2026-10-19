@@ -78,7 +78,7 @@ const getSingleHouseBySlug = async (req, res, next) => {
         return sendApiSuccessResponse(res, {
             statusCode: HTTP_STATUS.OK,
             message: 'House details fetched',
-            data: [house],
+            data: { house },
         });
     } catch (error) {
         next(error);
