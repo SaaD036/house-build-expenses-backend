@@ -2,15 +2,15 @@ import { Dispatch } from 'react';
 import { Method } from 'axios';
 import { get } from 'lodash';
 
-import { callAxiosAPI } from '../apiServices/calAPPI';
 import { buildURL } from '../apiServices/buildURL';
+import { callAxiosAPI } from '../apiServices/calAPPI';
 import { initiateToast } from '../../Components/Custom/CustomToast';
+import { prepareHouseDataFromApiResponse } from '../../Utilities/Houses/HouseApi';
 
-import { FETCH_HOUSE_LIST } from '../types/houses';
+import { FETCH_HOUSE_LIST, FETCH_HOUSE_DETAILS, FETCH_HOUSE_DETAILS_ERROR } from '../types/houses';
 
 import { HTTP_STATUS_CODE } from '../../Constants/HTTP';
 import houseAPIs from '../apiServices/APIs/houseAPIs.json';
-
 import ValidationError from '../../ErrorHandlers/ValidationError';
 
 import { HouseType } from '../../Types/Houses';
@@ -32,22 +32,7 @@ export const fetchHouseList = (filters: any) => async (dispatch: DispatchType) =
 
         const houseList: HouseType[] =
             get(houseListResponse, 'data.houses', []).map(
-                (h: any): HouseType => ({
-                    id: h.id,
-                    createdAt: new Date(h.createdAt),
-                    updatedAt: new Date(h.updatedAt),
-                    name: h.name,
-                    slug: h.slug,
-                    address: {
-                        area: h.address.area,
-                        upazilla: h.address.upazilla,
-                        district: h.address.district,
-                        addressLine: h.address.address_line,
-                    },
-                    floorCount: h.floorCount,
-                    isApproved: h.isApproved,
-                    owner: h.owner,
-                })
+                (h: any): HouseType => prepareHouseDataFromApiResponse(h)
             ) ?? [];
 
         dispatch({
@@ -62,4 +47,48 @@ export const fetchHouseList = (filters: any) => async (dispatch: DispatchType) =
             });
         }
     }
+};
+
+export const fetchHouseDetails = (houseSlug: string) => async (dispatch: DispatchType) => {
+    try {
+        const { path, method } = houseAPIs.FETCH_HOUSE_DETAILS;
+        const { status, data: houseDetailsResponse } = await callAxiosAPI({
+            url: buildURL(path, { houseSlug }),
+            method: method as Method,
+        });
+
+        const houseDetailsResponseData = get(houseDetailsResponse, 'data.house', undefined);
+
+        if (status > HTTP_STATUS_CODE.VALID_STATUS_LIMIT || !houseDetailsResponseData) {
+            throw new ValidationError('Can not fetch house details');
+        }
+
+        const houseDetails: HouseType = prepareHouseDataFromApiResponse(
+            houseDetailsResponse.data.house
+        );
+
+        dispatch({
+            type: FETCH_HOUSE_DETAILS,
+            payload: { house: houseDetails },
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            initiateToast({
+                type: 'error',
+                message: error.message.toString(),
+            });
+        }
+
+        dispatch({
+            type: FETCH_HOUSE_DETAILS_ERROR,
+            payload: {},
+        });
+    }
+};
+
+export const clearHouseDetailsData = () => (dispatch: DispatchType) => {
+    dispatch({
+        type: FETCH_HOUSE_DETAILS_ERROR,
+        payload: {},
+    });
 };

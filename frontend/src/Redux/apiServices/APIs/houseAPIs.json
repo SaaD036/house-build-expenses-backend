@@ -2,5 +2,9 @@
     "FETCH_HOUSE_LIST": {
         "path": "/house",
         "method": "GET"
+    },
+    "FETCH_HOUSE_DETAILS": {
+        "path": "/house/{houseSlug}",
+        "method": "GET"
     }
 }

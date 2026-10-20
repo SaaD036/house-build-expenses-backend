@@ -4,10 +4,18 @@ import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
 import { SIDEBAR_ITEMS_LAYER } from './Sidebar/constants';
+import { HouseType } from '../../Types/Houses';
+
+export type HouseLayoutPropsType = {
+    house?: HouseType | null;
+    clearHouseDetailsData: () => void;
+    fetchHouseDetails: (houseSlug: string) => Promise<void>;
+};
 
 export type LayoutPropsTypes = {
     houseSlug?: string;
     children: React.ReactNode;
+    isLoadingChildren?: boolean;
     sidebarItemsLayer: keyof typeof SIDEBAR_ITEMS_LAYER;
 };
 

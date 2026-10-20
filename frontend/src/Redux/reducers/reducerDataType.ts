@@ -15,6 +15,8 @@ export type GeneralReducerStateType = {
 export type HouseReducerStateType = {
     houseList: HouseType[] | null;
     houseCount: number | null;
+    house: HouseType | null;
+    houseLastFetchTime: Date | null;
 };
 
 export type ExpenseReducerStateType = {

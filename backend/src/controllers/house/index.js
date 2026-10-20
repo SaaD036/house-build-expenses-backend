@@ -75,8 +75,10 @@ const getSingleHouseBySlug = async (req, res, next) => {
 
         const house = await fetchHouseDetailsBySlugService(houseSlug, req.user);
 
-        return res.status(HTTP_STATUS.OK).json({
-            house,
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'House details fetched',
+            data: { house },
         });
     } catch (error) {
         next(error);
