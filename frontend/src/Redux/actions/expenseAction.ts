@@ -141,49 +141,51 @@ export const createExpense =
         }
     };
 
-export const deleteSingleExpense = (id: number) => async (dispatch: Dispatch<DispatchType>) => {
-    try {
-        const { path, method } = expenseAPIs.DELETE_SINGLE_EXPENSE;
-        const { BAD_REQUEST, UNAUTHENTICATED, NOT_FOUND } = HTTP_STATUS_CODE;
+export const deleteSingleExpense =
+    (houseId: number | undefined, expenseId: number) =>
+    async (dispatch: Dispatch<DispatchType>) => {
+        try {
+            const { path, method } = expenseAPIs.DELETE_SINGLE_EXPENSE;
+            const { BAD_REQUEST, UNAUTHENTICATED, NOT_FOUND } = HTTP_STATUS_CODE;
 
-        const { status, data } = await callAxiosAPI({
-            url: buildURL(path, { id }),
-            method: method as Method,
-        });
-
-        if (status === UNAUTHENTICATED) {
-            throw new ValidationError('User does not have access to delete expense.');
-        } else if (status === NOT_FOUND) {
-            throw new ValidationError('Expense not found.');
-        } else if (status === BAD_REQUEST) {
-            const errorMessage = get(data, 'error.message', null);
-
-            if (typeof errorMessage === 'string') {
-                throw new ValidationError(errorMessage);
-            }
-
-            if (isArray(errorMessage) && errorMessage.length > 0) {
-                throw new ValidationError(errorMessage[0]);
-            }
-
-            throw new ValidationError('Can not delete expense.');
-        } else if (status > 299) {
-            throw new ValidationError('Can not delete expense.');
-        }
-
-        initiateToast({
-            type: 'success',
-            message: 'Expense deleted successfully',
-        });
-    } catch (error) {
-        if (error instanceof Error) {
-            initiateToast({
-                type: 'error',
-                message: error.message.toString(),
+            const { status, data } = await callAxiosAPI({
+                url: buildURL(path, { houseId, expenseId }),
+                method: method as Method,
             });
+
+            if (status === UNAUTHENTICATED) {
+                throw new ValidationError('User does not have access to delete expense.');
+            } else if (status === NOT_FOUND) {
+                throw new ValidationError('Expense not found.');
+            } else if (status === BAD_REQUEST) {
+                const errorMessage = get(data, 'error.message', null);
+
+                if (typeof errorMessage === 'string') {
+                    throw new ValidationError(errorMessage);
+                }
+
+                if (isArray(errorMessage) && errorMessage.length > 0) {
+                    throw new ValidationError(errorMessage[0]);
+                }
+
+                throw new ValidationError('Can not delete expense.');
+            } else if (status > 299) {
+                throw new ValidationError('Can not delete expense.');
+            }
+
+            initiateToast({
+                type: 'success',
+                message: 'Expense deleted successfully',
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
         }
-    }
-};
+    };
 
 export const editExpense =
     (id: number, payloadData: CreateExpenseFormDataType) =>

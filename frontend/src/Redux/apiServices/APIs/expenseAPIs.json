@@ -12,7 +12,7 @@
         "method": "GET"
     },
     "DELETE_SINGLE_EXPENSE": {
-        "path": "/expense/{id}",
+        "path": "/house/{houseId}/expense/{expenseId}",
         "method": "DELETE"
     },
     "EDIT_SINGLE_EXPENSE": {

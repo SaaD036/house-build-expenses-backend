@@ -11,7 +11,7 @@ export type SeeExpensesTableProps = {
         houseId: number | undefined,
         filters: CustomTableLoadDataTypes
     ) => Promise<void>;
-    deleteSingleExpense: (id: number) => Promise<void>;
+    deleteSingleExpense: (houseId: number | undefined, expenseId: number) => Promise<void>;
     showLoader: () => void;
     hideLoader: () => void;
 };

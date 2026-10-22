@@ -87,7 +87,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
 
         showLoader();
 
-        await deleteSingleExpense(selectedExpense.id);
+        await deleteSingleExpense(house?.id, selectedExpense.id);
         await getAllExpenses(house?.id, {
             page: currentPage,
             itemsPerPage: expensesPerPage,
