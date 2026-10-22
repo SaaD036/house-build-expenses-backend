@@ -18,9 +18,10 @@ import { createExpense } from '../../../Redux/actions/expenseAction';
 import { CREATE_EXPENSE_INITIAL_VALUE, CREATE_EXPENSE_FORM_VALIDATOR } from './constants';
 import { CreateExpensePagePropsType, CreateExpenseFormValueType } from './interfaces';
 import styles from './styles.module.css';
+import { ReducerStateType } from '../../../Redux/reducers';
 
 const CreateExpense = (props: CreateExpensePagePropsType) => {
-    const { disabledForm, createExpense } = props;
+    const { house, disabledForm, createExpense } = props;
 
     const [loading, setLoading] = useState<boolean>();
 
@@ -30,7 +31,7 @@ const CreateExpense = (props: CreateExpensePagePropsType) => {
     ) => {
         setLoading(true);
 
-        await createExpense({
+        await createExpense(house?.id, {
             title: createExpenseFormData.title || '',
             description: createExpenseFormData.description || '',
             amount: createExpenseFormData.amount || 1,
@@ -77,7 +78,9 @@ const CreateExpense = (props: CreateExpensePagePropsType) => {
     );
 };
 
-const mapStateToProps = (state: any) => ({});
+const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
+});
 
 const mapDispatchToProps = {
     createExpense,

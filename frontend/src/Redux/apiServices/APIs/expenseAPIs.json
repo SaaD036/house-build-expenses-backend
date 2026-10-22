@@ -1,14 +1,14 @@
 {
     "GET_ALL_EXPENSES": {
-        "path": "/expense",
+        "path": "/house/{houseId}/expense",
         "method": "GET"
     },
     "CREATE_EXPENSE": {
-        "path": "/expense",
+        "path": "/house/{houseId}/expense",
         "method": "POST"
     },
     "GET_SINGLE_EXPENSE": {
-        "path": "/expense/{id}",
+        "path": "/house/{houseId}/expense/{expenseId}",
         "method": "GET"
     },
     "DELETE_SINGLE_EXPENSE": {

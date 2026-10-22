@@ -44,6 +44,7 @@ const getAllExpenses = async (req, res, next) => {
                     {
                         association: 'do',
                         attributes: ['id', 'shopName', 'doItem', 'amount', 'doDate'],
+                        required: false,
                     },
                 ],
                 where: filter.where,

@@ -14,13 +14,13 @@ import { ReducerStateType } from '../../../Redux/reducers';
 import { ExpenseModalDetailsPropType } from './interfaces';
 
 const ExpenseModalDetails = (props: ExpenseModalDetailsPropType) => {
-    const { expenseId, expense, userRole, getSingleExpense } = props;
+    const { house, expenseId, expense, userRole, getSingleExpense } = props;
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const loadExpenseData = async () => {
         setIsLoading(true);
-        getSingleExpense(expenseId);
+        getSingleExpense(house?.id, expenseId);
         setIsLoading(false);
     };
 
@@ -107,6 +107,7 @@ const ExpenseModalDetails = (props: ExpenseModalDetailsPropType) => {
 };
 
 const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
     expense: state.expense.expenseDetails,
 });
 
