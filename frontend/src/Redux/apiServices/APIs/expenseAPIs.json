@@ -28,7 +28,7 @@
         "method": "GET"
     },
     "GET_TOTAL_EXPENSE": {
-        "path": "/expense/get-total-expense",
+        "path": "/house/{houseId}/expense/get-total-expense",
         "method": "GET"
     }
 }

@@ -232,7 +232,8 @@ export const editExpense =
     };
 
 export const getTotalExpense =
-    (filters: TotalExpenseFormDataType) => async (dispatch: Dispatch<DispatchType>) => {
+    (houseId: number | undefined, filters: TotalExpenseFormDataType) =>
+    async (dispatch: Dispatch<DispatchType>) => {
         try {
             const { path, method } = expenseAPIs.GET_TOTAL_EXPENSE;
             const { UNAUTHENTICATED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
@@ -241,24 +242,26 @@ export const getTotalExpense =
                 toDate: filters.toDate ? filters.toDate.toISOString() : '',
             };
 
-            const URLwithVarsANDparams = buildURL(path, {}, params);
+            const URLwithVarsANDparams = buildURL(path, { houseId }, params);
             const { status, data } = await callAxiosAPI({
                 url: URLwithVarsANDparams,
                 method: method as Method,
             });
 
+            const { success, data: houseExpenseDetailsData } = data;
+
             if (status === UNAUTHENTICATED) {
                 throw new ValidationError('User does not have access to expenses');
-            } else if (status === INTERNAL_SERVER_ERROR) {
+            } else if (!success || status === INTERNAL_SERVER_ERROR) {
                 throw new ValidationError('Can not fetch total expense-cost');
             }
 
             dispatch({
                 type: GET_TOTAL_EXPENSE,
                 payload: {
-                    totalExpenses: isNaN(get(data, 'totalExpense', null))
+                    totalExpenses: isNaN(get(houseExpenseDetailsData, 'totalExpense', null))
                         ? null
-                        : Number(get(data, 'totalExpense', 0)),
+                        : Number(get(houseExpenseDetailsData, 'totalExpense', 0)),
                 },
             });
         } catch (error) {
