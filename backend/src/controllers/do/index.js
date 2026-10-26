@@ -75,8 +75,8 @@ const createDO = async (req, res, next) => {
             doDate: doDate ? new Date(doDate) : new Date(),
             createdBy: id,
         });
-
-        return res.status(HTTP_STATUS.OK).json({
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.CREATED,
             message: 'DO created successfully',
         });
     } catch (error) {

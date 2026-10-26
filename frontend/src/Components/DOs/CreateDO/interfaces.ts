@@ -1,6 +1,9 @@
+import { HouseType } from '../../../Types/Houses';
+
 export type CreateDOpropsType = {
     disabledForm: boolean;
-    createDo: (formData: CreateDOformValueType) => Promise<void>;
+    house?: HouseType | null;
+    createDo: (houseId: number | undefined, formData: CreateDOformValueType) => Promise<void>;
 };
 
 export type CreateDOformValueType = {

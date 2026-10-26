@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { Dispatch } from 'react';
 import { Method } from 'axios';
 
@@ -18,68 +19,72 @@ import { get, isArray } from 'lodash';
 import { DO } from '../../Types/DOs';
 import { CreateDOformValueType } from '../../Components/DOs/CreateDO/interfaces';
 
-type DispatchType = { type: string; payload: Partial<DOreducerType> };
+type DispatchType = Dispatch<{ type: string; payload: Partial<DOreducerType> }>;
 
-export const getAllDOs = (filters: any) => async (dispatch: Dispatch<DispatchType>) => {
-    try {
-        const { path, method } = doAPIs.GET_ALL_DOS;
-        const { UNAUTHENTICATED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
-        const params: any = {};
+export const getAllDOs =
+    (houseId: number | undefined, filters: any) => async (dispatch: DispatchType) => {
+        try {
+            const { path, method } = doAPIs.GET_ALL_DOS;
+            const { UNAUTHENTICATED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+            const params: any = {};
 
-        const URLwithVarsANDparams = buildURL(path, {}, params);
-        const { status, data } = await callAxiosAPI({
-            url: URLwithVarsANDparams,
-            method: method as Method,
-        });
-
-        if (status === UNAUTHENTICATED) {
-            throw new ValidationError('User does not have access to DOs');
-        } else if (status === INTERNAL_SERVER_ERROR) {
-            throw new ValidationError('Can not fetch DOs');
-        }
-
-        const dos: DO[] = get(data, 'do', []).map((value: any) => ({
-            amount: Number(value.amount),
-            createdAt: new Date(value.createdAt),
-            creator: {
-                id: value.creator.id,
-                firstName: value.creator.firstName,
-                lastName: value.creator.lastName,
-            },
-            description: value.description,
-            doDate: new Date(value.doDate),
-            doEditHistory: value.doEditHistory,
-            doItem: value.doItem,
-            id: value.id,
-            imageURL: value.imageURL,
-            shopAddress: {
-                area: value.shopAddress.area,
-                ward: value.shopAddress.ward,
-                upazilla: value.shopAddress.upazilla,
-                district: value.shopAddress.district,
-            },
-            shopName: value.shopName,
-        }));
-
-        dispatch({
-            type: GET_ALL_DOS,
-            payload: {
-                dos,
-                doCount: 1000,
-            },
-        });
-    } catch (error) {
-        if (error instanceof Error) {
-            initiateToast({
-                type: 'error',
-                message: error.message.toString(),
+            const URLwithVarsANDparams = buildURL(path, { houseId }, params);
+            const { status, data } = await callAxiosAPI({
+                url: URLwithVarsANDparams,
+                method: method as Method,
             });
+
+            const { success, data: houseAndDoListResponse } = data;
+
+            if (status === UNAUTHENTICATED) {
+                throw new ValidationError('User does not have access to DOs');
+            } else if (!success || status === INTERNAL_SERVER_ERROR) {
+                throw new ValidationError('Can not fetch DOs');
+            }
+
+            const dos: DO[] = get(houseAndDoListResponse, 'dos', []).map((value: any) => ({
+                amount: Number(value.amount),
+                createdAt: new Date(value.createdAt),
+                creator: {
+                    id: value.creator.id,
+                    firstName: value.creator.firstName,
+                    lastName: value.creator.lastName,
+                },
+                description: value.description,
+                doDate: new Date(value.doDate),
+                doEditHistory: value.doEditHistory,
+                doItem: value.doItem,
+                id: value.id,
+                imageURL: value.imageURL,
+                shopAddress: {
+                    area: value.shopAddress.area,
+                    ward: value.shopAddress.ward,
+                    upazilla: value.shopAddress.upazilla,
+                    district: value.shopAddress.district,
+                },
+                shopName: value.shopName,
+            }));
+
+            dispatch({
+                type: GET_ALL_DOS,
+                payload: {
+                    dos,
+                    doCount: 1000,
+                },
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
         }
-    }
-};
+    };
 
 export const createDo =
-    (doData: CreateDOformValueType) => async (dispatch: Dispatch<DispatchType>) => {
+    (houseId: number | undefined, doData: CreateDOformValueType) =>
+    async (dispatch: DispatchType) => {
         try {
             const { path, method } = doAPIs.CREATE_DO;
             const { BAD_REQUEST, UNAUTHENTICATED } = HTTP_STATUS_CODE;
@@ -99,15 +104,17 @@ export const createDo =
             };
 
             const { status, data } = await callAxiosAPI({
-                url: buildURL(path),
+                url: buildURL(path, { houseId }),
                 method: method as Method,
                 data: doDataForPayload,
             });
 
+            const { success, error } = data;
+
             if (status === UNAUTHENTICATED) {
                 throw new ValidationError('User does not have access to DOs');
             } else if (status === BAD_REQUEST) {
-                const errorMessage = get(data, 'error.message', null);
+                const errorMessage = error ?? get(data, 'error.message', null);
 
                 if (typeof errorMessage === 'string') {
                     throw new ValidationError(errorMessage);
@@ -118,7 +125,7 @@ export const createDo =
                 }
 
                 throw new ValidationError('Can not add DOs');
-            } else if (status > 299) {
+            } else if (!success || status > 299) {
                 throw new ValidationError('Can not add DOs');
             }
 
