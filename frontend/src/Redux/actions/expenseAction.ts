@@ -340,122 +340,132 @@ export const getSingleExpense =
         }
     };
 
-export const getExpenseEditHistory = (id: number) => async (dispatch: Dispatch<DispatchType>) => {
-    try {
-        const { path, method } = expenseAPIs.GET_EXPENSE_EDIT_HISTORY;
-        const { UNAUTHENTICATED, UNAUTHORIZED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+export const getExpenseEditHistory =
+    (houseId: number | undefined, expenseId: number) =>
+    async (dispatch: Dispatch<DispatchType>) => {
+        try {
+            const { path, method } = expenseAPIs.GET_EXPENSE_EDIT_HISTORY;
+            const { UNAUTHENTICATED, UNAUTHORIZED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
 
-        const { status, data } = await callAxiosAPI({
-            url: buildURL(path, { id }),
-            method: method as Method,
-        });
+            const { status, data } = await callAxiosAPI({
+                url: buildURL(path, { houseId, expenseId }),
+                method: method as Method,
+            });
 
-        if (status === UNAUTHENTICATED || status === UNAUTHORIZED) {
-            throw new ValidationError('User does not have access to expense edit history');
-        } else if (status === INTERNAL_SERVER_ERROR) {
-            throw new ValidationError('Can not fetch expense edit history');
+            const { success, data: houseAndExpenseHistoryData } = data;
+
+            if (status === UNAUTHENTICATED || status === UNAUTHORIZED) {
+                throw new ValidationError('User does not have access to expense edit history');
+            } else if (!success || status === INTERNAL_SERVER_ERROR) {
+                throw new ValidationError('Can not fetch expense edit history');
+            }
+
+            const expenseEditHistory = get(houseAndExpenseHistoryData, 'expenseEditHistory', {});
+            const expenseEditHistoryData: {
+                history: ExpenseEditHistoryType[];
+                lastUpdater: ExpendeCreatorUpdaterType | null;
+            } = {
+                lastUpdater: expenseEditHistory?.lastUpdater
+                    ? {
+                          creatorID: expenseEditHistory.lastUpdater.id,
+                          firstName: expenseEditHistory.lastUpdater.firstName,
+                          lastName: expenseEditHistory.lastUpdater.lastName,
+                      }
+                    : null,
+                history: expenseEditHistory?.history
+                    ? expenseEditHistory.history.map((item: any) => ({
+                          task_type: item.task_type,
+                          task_at: new Date(item.task_at),
+                          field: item.field,
+                          new_value: `${item.new_value ?? ''}`.trim(),
+                          old_value: `${item.old_value ?? ''}`.trim(),
+                          updater: {
+                              creatorID: item.updater.id,
+                              firstName: item.updater.firstName,
+                              lastName: item.updater.lastName,
+                          },
+                      }))
+                    : [],
+            };
+
+            console.log('SaaD : ', expenseEditHistoryData);
+
+            dispatch({
+                type: GET_EXPENSE_EDIT_HISTORY,
+                payload: {
+                    expenseEditHistory: expenseEditHistoryData,
+                },
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
         }
+    };
 
-        const expenseEditHistory = data.expenseEditHistory;
-        const expenseEditHistoryData: {
-            history: ExpenseEditHistoryType[];
-            lastUpdater: ExpendeCreatorUpdaterType | null;
-        } = {
-            lastUpdater: expenseEditHistory?.lastUpdater
+export const getDoDetailsForExpense =
+    (houseId: number | undefined, expenseId: number) =>
+    async (dispatch: Dispatch<DispatchType>) => {
+        try {
+            const { path, method } = expenseAPIs.GET_EXPENSE_DO_DETAILS;
+            const { UNAUTHENTICATED, UNAUTHORIZED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
+
+            const { status, data } = await callAxiosAPI({
+                url: buildURL(path, { houseId, expenseId }),
+                method: method as Method,
+            });
+
+            const { success, data: houseAndHistoryDoResponse } = data;
+
+            if (status === UNAUTHENTICATED || status === UNAUTHORIZED) {
+                throw new ValidationError('User does not have access to expense do');
+            } else if (!success || status === INTERNAL_SERVER_ERROR) {
+                throw new ValidationError('Can not fetch expense do');
+            }
+
+            const expendeDoDetails = get(houseAndHistoryDoResponse, 'expendeDoDetails', {});
+            const expendeDoDetailsData: DoDetailsType | null = expendeDoDetails
                 ? {
-                      creatorID: expenseEditHistory.lastUpdater.id,
-                      firstName: expenseEditHistory.lastUpdater.firstName,
-                      lastName: expenseEditHistory.lastUpdater.lastName,
+                      id: expendeDoDetails.id,
+                      shopName: expendeDoDetails.shopName,
+                      shopAddress: expendeDoDetails.shopAddress,
+                      doItem: expendeDoDetails.doItem,
+                      description: expendeDoDetails.description,
+                      amount: expendeDoDetails.amount,
+                      doDate: expendeDoDetails.doDate,
+                      doEditHistoryCount: get(expendeDoDetails, 'doEditHistoryCount', 0),
+                      imageURL: expendeDoDetails.imageURL,
+                      createdAt: expendeDoDetails.createdAt,
+                      updatedAt: expendeDoDetails.updatedAt,
+                      creator: expendeDoDetails.creator ?? undefined,
+                      lastUpdater: expendeDoDetails.lastUpdater ?? null,
+                      expenses: get(expendeDoDetails, 'expenses', []).map(
+                          ({ id, amount, title, expenseAt }: any) => ({
+                              id,
+                              amount,
+                              title,
+                              expenseAt,
+                          })
+                      ),
+                      otherExpenseCount: get(expendeDoDetails, 'otherExpenseCount', 0),
                   }
-                : null,
-            history: expenseEditHistory?.history
-                ? expenseEditHistory.history.map((item: any) => ({
-                      task_type: item.task_type,
-                      task_at: new Date(item.task_at),
-                      field: item.field,
-                      new_value: `${item.new_value ?? ''}`.trim(),
-                      old_value: `${item.old_value ?? ''}`.trim(),
-                      updater: {
-                          creatorID: item.updater.id,
-                          firstName: item.updater.firstName,
-                          lastName: item.updater.lastName,
-                      },
-                  }))
-                : [],
-        };
+                : null;
 
-        dispatch({
-            type: GET_EXPENSE_EDIT_HISTORY,
-            payload: {
-                expenseEditHistory: expenseEditHistoryData,
-            },
-        });
-    } catch (error) {
-        if (error instanceof Error) {
-            initiateToast({
-                type: 'error',
-                message: error.message.toString(),
+            dispatch({
+                type: GET_DO_DETAILS_FOR_EXPENSE,
+                payload: {
+                    expenseDoDetails: expendeDoDetailsData,
+                },
             });
+        } catch (error) {
+            if (error instanceof Error) {
+                initiateToast({
+                    type: 'error',
+                    message: error.message.toString(),
+                });
+            }
         }
-    }
-};
-
-export const getDoDetailsForExpense = (id: number) => async (dispatch: Dispatch<DispatchType>) => {
-    try {
-        const { path, method } = expenseAPIs.GET_EXPENSE_DO_DETAILS;
-        const { UNAUTHENTICATED, UNAUTHORIZED, INTERNAL_SERVER_ERROR } = HTTP_STATUS_CODE;
-
-        const { status, data } = await callAxiosAPI({
-            url: buildURL(path, { id }),
-            method: method as Method,
-        });
-
-        if (status === UNAUTHENTICATED || status === UNAUTHORIZED) {
-            throw new ValidationError('User does not have access to expense do');
-        } else if (status === INTERNAL_SERVER_ERROR) {
-            throw new ValidationError('Can not fetch expense do');
-        }
-
-        const expendeDoDetails = data.expendeDoDetails;
-        const expendeDoDetailsData: DoDetailsType | null = expendeDoDetails
-            ? {
-                  id: expendeDoDetails.id,
-                  shopName: expendeDoDetails.shopName,
-                  shopAddress: expendeDoDetails.shopAddress,
-                  doItem: expendeDoDetails.doItem,
-                  description: expendeDoDetails.description,
-                  amount: expendeDoDetails.amount,
-                  doDate: expendeDoDetails.doDate,
-                  doEditHistoryCount: get(expendeDoDetails, 'doEditHistoryCount', 0),
-                  imageURL: expendeDoDetails.imageURL,
-                  createdAt: expendeDoDetails.createdAt,
-                  updatedAt: expendeDoDetails.updatedAt,
-                  creator: expendeDoDetails.creator ?? undefined,
-                  lastUpdater: expendeDoDetails.lastUpdater ?? null,
-                  expenses: get(expendeDoDetails, 'expenses', []).map(
-                      ({ id, amount, title, expenseAt }: any) => ({
-                          id,
-                          amount,
-                          title,
-                          expenseAt,
-                      })
-                  ),
-                  otherExpenseCount: get(expendeDoDetails, 'otherExpenseCount', 0),
-              }
-            : null;
-
-        dispatch({
-            type: GET_DO_DETAILS_FOR_EXPENSE,
-            payload: {
-                expenseDoDetails: expendeDoDetailsData,
-            },
-        });
-    } catch (error) {
-        if (error instanceof Error) {
-            initiateToast({
-                type: 'error',
-                message: error.message.toString(),
-            });
-        }
-    }
-};
+    };

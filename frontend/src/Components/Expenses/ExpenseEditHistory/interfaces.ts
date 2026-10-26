@@ -1,3 +1,4 @@
+import { HouseType } from '../../../Types/Houses';
 import { ExpendeCreatorUpdaterType, ExpenseEditHistoryType } from '../../../Types/expenses';
 
 export type ExpenseEditHistoryCardPropTypes = {
@@ -11,9 +12,10 @@ export type ExpenseEditHistoryCardPropTypes = {
 
 export type ExpenseEditHistoryPropTypes = {
     expenseId: number;
+    house?: HouseType | null;
     expenseEditHistory: {
         history: ExpenseEditHistoryType[];
         lastUpdater: ExpendeCreatorUpdaterType | null;
     } | null;
-    getExpenseEditHistory: (id: number) => Promise<void>;
+    getExpenseEditHistory: (houseId: number | undefined, expenseId: number) => Promise<void>;
 };

@@ -20,11 +20,11 @@
         "method": "PATCH"
     },
     "GET_EXPENSE_EDIT_HISTORY": {
-        "path": "/expense/{id}/edit-history",
+        "path": "/house/{houseId}/expense/{expenseId}/edit-history",
         "method": "GET"
     },
     "GET_EXPENSE_DO_DETAILS": {
-        "path": "/expense/{id}/do-details",
+        "path": "/house/{houseId}/expense/{expenseId}/do-details",
         "method": "GET"
     },
     "GET_TOTAL_EXPENSE": {
