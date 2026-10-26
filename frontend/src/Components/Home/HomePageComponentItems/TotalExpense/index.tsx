@@ -14,6 +14,7 @@ import { TotalExpensePropsType, TotalExpenseFormDataType } from './interfaces';
 
 import { DISPLAY_TOTAL_EXPENSE_VALIDATOR } from './constants';
 import styles from './styles.module.css';
+import { ReducerStateType } from '../../../../Redux/reducers';
 
 const FORM_DATA: TotalExpenseFormDataType = {
     formDate: undefined,
@@ -21,7 +22,7 @@ const FORM_DATA: TotalExpenseFormDataType = {
 };
 
 const TotalExpense = (props: TotalExpensePropsType) => {
-    const { hideDateFilters, totalExpense, getTotalExpense } = props;
+    const { house, hideDateFilters, totalExpense, getTotalExpense } = props;
 
     const [formValue, setFormValue] = useState<TotalExpenseFormDataType>(FORM_DATA);
     const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ const TotalExpense = (props: TotalExpensePropsType) => {
         setLoading(true);
 
         try {
-            await getTotalExpense(formValue);
+            await getTotalExpense(house?.id, formValue);
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -90,7 +91,8 @@ const TotalExpense = (props: TotalExpensePropsType) => {
     );
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
     totalExpense: state.expense.totalExpenses,
 });
 

@@ -20,9 +20,10 @@ import { CreateExpenseFormValueType } from '../CreateExpense/interfaces';
 
 import styles from './styles.module.css';
 import { Container } from '@mui/material';
+import { ReducerStateType } from '../../../Redux/reducers';
 
 function EditExepense(props: EditExpensePropTypes) {
-    const { disableForm, expense, onEditSuccess, onEditUnsuccess, editExpense } = props;
+    const { disableForm, house, expense, onEditSuccess, onEditUnsuccess, editExpense } = props;
 
     const [loading, setLoading] = useState(false);
 
@@ -33,7 +34,7 @@ function EditExepense(props: EditExpensePropTypes) {
         setLoading(true);
 
         try {
-            await editExpense(expense.id, {
+            await editExpense(house?.id, expense.id, {
                 title: createExpenseFormData.title || '',
                 description: createExpenseFormData.description || '',
                 amount: createExpenseFormData.amount || 1,
@@ -94,7 +95,8 @@ function EditExepense(props: EditExpensePropTypes) {
     );
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
     expenses: state.expense.expenses,
     expensesCount: state.expense.expensesCount,
 });

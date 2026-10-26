@@ -76,8 +76,6 @@ const addSingleExpenseInTheDoService = async (userId, houseId, expenseId, doId) 
 const getSingleExpenseService = async (house, expenseId) => {
     const { id: houseId } = house;
 
-    console.log('SaaD 1 : ', houseId);
-
     const expense = await Expense.scope({ method: ['houseScope', houseId] }).findOne({
         where: { id: expenseId },
         include: [
@@ -88,6 +86,7 @@ const getSingleExpenseService = async (house, expenseId) => {
             {
                 association: 'do',
                 attributes: ['id', 'shopName', 'amount', 'doDate'],
+                required: false,
             },
             {
                 model: User,
@@ -100,8 +99,6 @@ const getSingleExpenseService = async (house, expenseId) => {
             },
         ],
     });
-
-    console.log('SaaD 2 : ', houseId);
 
     if (!expense) {
         throw new NotFoundError(`expense not found with id = ${expenseId}`);

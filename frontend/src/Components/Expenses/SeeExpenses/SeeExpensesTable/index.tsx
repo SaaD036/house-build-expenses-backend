@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { MoreVert as ActionColumnIcon } from '@mui/icons-material';
 
 import CustomTable from '../../../Custom/CustomTable';
+import CustomPopover from '../../../Custom/CustomPopover';
 import SeeExpensesTablePopers from './SeeExpensesTablePopers';
 import UserProfilePopup from '../../../Users/UserProfilePopup';
 
@@ -22,11 +23,17 @@ import {
 import { ExpenseType } from '../../../../Types/expenses';
 
 import styles from '../styles.module.css';
-import CustomPopover from '../../../Custom/CustomPopover';
 
 const SeeExpensesTable = (props: SeeExpensesTableProps) => {
-    const { expenses, expensesCount, showLoader, hideLoader, getAllExpenses, deleteSingleExpense } =
-        props;
+    const {
+        house,
+        expenses,
+        expensesCount,
+        showLoader,
+        hideLoader,
+        getAllExpenses,
+        deleteSingleExpense,
+    } = props;
 
     const [selectedExpense, setSelectedExpense] = useState<ExpenseType | null>(null);
 
@@ -80,8 +87,11 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
 
         showLoader();
 
-        await deleteSingleExpense(selectedExpense.id);
-        await getAllExpenses({ page: currentPage, itemsPerPage: expensesPerPage });
+        await deleteSingleExpense(house?.id, selectedExpense.id);
+        await getAllExpenses(house?.id, {
+            page: currentPage,
+            itemsPerPage: expensesPerPage,
+        });
 
         hideLoader();
     };
@@ -89,6 +99,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
     const loadExpenseData = async (filterAndParams?: CustomTableLoadDataTypes) => {
         showLoader();
         await getAllExpenses(
+            house?.id,
             filterAndParams || {
                 page: currentPage,
                 itemsPerPage: expensesPerPage,
@@ -161,6 +172,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
 
 const mapStateToProps = (state: any) => ({
     loggedInUser: state.auth.loggedInUser,
+    house: state.house.house,
     expenses: state.expense.expenses,
     expensesCount: state.expense.expensesCount,
 });

@@ -44,6 +44,7 @@ const getAllExpenses = async (req, res, next) => {
                     {
                         association: 'do',
                         attributes: ['id', 'shopName', 'doItem', 'amount', 'doDate'],
+                        required: false,
                     },
                 ],
                 where: filter.where,
@@ -115,7 +116,6 @@ const updateExpense = async (req, res, next) => {
         const expense = await Expense.scope({ method: ['houseScope', houseId] }).findOne({
             where: {
                 id: expenseID,
-                createdBy: userId,
             },
         });
 

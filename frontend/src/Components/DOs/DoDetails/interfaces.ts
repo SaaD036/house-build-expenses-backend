@@ -1,9 +1,11 @@
 import { DoDetailsType, DoExpenseType } from '../../../Types/DOs';
+import { HouseType } from '../../../Types/Houses';
 
 export type DoDetailsForExpensePropTypes = {
     expenseId: number;
+    house?: HouseType | null;
     doDetailsData: DoDetailsType | null;
-    getDoDetailsForExpense: (expenseId: number) => Promise<void>;
+    getDoDetailsForExpense: (houseId: number | undefined, expenseId: number) => Promise<void>;
 };
 
 export type DoExpensesListPropTypes = {

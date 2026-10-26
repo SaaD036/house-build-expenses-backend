@@ -19,7 +19,7 @@ import styles from './styles.module.css';
 import { UserRole } from '../../../../Constants/Users';
 
 const DoDetailsForExpense = (props: DoDetailsForExpensePropTypes) => {
-    const { expenseId, doDetailsData, getDoDetailsForExpense } = props;
+    const { house, expenseId, doDetailsData, getDoDetailsForExpense } = props;
 
     const loggedInUser = getUserFromToken();
 
@@ -81,7 +81,7 @@ const DoDetailsForExpense = (props: DoDetailsForExpensePropTypes) => {
     useEffect(() => {
         const loadExpenseDoDetails = async () => {
             setLoading(true);
-            await getDoDetailsForExpense(expenseId);
+            await getDoDetailsForExpense(house?.id, expenseId);
             setLoading(false);
         };
 
@@ -129,6 +129,7 @@ const DoDetailsForExpense = (props: DoDetailsForExpensePropTypes) => {
 };
 
 const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
     doDetailsData: state.expense.expenseDoDetails,
 });
 
