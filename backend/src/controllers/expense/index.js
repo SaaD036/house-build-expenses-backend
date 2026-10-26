@@ -116,7 +116,6 @@ const updateExpense = async (req, res, next) => {
         const expense = await Expense.scope({ method: ['houseScope', houseId] }).findOne({
             where: {
                 id: expenseID,
-                createdBy: userId,
             },
         });
 

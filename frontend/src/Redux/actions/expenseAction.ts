@@ -188,14 +188,14 @@ export const deleteSingleExpense =
     };
 
 export const editExpense =
-    (id: number, payloadData: CreateExpenseFormDataType) =>
+    (houseId: number | undefined, expenseId: number, payloadData: CreateExpenseFormDataType) =>
     async (dispatch: Dispatch<DispatchType>) => {
         try {
             const { path, method } = expenseAPIs.EDIT_SINGLE_EXPENSE;
             const { BAD_REQUEST, UNAUTHENTICATED, NOT_FOUND } = HTTP_STATUS_CODE;
 
             const { status, data } = await callAxiosAPI({
-                url: buildURL(path, { id }),
+                url: buildURL(path, { houseId, expenseId }),
                 method: method as Method,
                 data: payloadData,
             });

@@ -16,7 +16,7 @@
         "method": "DELETE"
     },
     "EDIT_SINGLE_EXPENSE": {
-        "path": "/expense/{id}",
+        "path": "/house/{houseId}/expense/{expenseId}",
         "method": "PATCH"
     },
     "GET_EXPENSE_EDIT_HISTORY": {
