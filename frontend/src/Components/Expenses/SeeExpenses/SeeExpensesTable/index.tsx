@@ -129,6 +129,7 @@ const SeeExpensesTable = (props: SeeExpensesTableProps) => {
             )}
             {selectedExpense && (
                 <SeeExpensesTablePopers
+                    house={house}
                     selectedExpense={selectedExpense}
                     setSelectedExpense={(expense: ExpenseType | null) =>
                         setSelectedExpense(expense)

@@ -16,6 +16,10 @@ import CustomModal from '../../../Custom/CustomModal';
 import EditExepense from '../../EditExepense';
 import ExpenseModal from '../../ExpenseModal';
 
+import {
+    hasContributorLevelAccessToHouse,
+    hasCreatorLevelAccessToHouse,
+} from '../../../../Utilities/Houses/HouseAccess';
 import { getUserFromToken } from '../../../../Utilities/Users/UserToken';
 import { createActionColumnMenuItem } from '../../../Custom/CustomTable/utilities';
 
@@ -27,6 +31,7 @@ import { ExpenseModalTabKeyType } from '../../ExpenseModal/interfaces';
 
 const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
     const {
+        house,
         selectedExpense,
         setSelectedExpense,
         actionColumMenuAnchorEl,
@@ -45,13 +50,16 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
 
     const getActionColumnMenuItems = () => {
         let actionColumnMenuItems: any[] = [];
+        const accessType = house?.accessForLoggedInUser ?? UserRole.USER;
 
-        if (!userRole) {
+        const isCreatorLevelUser = hasCreatorLevelAccessToHouse(accessType, true);
+        const isContributorLevelUser = hasContributorLevelAccessToHouse(accessType, true);
+
+        if (!house || house.accessForLoggedInUser === UserRole.USER || !userRole) {
             return actionColumnMenuItems;
         }
 
         actionColumnMenuItems = [
-            createActionColumnMenuItem('add_to_album', 'Add to Album', AddToAlbumIcon, () => {}),
             createActionColumnMenuItem('see_details', 'See Details', SeeDetailsIcon, () =>
                 setExpenseModalTabKey(EXPENSE_MODAL_TAB.DETAILS.key)
             ),
@@ -60,8 +68,9 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
             ),
         ];
 
-        if (userRole !== UserRole.USER) {
+        if (isContributorLevelUser) {
             actionColumnMenuItems = [
+                ...actionColumnMenuItems,
                 createActionColumnMenuItem('edit', 'Edit', EditIcon, () =>
                     setEditExpenseModal(true)
                 ),
@@ -71,6 +80,18 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
                     EditHistoryIcon,
                     () => setExpenseModalTabKey(EXPENSE_MODAL_TAB.EDIT_HISTORY.key)
                 ),
+            ];
+        }
+
+        if (isCreatorLevelUser) {
+            actionColumnMenuItems = [
+                ...actionColumnMenuItems,
+                createActionColumnMenuItem(
+                    'add_to_album',
+                    'Add to Album',
+                    AddToAlbumIcon,
+                    () => {}
+                ),
                 createActionColumnMenuItem(
                     'delete',
                     'Delete',
@@ -79,7 +100,6 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
                     userRole === UserRole.VISITOR
                 ),
                 createActionColumnMenuItem('add_do', 'Add to DO', DoIcon, () => {}),
-                ...actionColumnMenuItems,
             ];
         }
 

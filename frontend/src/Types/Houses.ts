@@ -2,7 +2,7 @@ import { UserRoleType, UserType } from './Users';
 import { HOUSE_ACCESS_TYPE } from '../Constants/Houses';
 
 export type HouseAccessForLoggedInUserType =
-    | Extract<UserRoleType, 'admin' | 'visitor'>
+    | Extract<UserRoleType, 'admin' | 'visitor' | 'user'>
     | (typeof HOUSE_ACCESS_TYPE)[keyof typeof HOUSE_ACCESS_TYPE];
 
 export type HouseAddressType = {
