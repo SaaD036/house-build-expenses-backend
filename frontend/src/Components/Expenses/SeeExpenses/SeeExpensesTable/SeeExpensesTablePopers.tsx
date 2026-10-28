@@ -149,7 +149,12 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
                 title="Edit expense"
             >
                 <EditExepense
-                    disableForm={userRole !== UserRole.ADMIN}
+                    disableForm={
+                        !hasContributorLevelAccessToHouse(
+                            house?.accessForLoggedInUser ?? UserRole.USER,
+                            false
+                        )
+                    }
                     expense={selectedExpense}
                     onEditSuccess={onEditModalClose}
                     onEditUnsuccess={() => {
