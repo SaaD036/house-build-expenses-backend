@@ -47,3 +47,28 @@ export const hasViewerLevelAccessToHouse = (
 
     return false;
 };
+
+export const getHouseResourceOptionsByHouseAccess = (
+    accessToHouse: HouseAccessForLoggedInUserType,
+    options: (any & { role: HouseAccessForLoggedInUserType })[]
+) => {
+    return options.filter((o) => {
+        if (accessToHouse === 'user') {
+            return false;
+        }
+
+        if (o.role === 'viewer') {
+            return hasViewerLevelAccessToHouse(accessToHouse);
+        }
+
+        if (o.role === 'contributor') {
+            return hasContributorLevelAccessToHouse(accessToHouse, true);
+        }
+
+        if (o.role === 'creator') {
+            return hasCreatorLevelAccessToHouse(accessToHouse, true);
+        }
+
+        return false;
+    });
+};

@@ -5,18 +5,18 @@ export const EXPENSE_MODAL_TAB = {
         key: 'details',
         label: 'Details',
         content: '',
-        role: 'all',
+        role: 'viewer',
     },
     EDIT_HISTORY: {
         key: 'edit_history',
         label: 'Edit History',
         content: '',
-        role: 'admin',
+        role: 'contributor',
     },
     DO_DETAILS: {
         key: 'do_details',
         label: 'DO Details',
         content: '',
-        role: 'all',
+        role: 'viewer',
     },
 } as const satisfies ExpenseModalTabType;

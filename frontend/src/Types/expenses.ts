@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { UserAccessRoleType } from '.';
+import { HouseAccessForLoggedInUserType } from './Houses';
 import { MultiTabModalTabItemType } from '../Components/Custom/CustomModal/MultiTabModal/interfaces';
 
 export type ExpendeCreatorUpdaterType = {
@@ -49,5 +49,7 @@ export type CreateExpenseFormDataType = {
 
 export type ExpenseModalTabType = Record<
     string,
-    MultiTabModalTabItemType & { role: UserAccessRoleType }
+    MultiTabModalTabItemType & {
+        role: Extract<HouseAccessForLoggedInUserType, 'creator' | 'contributor' | 'viewer'>;
+    }
 >;

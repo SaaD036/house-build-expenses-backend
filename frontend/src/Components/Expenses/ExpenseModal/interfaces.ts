@@ -10,6 +10,7 @@ export type ExpenseModalTabKeyType =
 
 export type ExpenseModalPropType = {
     expenseId: number;
+    house: HouseType | null;
     expenseModalTabKey: ExpenseModalTabKeyType;
     onCloseModal: () => void;
 };

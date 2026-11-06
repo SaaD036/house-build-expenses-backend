@@ -164,6 +164,7 @@ const SeeExpensesTablePopers = (props: SeeExpensesTablePopersProps) => {
                 />
             </CustomModal>
             <ExpenseModal
+                house={house ?? null}
                 expenseId={selectedExpense.id}
                 expenseModalTabKey={expenseModalTabKey}
                 onCloseModal={() => setExpenseModalTabKey(undefined)}

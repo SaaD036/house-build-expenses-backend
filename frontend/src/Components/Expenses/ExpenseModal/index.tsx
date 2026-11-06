@@ -13,7 +13,12 @@ import { ExpenseModalPropType, ExpenseModalTabKeyType } from './interfaces';
 import { EXPENSE_MODAL_TAB } from '../../../Constants/Expenses';
 import DoDetailsForExpense from '../../DOs/DoDetails/DoDetailsForExpense';
 
-const ExpenseModal = ({ expenseId, expenseModalTabKey, onCloseModal }: ExpenseModalPropType) => {
+const ExpenseModal = ({
+    house,
+    expenseId,
+    expenseModalTabKey,
+    onCloseModal,
+}: ExpenseModalPropType) => {
     const user = getUserFromToken();
     const userRole = get(user, 'role', null);
 
@@ -42,7 +47,7 @@ const ExpenseModal = ({ expenseId, expenseModalTabKey, onCloseModal }: ExpenseMo
             open
             title="Expense Details"
             onClose={onCloseModal}
-            tabs={getTabItems(userRole, getTabContent)}
+            tabs={getTabItems(house, getTabContent)}
             defaultTabId={expenseModalTabKey || ''}
         />
     );
