@@ -1,0 +1,159 @@
+const {
+    fetchHouseListService,
+    createHouseService,
+    updateHouseService,
+    fetchHouseDetailsBySlugService,
+    deleteHouseService,
+    fetchHouseEditHistoryService,
+} = require('../../services/houses');
+
+const {
+    sendApiSuccessResponse,
+    preparePaginationResponse,
+} = require('../../utilities/apiUtils/apiResponseHandler');
+
+const { HTTP_STATUS } = require('../../constants/http');
+
+/**
+ * @desciption    Fetch houses list
+ * @route         GET /api/house
+ * @access        All
+ */
+const getAllHouses = async (req, res, next) => {
+    try {
+        const { name, ownerName, floorCount, floorCountOperator, page, limit } = req.query;
+        const { housesList, houseCount } = await fetchHouseListService(
+            {
+                name,
+                ownerName,
+                floorCount,
+                floorCountOperator,
+                limit: isNaN(limit) ? 10 : Number(limit),
+                page: isNaN(page) ? 1 : Number(page),
+            },
+            req.user
+        );
+
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'House list fetched',
+            data: { houses: housesList, houseCount },
+            meta: preparePaginationResponse(houseCount, Number(page), Number(limit)),
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @desciption    Create a new House
+ * @route         POST /api/house
+ * @access        All
+ */
+const createHouse = async (req, res, next) => {
+    try {
+        const { name, address, floorCount } = req.body;
+
+        await createHouseService(name, address, floorCount, req.user);
+
+        return res.status(HTTP_STATUS.CREATED).json({
+            message: 'house created',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @desciption    Get a house details
+ * @route         POST /api/house/:houseSlug
+ * @access        Admin, Creator and Accessed
+ */
+const getSingleHouseBySlug = async (req, res, next) => {
+    try {
+        const { houseSlug } = req.params;
+
+        const house = await fetchHouseDetailsBySlugService(houseSlug, req.user);
+
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'House details fetched',
+            data: { house },
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @desciption    Update a house
+ * @route         PUT /api/house/:id
+ * @access        Admin, Creator
+ */
+const updateHouse = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+
+        await updateHouseService(houseId, req.body, req.user);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'house updated',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @desciption    Delete a house
+ * @route         DELETE /api/house/:houseId
+ * @access        Admin, Creator
+ */
+const deleteHouse = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+        const loggedInUser = req.user;
+
+        await deleteHouseService(houseId, loggedInUser);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: 'house deleted',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @desciption    Fetch house-edit history
+ * @route         GET /api/house/:houseId/edit-history
+ * @access        Admin, Creator
+ */
+const getHouseEditHistory = async (req, res, next) => {
+    try {
+        const { houseId } = req.params;
+        const { page = 1, limit = 10, editorName } = req.query;
+
+        const editHistory = await fetchHouseEditHistoryService(houseId, {
+            page,
+            limit,
+            editor: (editorName || '').trim(),
+        });
+
+        return res.status(HTTP_STATUS.OK).json({
+            house: req.house,
+            ...editHistory,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = {
+    getAllHouses,
+    createHouse,
+    getSingleHouseBySlug,
+    updateHouse,
+    deleteHouse,
+    getHouseEditHistory,
+};

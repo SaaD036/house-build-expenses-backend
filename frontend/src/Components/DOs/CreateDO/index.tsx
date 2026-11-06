@@ -21,9 +21,10 @@ import { CREATE_DO_FORM_VALIDATION, CREATE_DO_INITIAL_VALUE } from './constants'
 import { CreateDOformValueType, CreateDOpropsType } from './interfaces';
 
 import styles from './styles.module.css';
+import { ReducerStateType } from '../../../Redux/reducers';
 
 const CreateDO = (props: CreateDOpropsType) => {
-    const { disabledForm, createDo } = props;
+    const { house, disabledForm, createDo } = props;
 
     const [loading, setLoading] = useState(false);
 
@@ -33,7 +34,7 @@ const CreateDO = (props: CreateDOpropsType) => {
     ) => {
         setLoading(true);
 
-        await createDo(formValue);
+        await createDo(house?.id, formValue);
         formikHelpers.setValues(CREATE_DO_INITIAL_VALUE);
 
         setLoading(false);
@@ -104,8 +105,12 @@ const CreateDO = (props: CreateDOpropsType) => {
     );
 };
 
+const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
+});
+
 const mapDispatchToProps = {
     createDo,
 };
 
-export default connect(null, mapDispatchToProps)(CreateDO);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateDO);

@@ -5,7 +5,6 @@ import CreateExpense from './CreateExpense';
 
 import { tabValueItem } from '../../Pages/Expenses/constants';
 import { ExpensePagePropType } from './interfaces';
-import styles from './styles.module.css';
 
 const ExpensePageComponent = (props: ExpensePagePropType) => {
     const { tabName, isCreateExpenseFormDisabled } = props;
@@ -22,7 +21,7 @@ const ExpensePageComponent = (props: ExpensePagePropType) => {
         return <div>Page not found</div>;
     };
 
-    return <div className={styles.expenseTabComponentWrapper}>{renderTabComponents()}</div>;
+    return <div className="tabComponentWrapper">{renderTabComponents()}</div>;
 };
 
 export default ExpensePageComponent;

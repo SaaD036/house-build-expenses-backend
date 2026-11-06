@@ -14,14 +14,14 @@ import { ReducerStateType } from '../../../Redux/reducers';
 import { SeeDOsPropsType } from './interfaces';
 
 const SeeDOs = (props: SeeDOsPropsType) => {
-    const { currentView, dos, getAllDOs } = props;
+    const { house, currentView, dos, getAllDOs } = props;
 
     const [isLoadingDOdata, setIsLoadingDOdata] = useState(false);
 
     const loadDOs = async () => {
         setIsLoadingDOdata(true);
 
-        await getAllDOs(null);
+        await getAllDOs(house?.id, null);
 
         setIsLoadingDOdata(false);
     };
@@ -47,6 +47,7 @@ const SeeDOs = (props: SeeDOsPropsType) => {
 const mapStateToProps = (state: ReducerStateType) => ({
     currentView: state.general.currentView,
     dos: state.do.dos,
+    house: state.house.house,
     doCount: state.do.doCount,
 });
 

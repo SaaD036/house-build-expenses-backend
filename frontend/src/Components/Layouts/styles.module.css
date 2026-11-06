@@ -28,9 +28,17 @@
 }
 
 .sidebar {
-    height: calc(100vh - 80px);
     width: 100%;
+    flex-grow: 1;
     flex-direction: column;
+}
+
+.sidebarTopSection {
+    height: 50px;
+    width: 80%;
+    display: flex;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
 }
 
 .sidebarItemsContainer {
@@ -72,11 +80,19 @@
 
 .footer {
     width: 80%;
-    height: 40px;
-    justify-content: flex-start !important;
-    padding-left: 10px;
+    height: 50px;
     color: #158901;
     cursor: pointer;
+}
+
+.footer div {
+    border: 1.5px solid #158901;
+    padding: 2.5px 10px;
+    border-radius: 15px;
+}
+
+.footer div span {
+    font-size: 14px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -103,24 +119,7 @@
         width: 220px;
     }
 
-    /* In previous implementation, in smaller dimesion only icons were visible and text were hidden */
-    /* .sidebarItemsContainer {
-        width: 100%;
-    }
-
-    .sidebarItems div {
-        display: none;
-    }
-
-    .sidebarItemsDivider {
-        width: 100%;
-    } */
-
     .childrenSection {
         width: calc(100vw - 40px);
-    }
-
-    .footer div {
-        display: none !important;
     }
 }

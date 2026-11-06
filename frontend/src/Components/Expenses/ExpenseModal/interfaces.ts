@@ -1,3 +1,4 @@
+import { HouseType } from '../../../Types/Houses';
 import { UserRoleType } from '../../../Types/Users';
 import { ExpenseType } from '../../../Types/expenses';
 
@@ -9,13 +10,15 @@ export type ExpenseModalTabKeyType =
 
 export type ExpenseModalPropType = {
     expenseId: number;
+    house: HouseType | null;
     expenseModalTabKey: ExpenseModalTabKeyType;
     onCloseModal: () => void;
 };
 
 export type ExpenseModalDetailsPropType = {
     expenseId: number;
+    house: HouseType | null | undefined;
     expense: ExpenseType | null;
     userRole: UserRoleType | null;
-    getSingleExpense: (id: number) => Promise<void>;
+    getSingleExpense: (houseId: number | undefined, expenseId: number) => Promise<void>;
 };

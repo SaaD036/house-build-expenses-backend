@@ -8,23 +8,39 @@ const {
     removeDoFromAllExpenses,
 } = require('../../controllers/do');
 
-const adminMiddleware = require('../../middlewares/auth/Admin');
+const houseAccessMiddleware = require('../../middlewares/HouseAccessMiddleware');
 
 const { createDOvalidator, addRemoveExpensesValidator } = require('./doValidators');
-const validtorHandler = require('../validatorHandler');
 
-const router = express.Router();
+const { HOUSE_ACCESS_TYPE } = require('../../constants/houses/houseAccess');
 
-router.get('/', getAllDOs);
-router.post('/', adminMiddleware, createDOvalidator, validtorHandler, createDO);
+const router = express.Router({ mergeParams: true });
 
-router.patch('/:doId/add-expenses', adminMiddleware, addRemoveExpensesValidator, addDoToExpenses);
+router.get('/', houseAccessMiddleware(HOUSE_ACCESS_TYPE.VIEWER), getAllDOs);
+router.post(
+    '/',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR),
+    createDOvalidator,
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR),
+    createDO
+);
+
+router.patch(
+    '/:doId/add-expenses',
+    addRemoveExpensesValidator,
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR),
+    addDoToExpenses
+);
 router.delete(
     '/:doId/remove-expenses',
-    adminMiddleware,
     addRemoveExpensesValidator,
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR),
     removeDoFromExpenses
 );
-router.delete('/:doId/empty', adminMiddleware, removeDoFromAllExpenses);
+router.delete(
+    '/:doId/empty',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR),
+    removeDoFromAllExpenses
+);
 
 module.exports = router;

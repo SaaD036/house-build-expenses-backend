@@ -1,8 +1,7 @@
 const { check } = require('express-validator');
 const { isDate, isArray } = require('lodash');
-const { Op } = require('sequelize');
 
-const { DO, Expense } = require('../../../models');
+const ValidatorHandler = require('../../validatorHandler');
 
 const createExpenseValidator = [
     check('amount')
@@ -33,10 +32,11 @@ const createExpenseValidator = [
 
         return isDate(new Date(value));
     }),
+    ValidatorHandler,
 ];
 
 const deleteMultipleExpensesValidator = [
-    check('expenseIDX')
+    check('expenseIdx')
         .custom((value) => {
             if (!isArray(value)) {
                 return false;
@@ -51,81 +51,16 @@ const deleteMultipleExpensesValidator = [
             return true;
         })
         .withMessage('Expense IDs are not valid.'),
-];
-
-const addToDOvalidator = [
-    check('idx')
-        .custom((value) => {
-            if (!isArray(value)) {
-                return false;
-            }
-
-            const valueArrayWithInvalidIDX = (value || []).filter((item) => {
-                if (isNaN(Number(item.expenseId))) {
-                    return true;
-                }
-
-                if (isNaN(Number(item.doId))) {
-                    return true;
-                }
-            });
-
-            if (valueArrayWithInvalidIDX.length > 0) {
-                return false;
-            }
-
-            return true;
-        })
-        .withMessage('Invalid expense/do ID')
-        .custom(async (value) => {
-            const expenseIDX = value.map((item) => item.expenseId);
-            const doIDX = value.map((item) => item.doId);
-
-            try {
-                const [expenses, dos] = await Promise.all([
-                    await Expense.findAll({
-                        where: {
-                            id: {
-                                [Op.in]: expenseIDX,
-                            },
-                            isDeleted: false,
-                        },
-                        attributes: ['id'],
-                    }),
-                    await DO.findAll({
-                        where: {
-                            id: {
-                                [Op.in]: doIDX,
-                            },
-                            isDeleted: false,
-                        },
-                        attributes: ['id'],
-                    }),
-                ]);
-
-                const dbExpenseIDX = expenses.map((item) => item.id);
-                const invalidExpenseIDx = expenseIDX.filter((item) => !dbExpenseIDX.includes(item));
-
-                const dbDOidx = dos.map((item) => item.id);
-                const invalidDOidx = doIDX.filter((item) => !dbDOidx.includes(item));
-
-                if (invalidExpenseIDx.length > 0 || invalidDOidx.length > 0) {
-                    return Promise.reject();
-                }
-            } catch (error) {
-                return Promise.reject();
-            }
-        })
-        .withMessage('Some expense/do id does not exist'),
+    ValidatorHandler,
 ];
 
 const addSingleExpenseToDoValidator = [
-    check('doId').isLength({ min: 1 }).withMessage('DO ID is required'),
+    check('doId').isLength({ min: 1 }).withMessage('DO id is required'),
+    ValidatorHandler,
 ];
 
 module.exports = {
     createExpenseValidator,
     deleteMultipleExpensesValidator,
-    addToDOvalidator,
     addSingleExpenseToDoValidator,
 };

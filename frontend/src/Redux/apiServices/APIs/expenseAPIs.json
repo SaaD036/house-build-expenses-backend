@@ -1,34 +1,34 @@
 {
     "GET_ALL_EXPENSES": {
-        "path": "/expense",
+        "path": "/house/{houseId}/expense",
         "method": "GET"
     },
     "CREATE_EXPENSE": {
-        "path": "/expense",
+        "path": "/house/{houseId}/expense",
         "method": "POST"
     },
     "GET_SINGLE_EXPENSE": {
-        "path": "/expense/{id}",
+        "path": "/house/{houseId}/expense/{expenseId}",
         "method": "GET"
     },
     "DELETE_SINGLE_EXPENSE": {
-        "path": "/expense/{id}",
+        "path": "/house/{houseId}/expense/{expenseId}",
         "method": "DELETE"
     },
     "EDIT_SINGLE_EXPENSE": {
-        "path": "/expense/{id}",
+        "path": "/house/{houseId}/expense/{expenseId}",
         "method": "PATCH"
     },
     "GET_EXPENSE_EDIT_HISTORY": {
-        "path": "/expense/{id}/edit-history",
+        "path": "/house/{houseId}/expense/{expenseId}/edit-history",
         "method": "GET"
     },
     "GET_EXPENSE_DO_DETAILS": {
-        "path": "/expense/{id}/do-details",
+        "path": "/house/{houseId}/expense/{expenseId}/do-details",
         "method": "GET"
     },
     "GET_TOTAL_EXPENSE": {
-        "path": "/expense/get-total-expense",
+        "path": "/house/{houseId}/expense/get-total-expense",
         "method": "GET"
     }
 }

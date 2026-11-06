@@ -16,7 +16,7 @@ import { ExpenseEditHistoryPropTypes } from './interfaces';
 import styles from './styles.module.css';
 
 const ExpenseEditHistory = (props: ExpenseEditHistoryPropTypes) => {
-    const { expenseId, expenseEditHistory, getExpenseEditHistory } = props;
+    const { house, expenseId, expenseEditHistory, getExpenseEditHistory } = props;
 
     const [loading, setLoading] = useState(false);
 
@@ -43,7 +43,7 @@ const ExpenseEditHistory = (props: ExpenseEditHistoryPropTypes) => {
     useEffect(() => {
         const loadExpenseEditHistory = async () => {
             setLoading(true);
-            await getExpenseEditHistory(expenseId);
+            await getExpenseEditHistory(house?.id, expenseId);
             setLoading(false);
         };
 
@@ -77,6 +77,7 @@ const ExpenseEditHistory = (props: ExpenseEditHistoryPropTypes) => {
 };
 
 const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
     expenseEditHistory: state.expense.expenseEditHistory,
 });
 

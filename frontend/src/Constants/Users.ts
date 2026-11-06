@@ -2,7 +2,7 @@ export const UserRole = {
     ADMIN: 'admin',
     USER: 'user',
     VISITOR: 'visitor',
-};
+} as const;
 
 export const AdminRoleArray = [UserRole.ADMIN, UserRole.VISITOR];
 

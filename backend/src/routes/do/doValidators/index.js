@@ -57,6 +57,7 @@ const createDOvalidator = [
             return isDate(new Date(value));
         })
         .withMessage('DO date format invalid'),
+    validtorHandler,
 ];
 
 const addRemoveExpensesValidator = [

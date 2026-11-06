@@ -1,4 +1,6 @@
-export type UserRoleType = 'admin' | 'user' | 'visitor';
+import { UserRole } from '../Constants/Users';
+
+export type UserRoleType = (typeof UserRole)[keyof typeof UserRole];
 
 export type LoggedinUserType = {
     id: number;
