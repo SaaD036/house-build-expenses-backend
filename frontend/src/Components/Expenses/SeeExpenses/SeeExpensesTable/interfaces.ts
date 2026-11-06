@@ -17,6 +17,7 @@ export type SeeExpensesTableProps = {
 };
 
 export type SeeExpensesTablePopersProps = {
+    house?: HouseType | null;
     selectedExpense: ExpenseType;
     setSelectedExpense: (expense: ExpenseType | null) => void;
     actionColumMenuAnchorEl: HTMLElement | null;
