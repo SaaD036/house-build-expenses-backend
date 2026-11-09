@@ -32,10 +32,6 @@ const getAllUser = async (req, res, next) => {
                 where: filter.where,
                 limit: filter.limit,
                 offset: filter.offset,
-                include: {
-                    association: 'expenses',
-                    attributes: [],
-                },
                 attributes: [
                     'id',
                     'firstName',
