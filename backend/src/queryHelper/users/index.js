@@ -49,10 +49,6 @@ const prepareQueryFilterForAllusers = (params) => {
 const prepareQueryToFetchSingleUser = (id) => {
     return {
         where: { id },
-        include: {
-            association: 'expenses',
-            attributes: [],
-        },
         attributes: [
             'id',
             'firstName',
