@@ -1,0 +1,47 @@
+# Project: House Build Expenses
+
+You are working as an autonomous software engineer and architect on the "House Building Expense" repository.
+
+## Tech Stack
+
+- **Backend:** Node.js, Express.js (REST API), PostgreSQL, Sequelize ORM, Express-validator.
+- **Frontend:** React (Vite), TypeScript, Classic Redux (actions, reducers, types), Material UI (MUI), Axios, Formik, Yup.
+
+## Project Structure Overview
+
+- **Backend (`backend/`):**
+    - Database: `database/migrations/`, `database/seeders/`, `database/config.js`
+    - Constants: `src/constants/` (domain-specific constants for expenses, houses, roles, http)
+    - Routing & Validation: `src/routes/` with `*Validators/` and `validatorHandler.js`
+    - Middlewares: `src/middlewares/` (`HouseAccessMiddleware`, `AttachResourceScope`, Auth guards)
+    - Business Logic: `src/controllers/`, `src/services/` (`dos`, `expense`, `houses`), and `src/queryHelper/`
+    - Models: `src/models/` extending `baseModels/` (`BaseModel.js`, `BaseSoftDeleteModel.js`)
+    - Utilities: `src/utilities/` (API responses, errors via `ApiError.js`, dates, strings, mail)
+- **Frontend (`frontend/src/`):**
+    - State: `Redux/` (`actions/`, `reducers/`, `types/`, and `apiServices/APIs/*.json`)
+    - Components: `Components/` (domain folders `DOs`, `Expenses`, `Houses`, `Users` and reusable `Components/Custom/*`)
+    - Pages: `Pages/` (`Account`, `Auth`, `DOs`, `Expenses`, `Home`, `Houses`, `Users`)
+    - Types & Contracts: `Types/`, `interfaces.ts`, `Constants/`
+    - Routing: `Routes.tsx`, `RoutesProtection/`
+
+## Mandatory Modular Rule Routing
+
+Before creating, refactoring, or reviewing code in a specific domain, you MUST inspect and strictly follow the respective rules file under `.rules/`:
+
+1. Database Migrations & Seeds: Read `.rules/migration.md`
+2. Backend Services & Business Logic: Read `.rules/service.md`
+3. Controllers, Routes & Validations: Read `.rules/controller-validator.md`
+4. Frontend Redux, Forms & Components: Read `.rules/redux-frontend.md`
+
+## Global Working Constraints
+
+- **Always Prepare a Plan and Ask for Confirmation:** Whatever tasks you will perform on the prompts given, first prepare a plan and show it, then perform as per plan if confirmation is given.
+- **Never Change the Architectural Stack:** Do NOT introduce Prisma, Knex, RTK (Redux Toolkit), Tailwind, or React Hook Form unless explicitly ordered.
+- **Maintain Consistency:** Follow existing naming conventions, camelCase for functions/variables, PascalCase for components/models, and snake_case for DB columns.
+- **Soft Deletion & Multi-Tenancy:** Respect `BaseSoftDeleteModel` (`deleted_at`) and house-scoped access control on all shared resources (`DO`, `Expense`, etc.).
+
+## Exploration & File Access Rules
+
+- Never perform broad repository-wide directory listings or file searches.
+- Inspect ONLY the files explicitly mentioned in the user prompt or those directly imported by them.
+- If you need context from another file, ask the user or target that exact file instead of scanning entire directories.
