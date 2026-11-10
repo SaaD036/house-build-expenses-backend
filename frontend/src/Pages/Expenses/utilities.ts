@@ -1,20 +1,13 @@
-import { get } from 'lodash';
-import { jwtDecode } from 'jwt-decode';
-
-import { cookieName, getCookie } from '../../Utilities/Cookies';
-
+import { HouseType } from '../../Types/Houses';
+import { HOUSE_ACCESS_TYPE } from '../../Constants/Houses';
 import { EXPENSE_PAGE_TAB_ITEMS, tabValueItem } from './constants';
-import { UserRole } from '../../Constants/Users';
 
-export const getExpensePageTabs = () => {
-    const userToken = getCookie(cookieName.USER_TOKEN);
-    const user = jwtDecode(userToken || '');
-
-    if (!user || !get(user, 'role', null)) {
+export const getExpensePageTabs = (house: HouseType | null) => {
+    if (!house || house.accessForLoggedInUser === 'user') {
         return [];
     }
 
-    if (get(user, 'role') === UserRole.USER) {
+    if (house.accessForLoggedInUser === HOUSE_ACCESS_TYPE.VIEWER) {
         return EXPENSE_PAGE_TAB_ITEMS.filter(
             (tabItem) => tabItem.value !== tabValueItem.CREATE_EXPENSE
         );
