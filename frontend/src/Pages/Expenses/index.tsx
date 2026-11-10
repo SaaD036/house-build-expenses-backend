@@ -1,37 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { get } from 'lodash';
-import { jwtDecode } from 'jwt-decode';
+import { connect } from 'react-redux';
 
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
 import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
 import ExpensePageComponent from '../../Components/Expenses/ExpensePageComponent';
 
-import { useQuery } from '../../Redux/apiServices/buildURL';
 import { getExpensePageTabs } from './utilities';
-import { cookieName, getCookie } from '../../Utilities/Cookies';
+import { useQuery } from '../../Redux/apiServices/buildURL';
+import { hasContributorLevelAccessToHouse } from '../../Utilities/Houses/HouseAccess';
 
 import { tabValueItem } from './constants';
-import styles from './styles.module.css';
 import { UserRole } from '../../Constants/Users';
+
+import styles from './styles.module.css';
+import { ReducerStateType } from '../../Redux/reducers';
+import { HouseType } from '../../Types/Houses';
 
 const EXPENSE_PAGE_TITLE = 'Expenses';
 
-const ExpensesPage = () => {
+const ExpensesPage = ({ house }: { house?: HouseType | null }) => {
     const query = useQuery();
     const tabName = query.get('tab') || tabValueItem.SEE_EXPENSES;
-    const userToken = getCookie(cookieName.USER_TOKEN);
-    const user = jwtDecode(userToken || '');
 
     const [activeTab, setActiveTab] = useState(tabName);
 
     useEffect(() => {
-        const isLoggedInUserAsUser = get(user, 'role', UserRole.USER) === UserRole.USER;
+        const hasNoAccessToCreateTab = !hasContributorLevelAccessToHouse(
+            house?.accessForLoggedInUser ?? UserRole.USER,
+            true
+        );
 
-        if (isLoggedInUserAsUser && activeTab === tabValueItem.CREATE_EXPENSE) {
+        if (hasNoAccessToCreateTab && activeTab === tabValueItem.CREATE_EXPENSE) {
             setActiveTab(tabValueItem.SEE_EXPENSES);
         }
+    }, [activeTab, house?.accessForLoggedInUser]);
 
+    useEffect(() => {
         document.title = EXPENSE_PAGE_TITLE;
     }, []);
 
@@ -40,7 +45,7 @@ const ExpensesPage = () => {
             <Header
                 components={
                     <CustomNavTabs
-                        tabItems={getExpensePageTabs()}
+                        tabItems={getExpensePageTabs(house ?? null)}
                         selectedTab={activeTab}
                         onTabSelect={(tab: string) => setActiveTab(tab)}
                     />
@@ -49,7 +54,11 @@ const ExpensesPage = () => {
             <CustomErrorBoundary key={activeTab}>
                 <ExpensePageComponent
                     isCreateExpenseFormDisabled={
-                        get(user, 'role', UserRole.USER) !== UserRole.ADMIN
+                        !house ||
+                        !hasContributorLevelAccessToHouse(
+                            house.accessForLoggedInUser ?? UserRole.USER,
+                            false
+                        )
                     }
                     tabName={activeTab}
                 />
@@ -58,4 +67,8 @@ const ExpensesPage = () => {
     );
 };
 
-export default ExpensesPage;
+const mapStateToProps = (state: ReducerStateType) => ({
+    house: state.house.house,
+});
+
+export default connect(mapStateToProps, null)(ExpensesPage);
