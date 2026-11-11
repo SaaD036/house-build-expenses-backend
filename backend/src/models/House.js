@@ -49,6 +49,19 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 field: 'slug',
             },
+            description: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+                field: 'description',
+            },
+            imageUrl: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                field: 'image_url',
+                validate: {
+                    isUrl: true,
+                },
+            },
             address: {
                 type: DataTypes.JSONB,
                 allowNull: false,
