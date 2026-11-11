@@ -7,6 +7,7 @@ const {
     deleteHouse,
     getSingleHouseBySlug,
     getHouseEditHistory,
+    getCreatedHousesCount,
 } = require('../../controllers/house');
 const {
     getHouseAccess,
@@ -30,6 +31,8 @@ const router = express.Router();
 
 router.get('/', getAllHouses);
 router.post('/', createHouseValidator, createHouse);
+
+router.get('/total-created-house', getCreatedHousesCount);
 
 router.get(
     '/:houseId/house-access',
