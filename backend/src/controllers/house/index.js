@@ -5,6 +5,7 @@ const {
     fetchHouseDetailsBySlugService,
     deleteHouseService,
     fetchHouseEditHistoryService,
+    getCreatedHousesCountByUserId,
 } = require('../../services/houses');
 
 const {
@@ -17,7 +18,7 @@ const { HTTP_STATUS } = require('../../constants/http');
 /**
  * @desciption    Fetch houses list
  * @route         GET /api/house
- * @access        All
+ * @access        Authenticated
  */
 const getAllHouses = async (req, res, next) => {
     try {
@@ -48,7 +49,7 @@ const getAllHouses = async (req, res, next) => {
 /**
  * @desciption    Create a new House
  * @route         POST /api/house
- * @access        All
+ * @access        Authenticated
  */
 const createHouse = async (req, res, next) => {
     try {
@@ -149,6 +150,27 @@ const getHouseEditHistory = async (req, res, next) => {
     }
 };
 
+/**
+ * @desciption    Get count of houses created by authenticated user
+ * @route         GET /api/house/created-count
+ * @access        Authenticated
+ */
+const getCreatedHousesCount = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+
+        const totalCreatedHouseCount = await getCreatedHousesCountByUserId(userId);
+
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'House count fetched',
+            data: { totalCreatedHouseCount },
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllHouses,
     createHouse,
@@ -156,4 +178,5 @@ module.exports = {
     updateHouse,
     deleteHouse,
     getHouseEditHistory,
+    getCreatedHousesCount,
 };

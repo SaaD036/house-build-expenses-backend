@@ -240,6 +240,14 @@ const fetchHouseEditHistoryService = async (houseId, params) => {
     return { houseEditHistory: editHistory, houseEditHistoryCount: editHistoryCount };
 };
 
+const getCreatedHousesCountByUserId = async (userId) => {
+    return await House.count({
+        where: {
+            ownerId: userId,
+        },
+    });
+};
+
 module.exports = {
     fetchHouseListService,
     createHouseService,
@@ -247,4 +255,5 @@ module.exports = {
     fetchHouseDetailsBySlugService,
     deleteHouseService,
     fetchHouseEditHistoryService,
+    getCreatedHousesCountByUserId,
 };
