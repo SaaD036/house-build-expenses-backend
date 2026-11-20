@@ -53,12 +53,16 @@ const getAllHouses = async (req, res, next) => {
  */
 const createHouse = async (req, res, next) => {
     try {
-        const { name, address, floorCount } = req.body;
+        const { name, address, floorCount, description } = req.body;
 
-        await createHouseService(name, address, floorCount, req.user);
+        await createHouseService(
+            { name, address, floorCount, file: req.file, description },
+            req.user
+        );
 
-        return res.status(HTTP_STATUS.CREATED).json({
-            message: 'house created',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.CREATED,
+            message: 'House created',
         });
     } catch (error) {
         next(error);
@@ -94,11 +98,13 @@ const getSingleHouseBySlug = async (req, res, next) => {
 const updateHouse = async (req, res, next) => {
     try {
         const { houseId } = req.params;
+        const payload = { ...req.body };
 
-        await updateHouseService(houseId, req.body, req.user);
+        await updateHouseService(houseId, { ...payload, imageFile: req.file }, req.user);
 
-        return res.status(HTTP_STATUS.OK).json({
-            message: 'house updated',
+        return sendApiSuccessResponse(res, {
+            statusCode: HTTP_STATUS.OK,
+            message: 'House updated',
         });
     } catch (error) {
         next(error);
