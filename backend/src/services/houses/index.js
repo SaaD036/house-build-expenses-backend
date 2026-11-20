@@ -13,9 +13,11 @@ const {
     prepareDataForHouseEditTableRow,
     prepareValueColumnDataForHouseEdit,
 } = require('../../utilities/houses/houseEditHistoryUtilities');
-const { compareHouseAddress } = require('../../utilities/houses/houseAddressUtilities');
 const { BadRequestError, NotFoundError } = require('../../utilities/errors/ApiError');
+const { compareHouseAddress } = require('../../utilities/houses/houseAddressUtilities');
+const { uploadImageToCloudinary, replaceImageInCloudinary } = require('../../libs/Cloudinary');
 
+const { CLOUDINARY_FOLDERS } = require('../../constants');
 const { UserRole } = require('../../constants/roles');
 const { HOUSE_TABLES } = require('../../constants/houses');
 const { HOUSE_ACCESS_TYPE } = require('../../constants/houses/houseAccess');
@@ -52,11 +54,19 @@ const fetchHouseListService = async (params, loggedInUser) => {
     return { housesList, houseCount };
 };
 
-const createHouseService = async (name, address, floorCount, loggedInUser) => {
+const createHouseService = async (payloads, loggedInUser) => {
+    const { name, address, floorCount, file, description } = payloads;
+    let imageUrl = null;
+
     const houseCount = await House.count({ where: { ownerId: loggedInUser.id } });
 
     if (houseCount >= 2) {
         throw new BadRequestError('you already have created 2 houses');
+    }
+
+    if (file) {
+        const uploadResult = await uploadImageToCloudinary(file.buffer, CLOUDINARY_FOLDERS.HOUSES);
+        imageUrl = uploadResult.secure_url;
     }
 
     await House.create({
@@ -65,6 +75,8 @@ const createHouseService = async (name, address, floorCount, loggedInUser) => {
         floorCount: isNaN(floorCount) ? 1 : Number(floorCount),
         ownerId: loggedInUser.id,
         isApproved: loggedInUser.role === UserRole.ADMIN,
+        imageUrl,
+        description,
     });
 };
 
@@ -133,7 +145,7 @@ const fetchHouseDetailsBySlugService = async (slug, loggedInUser) => {
 };
 
 const updateHouseService = async (id, bodyData = {}, loggedInUser) => {
-    const { name, floorCount, address } = bodyData;
+    const { name, floorCount, address, imageFile, description } = bodyData;
     const updateLog = [];
 
     const houseDetails = await House.findOne({
@@ -158,7 +170,7 @@ const updateHouseService = async (id, bodyData = {}, loggedInUser) => {
         houseDetails.name = name.trim();
     }
 
-    if (!isNaN(floorCount) && Number(floorCount) !== houseDetails.floorCount) {
+    if (!!floorCount && !isNaN(floorCount) && Number(floorCount) !== houseDetails.floorCount) {
         updateLog.push(
             prepareDataForHouseEditTableRow(
                 id,
@@ -184,6 +196,42 @@ const updateHouseService = async (id, bodyData = {}, loggedInUser) => {
         );
 
         houseDetails.address = address;
+    }
+
+    if (imageFile) {
+        const { secure_url } = await replaceImageInCloudinary(
+            imageFile.buffer,
+            houseDetails.imageUrl,
+            CLOUDINARY_FOLDERS.HOUSES
+        );
+
+        updateLog.push(
+            prepareDataForHouseEditTableRow(
+                id,
+                loggedInUser.id,
+                HOUSE_TABLES.HOUSE,
+                HOUSE_TABLE_COLUMN_NAMES.imageUrl.dbKey,
+                prepareValueColumnDataForHouseEdit(
+                    houseDetails.imageUrl ? 'image updated' : 'image added'
+                )
+            )
+        );
+
+        houseDetails.imageUrl = secure_url;
+    }
+
+    if (!!description && houseDetails.description !== description) {
+        updateLog.push(
+            prepareDataForHouseEditTableRow(
+                id,
+                loggedInUser.id,
+                HOUSE_TABLES.HOUSE,
+                HOUSE_TABLE_COLUMN_NAMES.description.dbKey,
+                prepareValueColumnDataForHouseEdit(description.trim(), houseDetails.description)
+            )
+        );
+
+        houseDetails.description = description.trim();
     }
 
     if (updateLog.length === 0) {

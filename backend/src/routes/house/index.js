@@ -17,6 +17,7 @@ const {
     removeMultipleUserAccessesFromHouse,
 } = require('../../controllers/house/houseAccess');
 
+const upload = require('../../middlewares/UploadMiddleware');
 const houseAccessMiddleware = require('../../middlewares/HouseAccessMiddleware');
 
 const {
@@ -30,7 +31,7 @@ const { HOUSE_ACCESS_TYPE } = require('../../constants/houses/houseAccess');
 const router = express.Router();
 
 router.get('/', getAllHouses);
-router.post('/', createHouseValidator, createHouse);
+router.post('/', upload.single('image'), createHouseValidator, createHouse);
 
 router.get('/total-created-house', getCreatedHousesCount);
 
@@ -78,7 +79,12 @@ router.get(
 );
 
 router.get('/:houseSlug', getSingleHouseBySlug);
-router.put('/:houseId', houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR), updateHouse);
+router.put(
+    '/:houseId',
+    houseAccessMiddleware(HOUSE_ACCESS_TYPE.CONTRIBUTOR),
+    upload.single('image'),
+    updateHouse
+);
 router.delete('/:houseId', houseAccessMiddleware(HOUSE_ACCESS_TYPE.CREATOR), deleteHouse);
 
 module.exports = router;
