@@ -19,6 +19,7 @@ import { CREATE_EXPENSE_INITIAL_VALUE, CREATE_EXPENSE_FORM_VALIDATOR } from './c
 import { CreateExpensePagePropsType, CreateExpenseFormValueType } from './interfaces';
 import styles from './styles.module.css';
 import { ReducerStateType } from '../../../Redux/reducers';
+import CustomRichTextEditor from '../../Custom/CustomRichTextEditor';
 
 const CreateExpense = (props: CreateExpensePagePropsType) => {
     const { house, disabledForm, createExpense } = props;
@@ -72,6 +73,7 @@ const CreateExpense = (props: CreateExpensePagePropsType) => {
                             </button>
                         </ButtonSection>
                     </Form>
+                    <CustomRichTextEditor value="" onChange={() => {}} />
                 </div>
             </CardContainer>
         </div>
