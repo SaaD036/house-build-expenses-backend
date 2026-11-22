@@ -138,9 +138,12 @@ const CustomRichTextEditor: React.FC<CustomRichTextEditorProps> = ({
     };
 
     const handleSaveLink = () => {
-        if (!editor) return;
+        if (!editor) {
+            return;
+        }
 
         const trimmedUrl = linkUrl.trim();
+
         if (!trimmedUrl) {
             editor.chain().focus().unsetLink().run();
             setLinkAnchorEl(null);
