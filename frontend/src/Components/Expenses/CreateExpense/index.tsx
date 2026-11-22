@@ -7,18 +7,19 @@ import Form from '../../Custom/Form';
 import FormTextInput from '../../Custom/Form/FormComponent/FormTextInput';
 import FormDate from '../../Custom/Form/FormComponent/FormDateInput';
 import FormCurrencyInput from '../../Custom/Form/FormComponent/FormCurrencyInput';
-import FormTextArea from '../../Custom/Form/FormComponent/FormTextAreaInput';
 
 import CardContainer from '../../CardContainer';
 import ButtonSection from '../../Custom/CustomButton/ButtonSection';
 import TabComponentLoader from '../../Custom/CustomLoadingItems/TabComponentLoader';
+import FormRichTextEditor from '../../Custom/Form/FormComponent/FormRichTextEditor';
 
 import { createExpense } from '../../../Redux/actions/expenseAction';
 
-import { CREATE_EXPENSE_INITIAL_VALUE, CREATE_EXPENSE_FORM_VALIDATOR } from './constants';
-import { CreateExpensePagePropsType, CreateExpenseFormValueType } from './interfaces';
-import styles from './styles.module.css';
 import { ReducerStateType } from '../../../Redux/reducers';
+import { CreateExpensePagePropsType, CreateExpenseFormValueType } from './interfaces';
+
+import { CREATE_EXPENSE_INITIAL_VALUE, CREATE_EXPENSE_FORM_VALIDATOR } from './constants';
+import styles from './styles.module.css';
 
 const CreateExpense = (props: CreateExpensePagePropsType) => {
     const { house, disabledForm, createExpense } = props;
@@ -58,13 +59,17 @@ const CreateExpense = (props: CreateExpensePagePropsType) => {
                         onSubmit={onSubmitCreateExpenseForm}
                     >
                         <FormTextInput id="title" name="title" label="Title" />
-                        <FormTextArea id="description" name="description" label="Description" />
                         <FormCurrencyInput id="amount" name="amount" label="Amount" min={1} />
                         <FormDate
                             id="expense_at"
                             name="expense_at"
                             label="Expense Time"
                             maxDate={new Date()}
+                        />
+                        <FormRichTextEditor
+                            id="description"
+                            name="description"
+                            label="Description"
                         />
                         <ButtonSection className={styles.buttonSection}>
                             <button className="button" type="submit">

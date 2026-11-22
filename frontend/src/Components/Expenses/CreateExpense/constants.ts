@@ -10,7 +10,7 @@ export const CREATE_EXPENSE_INITIAL_VALUE: CreateExpenseFormValueType = {
 };
 
 export const CREATE_EXPENSE_FORM_VALIDATOR = Yup.object({
-    title: Yup.string().required('Firstname is required'),
+    title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
     amount: Yup.number().min(1, 'Amount must be positive number').required('Amount is required'),
 });
