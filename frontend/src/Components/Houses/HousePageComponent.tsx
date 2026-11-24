@@ -1,6 +1,7 @@
 import React from 'react';
 
 import SeeHouses from './SeeHouses';
+import CreateHouse from './CreateHouse';
 
 import { HOUSES_PAGE_TABS_VALUES } from '../../Pages/Houses/constants';
 import { HousePageComponentPropsType } from './interfaces';
@@ -18,7 +19,7 @@ const HousePageComponent = (props: HousePageComponentPropsType) => {
         }
 
         if (tabName === HOUSES_PAGE_TABS_VALUES.CREATE_HOUSE) {
-            return <div>Create House Tab</div>;
+            return <CreateHouse />;
         }
 
         return <div>Page not found</div>;

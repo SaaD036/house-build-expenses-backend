@@ -1,0 +1,40 @@
+.formRow {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.flex3 {
+    flex: 3;
+    min-width: 0;
+}
+
+.flex1 {
+    flex: 1;
+    min-width: 0;
+}
+
+.fullWidth {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+}
+
+.buttonSection {
+    height: 36.5px;
+}
+
+@media (max-width: 768px) {
+    .formRow {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .flex3,
+    .flex1,
+    .fullWidth {
+        width: 100%;
+        flex: none;
+    }
+}
+

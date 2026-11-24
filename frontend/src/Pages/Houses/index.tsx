@@ -4,10 +4,10 @@ import { useQuery } from '../../Redux/apiServices/buildURL';
 
 import Header from '../../Components/Header';
 import CustomNavTabs from '../../Components/Custom/CustomTab';
-
-import { HOUSES_PAGE_TABS_VALUES, HOUSE_PAGE_TABS } from './constants';
 import CustomErrorBoundary from '../../Components/Custom/CustomErrorBoundary';
 import HousePageComponent from '../../Components/Houses/HousePageComponent';
+
+import { HOUSES_PAGE_TABS_VALUES, HOUSE_PAGE_TABS } from './constants';
 const HOME_PAGE_TITLE = 'HBE';
 
 const HousePage = () => {
