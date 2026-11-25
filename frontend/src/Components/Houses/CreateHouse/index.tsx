@@ -17,6 +17,7 @@ import {
 } from './constants';
 
 import styles from './styles.module.css';
+import CustomErrorMessage from '../../Custom/CustomErrorMessage';
 
 export interface CreateHouseProps {
     isFormDisabled?: boolean;
@@ -32,6 +33,7 @@ export const CreateHouse: React.FC<CreateHouseProps> = ({ isFormDisabled = true,
     return (
         <div style={{ display: 'grid', gap: '25px' }}>
             <CardContainer title="Create House" />
+            <CustomErrorMessage errorMessage="You already have created two houses" />
             <CardContainer>
                 <Form
                     initialValue={INITIAL_CREATE_HOUSE_VALUES}
@@ -47,15 +49,13 @@ export const CreateHouse: React.FC<CreateHouseProps> = ({ isFormDisabled = true,
                         </div>
                     </div>
                     <div className={styles.formRow}>
-                        <div className={styles.fullWidth}>
-                            <FormRichTextEditor
-                                id="description"
-                                name="description"
-                                label="Description"
-                                placeholder="Enter description..."
-                                minHeight={150}
-                            />
-                        </div>
+                        <FormRichTextEditor
+                            id="description"
+                            name="description"
+                            label="Description"
+                            placeholder="Enter description..."
+                            minHeight={150}
+                        />
                     </div>
                     <div className={styles.formRow}>
                         <div className={styles.flex1}>
